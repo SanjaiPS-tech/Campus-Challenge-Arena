@@ -1,73 +1,51 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-[#081711] text-[#f4eee0]">
+<html lang="en" class="h-full bg-[#FAF7F2] text-[#292524]">
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Campus Challenge Arena • Solarpunk Community & Innovation Platform</title>
+  <title>Campus Challenge Arena • Hand-Drawn Creative Planner</title>
 
-  <!-- Google Fonts: Botanical warmth + Modern Readability -->
+  <!-- Google Fonts: Hand-drawn Sketch + Clean Readability -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            solargold: {
-              300: '#fde047',
-              400: '#facc15',
-              500: '#eab308',
-              600: '#ca8a04',
-            },
-            foliage: {
-              300: '#6ee7b7',
-              400: '#34d399',
-              500: '#10b981',
-              600: '#059669',
-              700: '#047857',
-              800: '#065f46',
-              900: '#064e3b',
-              950: '#022c22',
-            },
-            skywater: {
-              400: '#38bdf8',
-              500: '#0ea5e9',
-              600: '#0284c7',
-            },
-            terracotta: {
-              400: '#f87171',
-              500: '#e07a5f',
-              600: '#c2593f',
-            },
-            parchment: {
-              50: '#fdfbf7',
-              100: '#f4f1ea',
-              200: '#e9e3d5',
-              300: '#d7cbb5',
-            },
-            biome: {
-              950: '#081711', // Deepest mossy night
-              900: '#0e241c', // Sidebar & cards
-              850: '#133026', // Elevated panels
-              800: '#1a3e32', // Borders
-              700: '#235343',
+            ink: '#292524',
+            paper: '#FAF7F2',
+            papercard: '#FFFFFF',
+            pastel: {
+              mint: '#E6F4EA',
+              mintdark: '#A7F3D0',
+              pink: '#FCE7F3',
+              pinkdark: '#F472B6',
+              lavender: '#EDE9FE',
+              lavenderdark: '#A78BFA',
+              yellow: '#FEF9C3',
+              yellowdark: '#FACC15',
+              blue: '#E0F2FE',
+              bluedark: '#38BDF8',
+              terracotta: '#FFEDD5',
+              terracottadark: '#FB923C',
             }
           },
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-            display: ['"Space Grotesk"', 'sans-serif'],
+            hand: ['"Patrick Hand"', '"Caveat"', 'cursive'],
+            script: ['"Caveat"', 'cursive'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
             mono: ['"JetBrains Mono"', 'monospace'],
           },
           boxShadow: {
-            'solar-glow': '0 0 30px -5px rgba(234, 179, 8, 0.3)',
-            'foliage-glow': '0 0 30px -5px rgba(16, 185, 129, 0.25)',
-            'sky-glow': '0 0 30px -5px rgba(14, 165, 233, 0.25)',
-            'organic': '0 12px 35px -8px rgba(3, 20, 14, 0.6)',
+            'sketch': '3px 4px 0px #292524',
+            'sketch-sm': '2px 2px 0px #292524',
+            'sketch-lg': '5px 6px 0px #292524',
+            'sketch-hover': '6px 8px 0px #292524',
           }
         }
       }
@@ -75,463 +53,494 @@
   </script>
 
   <style>
-    /* Solarpunk Background Mesh */
+    /* Paper Grid Background */
     body {
-      background-color: #081711;
+      background-color: #FAF7F2;
       background-image: 
-        radial-gradient(circle at 85% 15%, rgba(234, 179, 8, 0.08) 0%, transparent 45%),
-        radial-gradient(circle at 15% 85%, rgba(16, 185, 129, 0.09) 0%, transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.04) 0%, transparent 60%);
-      background-attachment: fixed;
+        linear-gradient(to right, rgba(41, 37, 36, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(41, 37, 36, 0.05) 1px, transparent 1px);
+      background-size: 24px 24px;
     }
 
-    /* Solarpunk Circuit-Leaf Overlay */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: radial-gradient(rgba(52, 211, 153, 0.12) 1px, transparent 1px);
-      background-size: 28px 28px;
-      pointer-events: none;
-      z-index: 0;
+    /* Hand-Drawn Rough Border Shapes */
+    .sketch-card {
+      background-color: #FFFFFF;
+      border: 2px solid #292524;
+      border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+      box-shadow: 4px 4px 0px #292524;
+      transition: all 0.2s ease;
+    }
+    .sketch-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #292524;
     }
 
-    /* Custom Organic Scrollbars */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #081711;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #1a3e32;
-      border-radius: 9999px;
-      border: 2px solid #081711;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #10b981;
+    .sketch-box {
+      border: 2px solid #292524;
+      border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+      box-shadow: 3px 3px 0px #292524;
     }
 
-    /* Growth and Bloom Animation */
-    @keyframes unfurl {
-      from {
-        opacity: 0;
-        transform: translateY(10px) scale(0.99);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+    .sketch-btn {
+      border: 2px solid #292524;
+      border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+      box-shadow: 3px 3px 0px #292524;
+      transition: all 0.15s ease;
+      font-family: 'Patrick Hand', cursive;
+    }
+    .sketch-btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 5px 0px #292524;
+    }
+    .sketch-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #292524;
     }
 
+    /* Washi Tape Accent */
+    .washi-tape {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-1.5deg);
+      width: 90px;
+      height: 22px;
+      background: rgba(254, 240, 138, 0.85);
+      border-left: 2px dashed rgba(41, 37, 36, 0.4);
+      border-right: 2px dashed rgba(41, 37, 36, 0.4);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      z-index: 10;
+    }
+    .washi-tape-pink {
+      background: rgba(251, 207, 232, 0.85);
+    }
+    .washi-tape-mint {
+      background: rgba(167, 243, 208, 0.85);
+    }
+    .washi-tape-blue {
+      background: rgba(186, 230, 253, 0.85);
+    }
+
+    /* Highlighter Marker Effect */
+    .marker-yellow {
+      background: linear-gradient(104deg, rgba(254, 240, 138, 0.7) 0.9%, rgba(254, 240, 138, 0.4) 100%);
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+    .marker-mint {
+      background: linear-gradient(104deg, rgba(167, 243, 208, 0.7) 0.9%, rgba(167, 243, 208, 0.4) 100%);
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+    .marker-pink {
+      background: linear-gradient(104deg, rgba(251, 207, 232, 0.7) 0.9%, rgba(251, 207, 232, 0.4) 100%);
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+
+    /* Custom Planner Tab Dividers */
+    .planner-tab {
+      border: 2px solid #292524;
+      border-right: none;
+      border-radius: 12px 0 0 12px;
+      box-shadow: -3px 3px 0px #292524;
+      transition: all 0.2s ease;
+      font-family: 'Patrick Hand', cursive;
+    }
+    .planner-tab.active {
+      transform: translateX(4px);
+      background-color: #FFFFFF !important;
+      border-right: 2px solid #FFFFFF;
+      font-weight: 700;
+    }
+
+    /* Page-Turning Transition Effect */
     .dashboard-view {
       display: none;
-      animation: unfurl 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: pageTurn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     .dashboard-view.active {
       display: block;
     }
 
-    /* Pulse of Life */
-    @keyframes photosynthetic-pulse {
-      0%, 100% { opacity: 0.9; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.18); }
-    }
-    .pulse-dot {
-      animation: photosynthetic-pulse 2.2s infinite ease-in-out;
-    }
-
-    /* Glassmorphism Bio-Panels */
-    .bio-panel {
-      background: rgba(14, 36, 28, 0.75);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(52, 211, 153, 0.15);
-      border-radius: 1.25rem;
-    }
-    .bio-panel-interactive {
-      background: rgba(14, 36, 28, 0.75);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(52, 211, 153, 0.15);
-      border-radius: 1.25rem;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .bio-panel-interactive:hover {
-      border-color: rgba(234, 179, 8, 0.45);
-      transform: translateY(-3px);
-      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.7), 0 0 25px -5px rgba(234, 179, 8, 0.2);
+    @keyframes pageTurn {
+      0% {
+        opacity: 0;
+        transform: rotate(-0.5deg) translateY(6px);
+      }
+      100% {
+        opacity: 1;
+        transform: rotate(0deg) translateY(0);
+      }
     }
 
-    /* Organic flowing borders */
-    .organic-shape {
-      border-radius: 1.75rem 1.25rem 1.75rem 1.25rem;
+    /* Animated Pencil Strikethrough */
+    @keyframes pencilStroke {
+      0% { width: 0; }
+      100% { width: 100%; }
+    }
+    .strike-through {
+      position: relative;
+    }
+    .strike-through::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      height: 2px;
+      background: #E11D48;
+      animation: pencilStroke 0.3s ease-in forwards;
+    }
+
+    /* Hand-Drawn Checkbox */
+    .sketch-check {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #292524;
+      border-radius: 50% 40% 60% 45%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
   </style>
 </head>
 
-<body class="h-full font-sans text-parchment-100 antialiased overflow-hidden flex flex-col relative z-10">
+<body class="h-full font-sans text-ink antialiased overflow-hidden flex flex-col">
 
-  <!-- Solarpunk Toast Alert -->
-  <div id="toast" class="fixed top-6 right-6 z-50 transform -translate-y-28 opacity-0 pointer-events-none transition-all duration-300 ease-out">
-    <div id="toast-card" class="bio-panel border border-solargold-500/50 p-4 rounded-2xl shadow-solar-glow flex items-center gap-3.5 max-w-md bg-biome-900/95 text-parchment-50">
-      <div id="toast-icon-wrap" class="w-10 h-10 rounded-xl bg-solargold-500/20 text-solargold-400 flex items-center justify-center font-bold text-xl flex-shrink-0">
-        <span id="toast-icon">🌱</span>
+  <!-- Hand-drawn Notification Sticky Note -->
+  <div id="toast" class="fixed top-5 right-6 z-50 transform -translate-y-28 opacity-0 pointer-events-none transition-all duration-300 ease-out">
+    <div id="toast-card" class="sketch-box p-4 bg-pastel-yellow border-2 border-ink shadow-sketch-lg flex items-center gap-3 max-w-md relative rotate-1">
+      <div class="washi-tape washi-tape-pink"></div>
+      <div id="toast-icon-wrap" class="w-9 h-9 rounded-full border-2 border-ink bg-white flex items-center justify-center font-hand text-lg flex-shrink-0">
+        <span id="toast-icon">✏️</span>
       </div>
-      <div class="overflow-hidden">
-        <div id="toast-title" class="text-sm font-semibold text-white tracking-wide">Ecosystem Update</div>
-        <div id="toast-msg" class="text-xs text-parchment-200 mt-0.5 truncate">Action harvested successfully.</div>
+      <div>
+        <div id="toast-title" class="font-hand text-base font-bold text-ink">Planner Note</div>
+        <div id="toast-msg" class="text-xs text-stone-700 font-sans">Item recorded on your checklist.</div>
       </div>
     </div>
   </div>
 
-  <!-- Main App Shell -->
-  <div class="flex-1 flex overflow-hidden">
+  <!-- Main Planner Binder Shell -->
+  <div class="flex-1 flex overflow-hidden p-3 sm:p-5 gap-3 sm:gap-4 max-w-[1600px] mx-auto w-full">
 
     <!-- ============================================================== -->
-    <!-- GARDEN PATHWAY SIDEBAR (Solarpunk Community Layout) -->
+    <!-- BINDER TAB DIVIDERS (Hand-Drawn Side Navigation) -->
     <!-- ============================================================== -->
-    <aside id="app-sidebar" class="w-68 bg-biome-950/90 border-r border-foliage-700/30 flex flex-col flex-shrink-0 z-30 transition-all duration-300">
+    <aside id="app-sidebar" class="w-60 sm:w-64 bg-[#F5EFE6] border-2 border-ink rounded-3xl p-3.5 flex flex-col flex-shrink-0 z-30 shadow-sketch relative">
       
-      <!-- Solarpunk Brand Header -->
-      <div class="h-20 px-6 flex items-center justify-between border-b border-foliage-700/30 bg-biome-900/40">
-        <a href="#dashboard" onclick="window.app.switchSection('dashboard')" class="flex items-center gap-3.5 group">
-          <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-foliage-600 via-foliage-500 to-solargold-400 flex items-center justify-center text-xl text-biome-950 font-bold shadow-solar-glow group-hover:rotate-6 transition-transform">
-            ☀️
+      <!-- Notebook Rings Accent -->
+      <div class="absolute -right-3 top-8 flex flex-col gap-6 z-20 pointer-events-none">
+        <div class="w-6 h-3.5 bg-stone-300 border-2 border-ink rounded-full"></div>
+        <div class="w-6 h-3.5 bg-stone-300 border-2 border-ink rounded-full"></div>
+        <div class="w-6 h-3.5 bg-stone-300 border-2 border-ink rounded-full"></div>
+        <div class="w-6 h-3.5 bg-stone-300 border-2 border-ink rounded-full"></div>
+        <div class="w-6 h-3.5 bg-stone-300 border-2 border-ink rounded-full"></div>
+        <div class="w-6 h-3.5 bg-stone-300 border-2 border-ink rounded-full"></div>
+      </div>
+
+      <!-- Journal Cover Header -->
+      <div class="pb-4 border-b-2 border-dashed border-stone-300 mb-3 px-2">
+        <a href="#dashboard" onclick="window.app.switchSection('dashboard')" class="block group">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-2xl group-hover:rotate-12 transition-transform">📒</span>
+            <span class="font-hand text-2xl font-bold tracking-tight text-ink">My Campus Arena</span>
           </div>
-          <div class="leading-tight">
-            <span class="font-display font-bold text-white tracking-wide text-sm block">CAMPUS ARENA</span>
-            <span class="text-[10px] font-mono font-medium text-solargold-400 tracking-wider flex items-center gap-1">
-              <span>🌿</span> SOLARPUNK BIOME
-            </span>
-          </div>
+          <span class="inline-block text-[11px] font-hand text-stone-600 bg-pastel-yellow px-2 py-0.5 rounded-md border border-stone-400">
+            ★ Daily Sketch Planner & Tracker
+          </span>
         </a>
       </div>
 
-      <!-- Garden Pathway Navigation Menu -->
-      <nav class="flex-1 px-3.5 py-4 space-y-1.5 overflow-y-auto">
+      <!-- Colorful Tabbed Dividers -->
+      <nav class="flex-1 space-y-2 overflow-y-auto pr-1">
         
-        <div class="px-3 pt-2 pb-1 text-[10px] font-bold tracking-wider uppercase text-foliage-400/70 font-mono flex items-center gap-1.5">
-          <span>🌱</span> Living Spaces
+        <div class="px-2 pt-1 pb-0.5 text-xs font-hand text-stone-500 uppercase tracking-wider">
+          ✦ Planning Views
         </div>
 
-        <!-- 1. The Commons (Dashboard Overview) -->
-        <button onclick="window.app.switchSection('dashboard')" id="nav-btn-dashboard" class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-semibold transition-all text-white bg-foliage-600/20 border border-foliage-500/30 shadow-foliage-glow">
-          <span class="text-base text-solargold-400">🏡</span>
-          <span class="flex-1 text-left">The Commons</span>
+        <!-- 1. Planner Overview (The Commons / Dashboard) -->
+        <button onclick="window.app.switchSection('dashboard')" id="nav-btn-dashboard" class="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-ink text-sm font-hand text-ink bg-pastel-yellow shadow-sketch-sm transition-all text-left">
+          <span class="text-base">📅</span>
+          <span class="flex-1 font-bold text-base">Planner Overview</span>
         </button>
 
-        <!-- 2. Innovation Arena -->
-        <button onclick="window.app.switchSection('arena')" id="nav-btn-arena" class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-semibold transition-all text-parchment-300 hover:text-white hover:bg-biome-850/60 border border-transparent">
-          <span class="text-base text-skywater-400">⚡</span>
-          <span class="flex-1 text-left">Innovation Arena</span>
-          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-foliage-500/20 text-foliage-300 border border-foliage-500/30">ACTIVE</span>
+        <!-- 2. Solve Arena (Daily Tasks) -->
+        <button onclick="window.app.switchSection('arena')" id="nav-btn-arena" class="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-pastel-mint hover:border-ink transition-all text-left">
+          <span class="text-base">✏️</span>
+          <span class="flex-1 font-bold text-base">Solve Arena</span>
+          <span class="text-[11px] px-1.5 py-0.2 rounded-full bg-pastel-pink border border-ink font-sans">LIVE</span>
         </button>
 
-        <!-- 3. Canopy Leaderboard -->
-        <button onclick="window.app.switchSection('leaderboard')" id="nav-btn-leaderboard" class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-semibold transition-all text-parchment-300 hover:text-white hover:bg-biome-850/60 border border-transparent">
-          <span class="text-base text-solargold-400">🌻</span>
-          <span class="flex-1 text-left">Canopy Rankings</span>
+        <!-- 3. Goal Tracker (Leaderboard) -->
+        <button onclick="window.app.switchSection('leaderboard')" id="nav-btn-leaderboard" class="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-pastel-lavender hover:border-ink transition-all text-left">
+          <span class="text-base">🏆</span>
+          <span class="flex-1 font-bold text-base">Goal Leaderboard</span>
         </button>
 
-        <!-- 4. Community Initiatives (Competitions) -->
-        <button onclick="window.app.switchSection('competitions')" id="nav-btn-competitions" class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-semibold transition-all text-parchment-300 hover:text-white hover:bg-biome-850/60 border border-transparent">
-          <span class="text-base text-foliage-400">🌾</span>
-          <span class="flex-1 text-left">Initiatives & Quests</span>
-          <span id="nav-badge-competitions" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-biome-800 text-foliage-300">0</span>
+        <!-- 4. Contest Calendar (Competitions Directory) -->
+        <button onclick="window.app.switchSection('competitions')" id="nav-btn-competitions" class="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-pastel-blue hover:border-ink transition-all text-left">
+          <span class="text-base">🗓️</span>
+          <span class="flex-1 font-bold text-base">Event Calendar</span>
+          <span id="nav-badge-competitions" class="text-xs font-hand px-2 py-0.5 rounded-md bg-stone-200 border border-ink">0</span>
         </button>
 
-        <div class="px-3 pt-5 pb-1 text-[10px] font-bold tracking-wider uppercase text-foliage-400/70 font-mono flex items-center gap-1.5">
-          <span>🌿</span> Collaboration & Care
+        <div class="px-2 pt-3 pb-0.5 text-xs font-hand text-stone-500 uppercase tracking-wider">
+          ✦ Organizer Studio
         </div>
 
-        <!-- 5. Community Bio-Hub (Student Portal) -->
-        <button onclick="window.app.switchSection('students')" id="nav-btn-students" class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-semibold transition-all text-parchment-300 hover:text-white hover:bg-biome-850/60 border border-transparent">
-          <span class="text-base text-terracotta-500">🪴</span>
-          <span class="flex-1 text-left">Innovator Bio-Hub</span>
+        <!-- 5. Student Index (Student Portal) -->
+        <button onclick="window.app.switchSection('students')" id="nav-btn-students" class="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-pastel-pink hover:border-ink transition-all text-left">
+          <span class="text-base">👥</span>
+          <span class="flex-1 font-bold text-base">Student Roster</span>
         </button>
 
-        <!-- 6. Biosphere Workshop (Organizer Console) -->
-        <button onclick="window.app.switchSection('organizer')" id="nav-btn-organizer" class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-semibold transition-all text-parchment-300 hover:text-white hover:bg-biome-850/60 border border-transparent">
-          <span class="text-base text-solargold-400">🏛️</span>
-          <span class="flex-1 text-left">Biosphere Workshop</span>
+        <!-- 6. Teacher Desk (Organizer Console) -->
+        <button onclick="window.app.switchSection('organizer')" id="nav-btn-organizer" class="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-pastel-terracotta hover:border-ink transition-all text-left">
+          <span class="text-base">🎨</span>
+          <span class="flex-1 font-bold text-base">Organizer Studio</span>
         </button>
 
-        <!-- 7. Eco-Archive & History -->
-        <button onclick="window.app.switchSection('history')" id="nav-btn-history" class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-semibold transition-all text-parchment-300 hover:text-white hover:bg-biome-850/60 border border-transparent">
-          <span class="text-base text-parchment-300">📜</span>
-          <span class="flex-1 text-left">Season Archives</span>
+        <!-- 7. Memory Scrapbook (History) -->
+        <button onclick="window.app.switchSection('history')" id="nav-btn-history" class="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-stone-200 hover:border-ink transition-all text-left">
+          <span class="text-base">📜</span>
+          <span class="flex-1 font-bold text-base">Past Seasons</span>
         </button>
 
       </nav>
 
-      <!-- Sidebar Footer: Solar Participant Card & Biological Status -->
-      <div class="p-3.5 border-t border-foliage-700/30 bg-biome-950/70 space-y-2.5">
-        <!-- Active Persona Card -->
-        <div class="p-3 rounded-2xl bg-biome-900/90 border border-foliage-700/40 flex items-center gap-3 shadow-sm">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-foliage-600 to-skywater-500 flex items-center justify-center text-sm font-bold text-biome-950 flex-shrink-0">
-            🌱
-          </div>
-          <div class="min-w-0 flex-1">
-            <div class="text-[10px] font-mono text-foliage-400 uppercase tracking-wider">Active Innovator</div>
-            <select id="active-student-select" class="w-full bg-transparent text-xs font-semibold text-white outline-none cursor-pointer truncate" onchange="window.app.onActiveStudentChange(this.value)">
-              <option value="" class="bg-biome-900">Choose Student...</option>
-            </select>
-          </div>
+      <!-- Active Participant Sticky Note Footer -->
+      <div class="pt-3 border-t-2 border-dashed border-stone-300 space-y-2">
+        <div class="p-2.5 bg-white border-2 border-ink rounded-2xl shadow-sketch-sm">
+          <div class="text-[11px] font-hand text-stone-500 mb-0.5">👤 Active Student:</div>
+          <select id="active-student-select" class="w-full bg-pastel-mint border border-ink rounded-lg text-xs font-hand text-ink py-1 px-1.5 outline-none cursor-pointer truncate" onchange="window.app.onActiveStudentChange(this.value)">
+            <option value="">Choose Student...</option>
+          </select>
         </div>
 
-        <!-- Ecosystem Status indicator -->
-        <div class="px-2.5 py-1.5 flex items-center justify-between text-[11px] font-mono text-parchment-300">
-          <span class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-solargold-400 pulse-dot"></span>
-            Solar Grid: Connected
+        <div class="flex items-center justify-between text-xs font-hand text-stone-600 px-1">
+          <span class="flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-ink"></span>
+            MySQL Connected
           </span>
-          <span class="text-[10px] text-foliage-400 font-bold">100% CLEAN</span>
+          <span class="text-[11px] text-stone-500">v8.0+</span>
         </div>
       </div>
 
     </aside>
 
     <!-- ============================================================== -->
-    <!-- MAIN BIOME CONTENT CONTAINER -->
+    <!-- OPEN PLANNER DESK (Main Interactive Content Page) -->
     <!-- ============================================================== -->
-    <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-transparent">
+    <div class="flex-1 bg-white border-2 border-ink rounded-3xl flex flex-col min-w-0 overflow-hidden shadow-sketch relative">
       
-      <!-- Top Canopy Header -->
-      <header class="h-20 border-b border-foliage-700/30 bg-biome-900/60 backdrop-blur-md px-6 sm:px-8 flex items-center justify-between gap-4 flex-shrink-0 z-20">
+      <!-- Top Planner Bar -->
+      <header class="h-16 border-b-2 border-ink bg-[#FFFDF9] px-6 flex items-center justify-between gap-4 flex-shrink-0 z-20">
         
-        <!-- Mobile Toggle & Section Title -->
-        <div class="flex items-center gap-3.5">
-          <button onclick="window.app.toggleMobileSidebar()" class="lg:hidden p-2 rounded-xl bg-biome-800 text-parchment-200 hover:text-white">
-            🌿
+        <div class="flex items-center gap-3">
+          <button onclick="window.app.toggleMobileSidebar()" class="lg:hidden p-2 rounded-xl border-2 border-ink bg-pastel-yellow text-ink">
+            ☰
           </button>
           <div>
-            <h1 id="topbar-section-title" class="font-display font-bold text-xl text-white tracking-tight flex items-center gap-2">
-              The Commons
+            <h1 id="topbar-section-title" class="font-hand text-2xl font-bold text-ink leading-tight flex items-center gap-2">
+              Planner Overview
             </h1>
-            <p id="topbar-section-subtitle" class="text-xs text-parchment-300 hidden sm:block">
-              Community Ecosystem • Sustainable Abundance & Active Innovations
+            <p id="topbar-section-subtitle" class="text-xs text-stone-500 font-sans hidden sm:block">
+              Daily agenda, active challenges, and sketched milestones
             </p>
           </div>
         </div>
 
-        <!-- Right Quick Actions -->
-        <div class="flex items-center gap-3">
+        <!-- Right Quick Planner Actions -->
+        <div class="flex items-center gap-2.5">
           
-          <!-- Solve Arena Quick Jump -->
-          <button onclick="window.app.switchSection('arena')" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-foliage-600/20 hover:bg-foliage-600/30 text-foliage-300 border border-foliage-500/40 transition-all shadow-sm">
-            <span>⚡</span> Solve Challenge
+          <button onclick="window.app.switchSection('arena')" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-ink bg-pastel-mint hover:bg-pastel-mintdark text-ink font-hand text-sm shadow-sketch-sm transition-all">
+            <span>✏️</span> Solve Today
           </button>
 
-          <!-- Host Workshop Shortcut -->
-          <button onclick="window.app.switchSection('organizer')" class="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-solargold-500/20 hover:bg-solargold-500/30 text-solargold-300 border border-solargold-500/40 transition-all shadow-sm">
-            <span>🌻</span> Nurture Quest
+          <button onclick="window.app.switchSection('organizer')" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-ink bg-pastel-lavender hover:bg-pastel-lavenderdark text-ink font-hand text-sm shadow-sketch-sm transition-all">
+            <span>➕</span> New Task / Contest
           </button>
 
-          <!-- Refresh / Re-seed Garden Button -->
-          <button onclick="window.app.resetAndSeedData()" title="Reset and seed thriving community demonstration data" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-solargold-500 to-terracotta-500 hover:from-solargold-400 hover:to-terracotta-400 text-biome-950 font-bold shadow-solar-glow transition-all">
-            <span>☀️</span> Seed Biome
+          <button onclick="window.app.resetAndSeedData()" title="Re-sketch clean demo database records" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-ink bg-pastel-yellow hover:bg-pastel-yellowdark text-ink font-hand text-sm shadow-sketch-sm transition-all">
+            <span>↻</span> Re-Seed Notebook
           </button>
 
         </div>
       </header>
 
-      <!-- Scrollable Living View Area -->
-      <main class="flex-1 overflow-y-auto px-4 sm:px-8 py-6 space-y-6">
+      <!-- Scrollable Open Page Layout -->
+      <main class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
 
         <!-- ============================================================== -->
-        <!-- 1. THE COMMONS (view-dashboard) -->
+        <!-- 1. PLANNER OVERVIEW (view-dashboard) -->
         <!-- ============================================================== -->
         <section id="view-dashboard" class="dashboard-view active space-y-6 max-w-7xl mx-auto">
           
-          <!-- Solarpunk Spotlight Hero -->
-          <div class="bio-panel p-6 sm:p-9 relative overflow-hidden border border-foliage-500/30 bg-gradient-to-br from-biome-850/90 via-biome-900/90 to-biome-950/90">
-            <!-- Decorative Sunbeam & Foliage Motif -->
-            <div class="absolute -right-12 -top-12 w-96 h-96 bg-solargold-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -left-12 -bottom-12 w-80 h-80 bg-foliage-500/15 rounded-full blur-3xl pointer-events-none"></div>
+          <!-- Pinned Spotlight Agenda Card (Open Post-it Note) -->
+          <div class="sketch-card p-6 sm:p-8 bg-pastel-yellow border-2 border-ink relative">
+            <div class="washi-tape washi-tape-pink"></div>
             
-            <div class="relative z-10 grid lg:grid-cols-12 gap-8 items-center">
+            <div class="grid lg:grid-cols-12 gap-6 items-center">
               
-              <div class="lg:col-span-8 space-y-3.5">
-                <div class="flex items-center gap-2.5">
-                  <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-foliage-500/20 text-foliage-300 border border-foliage-500/40 shadow-sm">
-                    <span class="w-2 h-2 rounded-full bg-solargold-400 pulse-dot"></span>
-                    FEATURED COMMUNITY INITIATIVE
+              <div class="lg:col-span-8 space-y-3">
+                <div class="flex items-center gap-2">
+                  <span class="px-2.5 py-0.5 rounded-full border-2 border-ink bg-white font-hand text-xs font-bold text-ink">
+                    ★ FEATURED PRIORITY EVENT
                   </span>
-                  <span id="spotlight-type" class="px-2.5 py-1 rounded-lg text-xs font-mono bg-biome-800 text-solargold-300 border border-foliage-700/50">
-                    Coding Sprint
+                  <span id="spotlight-type" class="px-2 py-0.5 rounded-md border border-ink bg-pastel-mint font-hand text-xs">
+                    Coding Contest
                   </span>
                 </div>
 
-                <h2 id="spotlight-title" class="font-display text-2xl sm:text-4xl font-bold text-white tracking-tight">
+                <h2 id="spotlight-title" class="font-hand text-3xl sm:text-4xl font-bold text-ink tracking-tight">
                   Apex CodeSprint 2026
                 </h2>
 
-                <p id="spotlight-desc" class="text-xs sm:text-sm text-parchment-200 leading-relaxed max-w-2xl">
-                  Harmonizing clean code algorithms with sustainable computing. Solve rapid algorithmic puzzles designed to optimize real-world resource allocation.
+                <p id="spotlight-desc" class="text-xs sm:text-sm text-stone-700 leading-relaxed max-w-2xl font-sans">
+                  The flagship inter-departmental algorithmic sprint. Solve rapid data structures and algorithmic puzzles under time pressure.
                 </p>
 
-                <!-- Ecological Metadata Metrics -->
-                <div class="flex flex-wrap items-center gap-5 pt-1 text-xs text-parchment-200 font-mono">
-                  <div class="flex items-center gap-2">
-                    <span class="text-solargold-400">🌾 Challenges:</span>
-                    <span id="spotlight-challenges" class="font-bold text-white">3 Questions (60 Pts)</span>
+                <div class="flex flex-wrap items-center gap-4 pt-1 font-hand text-sm text-stone-700">
+                  <div class="flex items-center gap-1.5">
+                    <span class="marker-yellow">Tasks:</span>
+                    <span id="spotlight-challenges" class="font-bold text-ink">3 Questions (60 Pts)</span>
                   </div>
-                  <div class="flex items-center gap-2">
-                    <span class="text-foliage-400">👥 Participants:</span>
-                    <span id="spotlight-participants" class="font-bold text-white">4 / 50 Enrolled</span>
+                  <div class="flex items-center gap-1.5">
+                    <span class="marker-mint">Class Size:</span>
+                    <span id="spotlight-participants" class="font-bold text-ink">4 / 50 Enrolled</span>
                   </div>
                 </div>
               </div>
 
-              <!-- Solarpunk CTAs -->
+              <!-- Planner CTAs -->
               <div class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-end">
-                <button onclick="window.app.enterSpotlightContest()" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-foliage-500 to-solargold-500 hover:from-foliage-400 hover:to-solargold-400 text-biome-950 font-bold text-xs tracking-wider uppercase shadow-solar-glow flex items-center justify-center gap-2 transition-all">
-                  <span>⚡</span> Enter Solution Arena
+                <button onclick="window.app.enterSpotlightContest()" class="sketch-btn px-5 py-3 bg-pastel-mint hover:bg-pastel-mintdark text-ink font-bold text-base flex items-center justify-center gap-2">
+                  <span>✏️</span> Open in Solve Arena
                 </button>
-                <button onclick="window.app.viewSpotlightLeaderboard()" class="px-6 py-3.5 rounded-2xl bg-biome-800 hover:bg-biome-700 text-parchment-100 font-semibold text-xs tracking-wider uppercase border border-foliage-700/60 flex items-center justify-center gap-2 transition-all">
-                  <span>🌻</span> View Standings Bloom
+                <button onclick="window.app.viewSpotlightLeaderboard()" class="sketch-btn px-5 py-3 bg-white hover:bg-stone-50 text-ink font-bold text-base flex items-center justify-center gap-2">
+                  <span>🏆</span> View Goal Standings
                 </button>
               </div>
 
             </div>
           </div>
 
-          <!-- Renewable Ecosystem KPI Telemetry -->
+          <!-- Sticky Note Doodled Stats Grid -->
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             
-            <!-- Metric 1: Quests -->
-            <div class="bio-panel p-5 rounded-2xl border border-foliage-700/40 relative overflow-hidden group">
-              <div class="text-[11px] font-mono uppercase tracking-wider text-solargold-400 mb-1 flex items-center gap-1.5">
-                <span>🌾</span> Active Initiatives
-              </div>
+            <!-- Sticky 1: Competitions -->
+            <div class="sketch-card p-5 bg-pastel-mint border-2 border-ink relative rotate-[-1deg]">
+              <div class="text-xs font-hand text-stone-600 mb-1">Total Competitions 📌</div>
               <div class="flex items-baseline justify-between">
-                <span id="stat-competitions" class="font-display text-3xl font-bold text-white">0</span>
-                <span class="text-2xl text-solargold-400 group-hover:scale-110 transition-transform">☀️</span>
+                <span id="stat-competitions" class="font-hand text-4xl font-bold text-ink">0</span>
+                <span class="text-2xl">🎯</span>
               </div>
-              <div class="text-[11px] text-parchment-300 mt-2">Sustainable collegiate events</div>
+              <div class="text-[11px] text-stone-600 mt-2 font-sans">Active & upcoming schedules</div>
             </div>
 
-            <!-- Metric 2: Innovators -->
-            <div class="bio-panel p-5 rounded-2xl border border-foliage-700/40 relative overflow-hidden group">
-              <div class="text-[11px] font-mono uppercase tracking-wider text-foliage-400 mb-1 flex items-center gap-1.5">
-                <span>🌱</span> Innovators Enrolled
-              </div>
+            <!-- Sticky 2: Students -->
+            <div class="sketch-card p-5 bg-pastel-pink border-2 border-ink relative rotate-[1deg]">
+              <div class="text-xs font-hand text-stone-600 mb-1">Enrolled Students 📝</div>
               <div class="flex items-baseline justify-between">
-                <span id="stat-students" class="font-display text-3xl font-bold text-white">0</span>
-                <span class="text-2xl text-foliage-400 group-hover:scale-110 transition-transform">👥</span>
+                <span id="stat-students" class="font-hand text-4xl font-bold text-ink">0</span>
+                <span class="text-2xl">👥</span>
               </div>
-              <div class="text-[11px] text-parchment-300 mt-2">Across campus departments</div>
+              <div class="text-[11px] text-stone-600 mt-2 font-sans">Across all campus batches</div>
             </div>
 
-            <!-- Metric 3: Problems -->
-            <div class="bio-panel p-5 rounded-2xl border border-foliage-700/40 relative overflow-hidden group">
-              <div class="text-[11px] font-mono uppercase tracking-wider text-skywater-400 mb-1 flex items-center gap-1.5">
-                <span>🧩</span> Problems & Quests
-              </div>
+            <!-- Sticky 3: Challenges -->
+            <div class="sketch-card p-5 bg-pastel-lavender border-2 border-ink relative rotate-[-1.5deg]">
+              <div class="text-xs font-hand text-stone-600 mb-1">Challenge Tasks 🧩</div>
               <div class="flex items-baseline justify-between">
-                <span id="stat-challenges" class="font-display text-3xl font-bold text-white">0</span>
-                <span class="text-2xl text-skywater-400 group-hover:scale-110 transition-transform">🍃</span>
+                <span id="stat-challenges" class="font-hand text-4xl font-bold text-ink">0</span>
+                <span class="text-2xl">⭐</span>
               </div>
-              <div class="text-[11px] text-parchment-300 mt-2">Algorithmic challenge nodes</div>
+              <div class="text-[11px] text-stone-600 mt-2 font-sans">Problem sets to solve</div>
             </div>
 
-            <!-- Metric 4: Solutions -->
-            <div class="bio-panel p-5 rounded-2xl border border-foliage-700/40 relative overflow-hidden group">
-              <div class="text-[11px] font-mono uppercase tracking-wider text-terracotta-400 mb-1 flex items-center gap-1.5">
-                <span>💧</span> Solutions Harvested
-              </div>
+            <!-- Sticky 4: Submissions -->
+            <div class="sketch-card p-5 bg-pastel-blue border-2 border-ink relative rotate-[1deg]">
+              <div class="text-xs font-hand text-stone-600 mb-1">Graded Solutions ✨</div>
               <div class="flex items-baseline justify-between">
-                <span id="stat-submissions" class="font-display text-3xl font-bold text-white">0</span>
-                <span class="text-2xl text-terracotta-400 group-hover:scale-110 transition-transform">✨</span>
+                <span id="stat-submissions" class="font-hand text-4xl font-bold text-ink">0</span>
+                <span class="text-2xl">✅</span>
               </div>
-              <div class="text-[11px] text-parchment-300 mt-2">Evaluated in real-time</div>
+              <div class="text-[11px] text-stone-600 mt-2 font-sans">Evaluated instant checks</div>
             </div>
 
           </div>
 
-          <!-- The Commons Split: Active Initiatives & Community Hub -->
+          <!-- Planner Spread: Event Agenda & Quick Shortcuts -->
           <div class="grid lg:grid-cols-12 gap-6">
             
-            <!-- Left: Quick Active Initiatives -->
+            <!-- Left: Weekly Event Cards -->
             <div class="lg:col-span-7 space-y-4">
               <div class="flex items-center justify-between">
-                <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
-                  <span>🌿</span> Living Initiatives
+                <h3 class="font-hand text-xl font-bold text-ink flex items-center gap-2">
+                  <span>📅</span> Active & Scheduled Events
                 </h3>
-                <button onclick="window.app.switchSection('competitions')" class="text-xs font-semibold text-solargold-400 hover:text-solargold-300">
-                  Explore Full Garden ➔
+                <button onclick="window.app.switchSection('competitions')" class="font-hand text-sm font-bold text-rose-600 hover:underline">
+                  Full Calendar View ➔
                 </button>
               </div>
 
               <!-- Quick Competitions List -->
               <div id="dashboard-quick-comps" class="space-y-3">
-                <div class="bio-panel p-4 flex items-center justify-between gap-4">
-                  <div>
-                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-foliage-500/20 text-foliage-300 uppercase font-bold">Active Now</span>
-                    <h4 class="font-bold text-sm text-white mt-1">Apex CodeSprint 2026</h4>
-                    <p class="text-xs text-parchment-300 mt-0.5">3 Algorithmic Challenges • Fast evaluation</p>
-                  </div>
-                  <button onclick="window.app.switchSection('arena')" class="px-3.5 py-1.5 rounded-xl bg-foliage-500 text-biome-950 font-bold text-xs">
-                    Solve ➔
-                  </button>
-                </div>
+                <!-- Dynamically populated -->
               </div>
             </div>
 
-            <!-- Right: Mycelium Network Quick Shortcuts -->
+            <!-- Right: Creative Planner Quick Tools -->
             <div class="lg:col-span-5 space-y-4">
-              <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
-                <span>🌱</span> Mycelium Pathways
+              <h3 class="font-hand text-xl font-bold text-ink flex items-center gap-2">
+                <span>✏️</span> Creative Tools
               </h3>
 
-              <div class="bio-panel p-5 space-y-3">
+              <div class="sketch-card p-5 bg-white border-2 border-ink space-y-3">
                 
-                <button onclick="window.app.switchSection('arena')" class="w-full flex items-center justify-between p-3.5 rounded-xl bg-biome-900 hover:bg-biome-850 border border-foliage-700/40 transition-colors text-left group">
+                <button onclick="window.app.switchSection('arena')" class="w-full flex items-center justify-between p-3 rounded-xl border-2 border-dashed border-stone-300 hover:border-ink hover:bg-pastel-mint transition-all text-left group">
                   <div class="flex items-center gap-3">
-                    <span class="text-2xl text-skywater-400">⚡</span>
+                    <span class="text-2xl">✏️</span>
                     <div>
-                      <div class="text-xs font-semibold text-white group-hover:text-solargold-400 transition-colors">Solve Live Challenges</div>
-                      <div class="text-[11px] text-parchment-300">Craft clean answers in the solution arena</div>
+                      <div class="font-hand text-base font-bold text-ink">Solve Problem of the Day</div>
+                      <div class="text-xs text-stone-500 font-sans">Open the solver scratchpad</div>
                     </div>
                   </div>
-                  <span class="text-foliage-400 group-hover:translate-x-1 transition-transform">➔</span>
+                  <span class="font-hand text-lg text-stone-400 group-hover:text-ink">➔</span>
                 </button>
 
-                <button onclick="window.app.switchSection('leaderboard')" class="w-full flex items-center justify-between p-3.5 rounded-xl bg-biome-900 hover:bg-biome-850 border border-foliage-700/40 transition-colors text-left group">
+                <button onclick="window.app.switchSection('leaderboard')" class="w-full flex items-center justify-between p-3 rounded-xl border-2 border-dashed border-stone-300 hover:border-ink hover:bg-pastel-yellow transition-all text-left group">
                   <div class="flex items-center gap-3">
-                    <span class="text-2xl text-solargold-400">🌻</span>
+                    <span class="text-2xl">🏆</span>
                     <div>
-                      <div class="text-xs font-semibold text-white group-hover:text-solargold-400 transition-colors">Canopy Leaderboards</div>
-                      <div class="text-[11px] text-parchment-300">Discover top innovators & community rankings</div>
+                      <div class="font-hand text-base font-bold text-ink">Check Goal Tracker</div>
+                      <div class="text-xs text-stone-500 font-sans">View student ranking tallies</div>
                     </div>
                   </div>
-                  <span class="text-foliage-400 group-hover:translate-x-1 transition-transform">➔</span>
+                  <span class="font-hand text-lg text-stone-400 group-hover:text-ink">➔</span>
                 </button>
 
-                <button onclick="window.app.switchSection('organizer')" class="w-full flex items-center justify-between p-3.5 rounded-xl bg-biome-900 hover:bg-biome-850 border border-foliage-700/40 transition-colors text-left group">
+                <button onclick="window.app.switchSection('organizer')" class="w-full flex items-center justify-between p-3 rounded-xl border-2 border-dashed border-stone-300 hover:border-ink hover:bg-pastel-lavender transition-all text-left group">
                   <div class="flex items-center gap-3">
-                    <span class="text-2xl text-terracotta-400">🏛️</span>
+                    <span class="text-2xl">🎨</span>
                     <div>
-                      <div class="text-xs font-semibold text-white group-hover:text-solargold-400 transition-colors">Biosphere Workshop</div>
-                      <div class="text-[11px] text-parchment-300">Plant new initiatives & evaluate contributions</div>
+                      <div class="font-hand text-base font-bold text-ink">Draft New Contest</div>
+                      <div class="text-xs text-stone-500 font-sans">Create and schedule challenge tasks</div>
                     </div>
                   </div>
-                  <span class="text-foliage-400 group-hover:translate-x-1 transition-transform">➔</span>
+                  <span class="font-hand text-lg text-stone-400 group-hover:text-ink">➔</span>
                 </button>
 
-                <button onclick="window.app.switchSection('students')" class="w-full flex items-center justify-between p-3.5 rounded-xl bg-biome-900 hover:bg-biome-850 border border-foliage-700/40 transition-colors text-left group">
+                <button onclick="window.app.switchSection('students')" class="w-full flex items-center justify-between p-3 rounded-xl border-2 border-dashed border-stone-300 hover:border-ink hover:bg-pastel-pink transition-all text-left group">
                   <div class="flex items-center gap-3">
-                    <span class="text-2xl text-foliage-400">🪴</span>
+                    <span class="text-2xl">👥</span>
                     <div>
-                      <div class="text-xs font-semibold text-white group-hover:text-solargold-400 transition-colors">Innovator Bio-Hub</div>
-                      <div class="text-[11px] text-parchment-300">Enroll new students into the community network</div>
+                      <div class="font-hand text-base font-bold text-ink">Add Student Profile</div>
+                      <div class="text-xs text-stone-500 font-sans">Register new participant to the roster</div>
                     </div>
                   </div>
-                  <span class="text-foliage-400 group-hover:translate-x-1 transition-transform">➔</span>
+                  <span class="font-hand text-lg text-stone-400 group-hover:text-ink">➔</span>
                 </button>
 
               </div>
@@ -542,114 +551,118 @@
         </section>
 
         <!-- ============================================================== -->
-        <!-- 2. INNOVATION ARENA (view-arena) -->
+        <!-- 2. SOLVE ARENA (view-arena) -->
         <!-- ============================================================== -->
         <section id="view-arena" class="dashboard-view space-y-6 max-w-7xl mx-auto">
           
-          <!-- Arena Header Banner -->
-          <div class="bio-panel p-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 border border-foliage-600/30">
+          <!-- Two-Page Open Notebook Header -->
+          <div class="sketch-card p-5 bg-pastel-mint border-2 border-ink flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             <div>
-              <h2 class="font-display text-xl font-bold text-white flex items-center gap-2">
-                <span>⚡</span> Collaborative Innovation Arena
+              <h2 class="font-hand text-2xl font-bold text-ink flex items-center gap-2">
+                <span>✏️</span> Solve Arena • Problem Scratchpad
               </h2>
-              <p class="text-xs text-parchment-300 mt-0.5">Solve algorithmic challenges with clean computing principles and real-time evaluation.</p>
+              <p class="text-xs text-stone-600 font-sans">Pick an event, select your assignment, and draft your solution.</p>
             </div>
 
             <!-- Target Selection Dropdowns -->
             <div class="flex flex-wrap items-center gap-3">
-              <div class="flex items-center gap-2 bg-biome-900 border border-foliage-700/50 px-3.5 py-2 rounded-xl text-xs">
-                <span class="font-mono text-solargold-400">Initiative:</span>
-                <select id="arena-competition-select" class="bg-transparent font-semibold text-white outline-none cursor-pointer max-w-xs" onchange="window.app.onArenaCompetitionSelect(this.value)">
-                  <option value="" class="bg-biome-900">Choose competition...</option>
+              <div class="flex items-center gap-2 bg-white border-2 border-ink px-3 py-1.5 rounded-xl text-xs">
+                <span class="font-hand text-stone-500 font-bold text-sm">Contest:</span>
+                <select id="arena-competition-select" class="bg-transparent font-hand font-bold text-sm text-ink outline-none cursor-pointer max-w-xs" onchange="window.app.onArenaCompetitionSelect(this.value)">
+                  <option value="">Choose competition...</option>
                 </select>
               </div>
 
-              <div class="flex items-center gap-2 bg-biome-900 border border-foliage-700/50 px-3.5 py-2 rounded-xl text-xs">
-                <span class="font-mono text-foliage-400">Participant:</span>
-                <select id="arena-student-select" class="bg-transparent font-semibold text-white outline-none cursor-pointer max-w-xs" onchange="window.app.onActiveStudentChange(this.value)">
-                  <option value="" class="bg-biome-900">Choose student...</option>
+              <div class="flex items-center gap-2 bg-white border-2 border-ink px-3 py-1.5 rounded-xl text-xs">
+                <span class="font-hand text-stone-500 font-bold text-sm">Student:</span>
+                <select id="arena-student-select" class="bg-transparent font-hand font-bold text-sm text-ink outline-none cursor-pointer max-w-xs" onchange="window.app.onActiveStudentChange(this.value)">
+                  <option value="">Choose student...</option>
                 </select>
               </div>
             </div>
           </div>
 
-          <!-- Problem & Solver Layout -->
+          <!-- Open Two-Page Spread -->
           <div class="grid lg:grid-cols-12 gap-6">
             
-            <!-- Left: Problem Statement Card -->
+            <!-- Left Notebook Page: Question Sheet -->
             <div class="lg:col-span-7 space-y-4">
               
               <!-- Challenge Picker Dropdown -->
-              <div class="bio-panel p-4 flex items-center justify-between gap-4 border border-foliage-700/40">
-                <span class="text-xs font-mono text-solargold-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <span>🍃</span> Select Problem:
+              <div class="sketch-card p-4 bg-white border-2 border-ink flex items-center justify-between gap-4">
+                <span class="font-hand font-bold text-base text-ink flex items-center gap-1.5">
+                  <span>📌</span> Assignment:
                 </span>
-                <select id="arena-challenge-select" class="flex-1 bg-biome-900 border border-foliage-700/60 px-3 py-2 rounded-xl text-xs font-semibold text-white outline-none cursor-pointer" onchange="window.app.onArenaChallengeSelect(this.value)">
-                  <option value="" class="bg-biome-900">-- Choose Challenge --</option>
+                <select id="arena-challenge-select" class="flex-1 bg-pastel-yellow border-2 border-ink px-3 py-2 rounded-xl font-hand font-bold text-sm text-ink outline-none cursor-pointer" onchange="window.app.onArenaChallengeSelect(this.value)">
+                  <option value="">-- Choose Challenge Task --</option>
                 </select>
               </div>
 
               <!-- Active Challenge Question Card -->
-              <div id="arena-challenge-card" class="bio-panel p-6 sm:p-7 space-y-4 relative overflow-hidden border border-foliage-600/40 shadow-organic">
-                <div class="flex items-center justify-between gap-3 border-b border-foliage-700/40 pb-3.5">
-                  <h3 id="arena-card-title" class="font-display font-bold text-xl text-white">
+              <div id="arena-challenge-card" class="sketch-card p-6 bg-white border-2 border-ink space-y-4 relative">
+                <div class="washi-tape washi-tape-mint"></div>
+
+                <div class="flex items-center justify-between gap-3 border-b-2 border-dashed border-stone-300 pb-3">
+                  <h3 id="arena-card-title" class="font-hand text-2xl font-bold text-ink">
                     Array Zero Sum Pair
                   </h3>
-                  <span id="arena-card-badge" class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-solargold-500/20 text-solargold-300 border border-solargold-500/40">
+                  <span id="arena-card-badge" class="px-3 py-1 rounded-full text-xs font-hand font-bold bg-pastel-pink border-2 border-ink">
                     20 Points
                   </span>
                 </div>
 
                 <div class="space-y-2">
-                  <div class="text-[11px] font-mono text-foliage-400 uppercase tracking-wider">Problem Statement:</div>
-                  <div id="arena-card-desc" class="p-4.5 rounded-2xl bg-biome-900/90 border border-foliage-700/50 text-sm font-sans text-parchment-100 leading-relaxed font-medium">
+                  <div class="font-hand text-sm font-bold text-stone-600">Problem Description:</div>
+                  <div id="arena-card-desc" class="p-4 rounded-xl bg-[#FFFDF9] border-2 border-stone-300 text-sm font-sans text-stone-800 leading-relaxed">
                     Given an integer array nums = [-3, 1, 2, 3, 5], find the pair that sums to zero. Return the values in ascending order separated by comma.
                   </div>
                 </div>
 
-                <div class="p-3 rounded-xl bg-biome-950 border border-foliage-700/40 text-[11px] text-parchment-300 font-mono flex items-center gap-2">
-                  <span class="text-solargold-400">💡</span> Evaluated in real-time by automated test harness in MySQL.
+                <div class="p-3 rounded-xl bg-pastel-yellow border border-stone-400 text-xs text-stone-700 font-hand flex items-center gap-2">
+                  <span>💡</span> Tip: Write answer cleanly matching test criteria. Evaluated instantly via MySQL.
                 </div>
               </div>
 
-              <!-- Recent Attempts in this Initiative -->
-              <div class="bio-panel p-5 space-y-3 border border-foliage-700/40">
-                <div class="flex items-center justify-between text-xs border-b border-foliage-700/40 pb-2.5">
-                  <span class="font-bold text-white flex items-center gap-2">
-                    <span>📋</span> Personal Harvest Log (Recent Attempts)
+              <!-- Recent Attempts Checklist -->
+              <div class="sketch-card p-5 bg-white border-2 border-ink space-y-3">
+                <div class="flex items-center justify-between text-xs border-b-2 border-dashed border-stone-200 pb-2">
+                  <span class="font-hand text-base font-bold text-ink flex items-center gap-1.5">
+                    <span>📝</span> Recent Attempts Checklist
                   </span>
-                  <span class="text-[11px] font-mono text-foliage-400">This Initiative</span>
+                  <span class="font-hand text-stone-500">Current Contest</span>
                 </div>
                 <div id="student-recent-submissions" class="space-y-2">
-                  <p class="text-xs text-parchment-300 italic py-2">No submissions recorded for this initiative yet.</p>
+                  <p class="text-xs text-stone-500 italic py-2 font-hand">No submissions recorded for this task yet.</p>
                 </div>
               </div>
 
             </div>
 
-            <!-- Right: Solution Workspace -->
+            <!-- Right Notebook Page: Solution Pad -->
             <div class="lg:col-span-5 space-y-4">
               
-              <div class="bio-panel p-6 sm:p-7 space-y-4 border border-foliage-600/40 shadow-organic">
-                <div class="border-b border-foliage-700/40 pb-3">
-                  <h3 class="font-display font-bold text-lg text-white flex items-center gap-2">
-                    <span>✍️</span> Solution Workspace
+              <div class="sketch-card p-6 bg-pastel-yellow border-2 border-ink space-y-4 relative">
+                <div class="washi-tape washi-tape-blue"></div>
+
+                <div class="border-b-2 border-dashed border-stone-300 pb-3">
+                  <h3 class="font-hand text-2xl font-bold text-ink flex items-center gap-2">
+                    <span>✍️</span> Solution Scratchpad
                   </h3>
-                  <p class="text-xs text-parchment-300 mt-0.5">Submit your output or solution answer.</p>
+                  <p class="text-xs text-stone-600 font-sans">Write down your final answer or solution output.</p>
                 </div>
 
                 <form onsubmit="window.app.handleAnswerSubmit(event)" class="space-y-4">
                   <div>
-                    <label class="block text-xs font-mono text-solargold-400 mb-1.5">Solution Output:</label>
-                    <textarea id="submit-answer-text" rows="5" placeholder="Type your answer (e.g. -3, 3 or A or O(log N))..." class="w-full p-3.5 rounded-2xl bg-biome-900 border border-foliage-700/60 text-white font-mono text-xs focus:border-solargold-400 focus:outline-none transition-colors" required></textarea>
+                    <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Your Written Answer:</label>
+                    <textarea id="submit-answer-text" rows="5" placeholder="Type answer here (e.g. -3, 3 or A)..." class="w-full p-3 rounded-xl bg-white border-2 border-ink text-ink font-mono text-xs focus:bg-white focus:outline-none" required></textarea>
                   </div>
 
                   <div class="flex items-center gap-2.5">
-                    <button type="submit" id="btn-submit-answer" class="flex-1 py-3.5 px-4 rounded-2xl bg-gradient-to-r from-foliage-500 to-solargold-500 hover:from-foliage-400 hover:to-solargold-400 text-biome-950 font-bold text-xs tracking-wider uppercase shadow-solar-glow flex items-center justify-center gap-2 transition-all">
-                      <span>⚡</span> Submit & Verify
+                    <button type="submit" id="btn-submit-answer" class="sketch-btn flex-1 py-3 px-4 bg-pastel-mint hover:bg-pastel-mintdark text-ink font-bold text-base flex items-center justify-center gap-2">
+                      <span>✏️</span> Submit & Check Grade
                     </button>
-                    <button type="button" onclick="window.app.clearSubmissionForm()" class="py-3.5 px-4 rounded-2xl bg-biome-800 hover:bg-biome-700 text-parchment-200 text-xs font-semibold transition-colors">
-                      Clear
+                    <button type="button" onclick="window.app.clearSubmissionForm()" class="sketch-btn py-3 px-4 bg-white hover:bg-stone-100 text-ink text-sm font-bold">
+                      Erase
                     </button>
                   </div>
                 </form>
@@ -658,15 +671,15 @@
                 <div id="submission-result" class="hidden pt-2"></div>
               </div>
 
-              <!-- Community Guidelines Tip -->
-              <div class="bio-panel p-4.5 text-xs text-parchment-300 space-y-1.5 border border-foliage-700/40">
-                <div class="font-semibold text-white flex items-center gap-2">
-                  <span>🌻</span> Biosphere Rules
+              <!-- Planner Memo Sticky -->
+              <div class="sketch-card p-4.5 bg-pastel-pink border-2 border-ink text-xs text-stone-700 space-y-1.5 rotate-[1deg]">
+                <div class="font-hand text-base font-bold text-ink flex items-center gap-1.5">
+                  <span>📌</span> Assignment Notes
                 </div>
-                <ul class="list-disc list-inside space-y-1 text-[11px] text-parchment-300 font-sans">
-                  <li>Innovators must be registered for the active competition.</li>
-                  <li>Initiatives must be in <strong class="text-foliage-400 font-mono">ACTIVE</strong> state.</li>
-                  <li>Instant verified solutions award points to your canopy standing.</li>
+                <ul class="list-disc list-inside space-y-1 text-xs font-hand text-stone-800">
+                  <li>Student must be enrolled in the competition.</li>
+                  <li>Contest status must be active.</li>
+                  <li>Correct answers award points directly to the leaderboard.</li>
                 </ul>
               </div>
 
@@ -677,72 +690,72 @@
         </section>
 
         <!-- ============================================================== -->
-        <!-- 3. CANOPY LEADERBOARDS (view-leaderboard) -->
+        <!-- 3. GOAL TRACKER (view-leaderboard) -->
         <!-- ============================================================== -->
         <section id="view-leaderboard" class="dashboard-view space-y-6 max-w-7xl mx-auto">
           
           <!-- Leaderboard Toolbar -->
-          <div class="bio-panel p-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 border border-foliage-600/30">
+          <div class="sketch-card p-5 bg-pastel-lavender border-2 border-ink flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             <div>
-              <h2 id="leaderboard-table-title" class="font-display text-xl font-bold text-white flex items-center gap-2">
-                <span>🌻</span> Canopy Rankings Bloom
+              <h2 id="leaderboard-table-title" class="font-hand text-2xl font-bold text-ink flex items-center gap-2">
+                <span>🏆</span> Goal Tracker & Scoreboard
               </h2>
-              <p class="text-xs text-parchment-300 mt-0.5">Real-time point tallies, solved challenges, and tie-breaking timestamps.</p>
+              <p class="text-xs text-stone-600 font-sans">Cumulative student scores, solved problems, and ranking medals.</p>
             </div>
 
             <!-- Controls & Mode Toggle -->
             <div class="flex flex-wrap items-center gap-3">
-              <div class="flex items-center gap-2 bg-biome-900 border border-foliage-700/50 px-3.5 py-2 rounded-xl text-xs">
-                <span class="font-mono text-solargold-400">Initiative:</span>
-                <select id="leaderboard-competition-select" class="bg-transparent font-semibold text-white outline-none cursor-pointer max-w-xs" onchange="window.app.loadLeaderboard(this.value)">
+              <div class="flex items-center gap-2 bg-white border-2 border-ink px-3 py-1.5 rounded-xl text-xs">
+                <span class="font-hand text-stone-500 font-bold text-sm">Contest:</span>
+                <select id="leaderboard-competition-select" class="bg-transparent font-hand font-bold text-sm text-ink outline-none cursor-pointer max-w-xs" onchange="window.app.loadLeaderboard(this.value)">
                   <!-- Dynamically populated -->
                 </select>
               </div>
 
               <!-- Global Hall of Fame Toggle -->
-              <button onclick="window.app.toggleGlobalLeaderboard()" id="btn-global-standings" class="px-4 py-2 rounded-xl text-xs font-semibold bg-biome-900 hover:bg-biome-800 text-solargold-300 border border-solargold-500/40 flex items-center gap-2 transition-colors">
-                <span>👑</span> Global Biome Hall of Fame
+              <button onclick="window.app.toggleGlobalLeaderboard()" id="btn-global-standings" class="sketch-btn px-4 py-2 bg-white text-ink text-sm font-bold flex items-center gap-2">
+                <span>👑</span> Global Honor Roll
               </button>
 
-              <button onclick="window.app.refreshCurrentLeaderboard(true)" class="p-2.5 rounded-xl bg-biome-900 hover:bg-biome-800 text-parchment-200 border border-foliage-700/50" title="Refresh Leaderboard">
+              <button onclick="window.app.refreshCurrentLeaderboard(true)" class="sketch-btn p-2.5 bg-white text-ink" title="Refresh Leaderboard">
                 ↻
               </button>
             </div>
           </div>
 
-          <!-- Top 3 Sunbeam Podium Cards -->
+          <!-- Top 3 Sketched Podium Cards -->
           <div id="podium-container" class="grid sm:grid-cols-3 gap-5">
             <!-- Dynamically populated -->
           </div>
 
           <!-- Leaderboard Table -->
-          <div class="bio-panel rounded-2xl overflow-hidden shadow-organic border border-foliage-700/40">
+          <div class="sketch-card bg-white border-2 border-ink overflow-hidden">
             
-            <div class="p-4.5 border-b border-foliage-700/40 flex items-center justify-between bg-biome-900/60">
+            <div class="p-4 border-b-2 border-ink flex items-center justify-between bg-[#FFFDF9]">
               <div class="flex items-center gap-2.5">
-                <span class="text-xs font-mono uppercase tracking-wider text-foliage-300 font-bold">All Ranked Innovators</span>
-                <span id="leaderboard-count" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-solargold-500/20 text-solargold-300 border border-solargold-500/30">0 Ranked</span>
+                <span class="font-hand text-base font-bold text-ink">★ Official Rankings Ledger</span>
+                <span id="leaderboard-count" class="px-2.5 py-0.5 rounded-full text-xs font-hand font-bold bg-pastel-yellow border border-ink">0 Ranked</span>
               </div>
-              <div class="text-[11px] font-mono text-parchment-300 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-foliage-400 pulse-dot"></span> Photosynthesizing every 8s
+              <div class="text-xs font-hand text-stone-500 flex items-center gap-1.5">
+                <span>✏️</span> Auto-refreshes every 8 seconds
               </div>
             </div>
 
             <div class="overflow-x-auto">
               <table class="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr class="border-b border-foliage-700/40 text-foliage-300 font-mono text-[11px] bg-biome-950/70">
-                    <th class="py-3 px-4 font-semibold">Rank</th>
-                    <th class="py-3 px-4 font-semibold">Innovator</th>
-                    <th class="py-3 px-4 font-semibold">Department & Year</th>
-                    <th class="py-3 px-4 font-semibold text-center">Problems Solved</th>
-                    <th class="py-3 px-4 font-semibold text-right">Canopy Score</th>
-                    <th class="py-3 px-4 font-semibold text-right">Harvest Time</th>
+                  <tr class="border-b-2 border-ink text-stone-600 font-hand text-sm bg-pastel-mint">
+                    <th class="py-3 px-4 font-bold">Rank</th>
+                    <th class="py-3 px-4 font-bold">Student Name</th>
+                    <th class="py-3 px-4 font-bold">Department & Year</th>
+                    <th class="py-3 px-4 font-bold text-center">Tasks Solved</th>
+                    <th class="py-3 px-4 font-bold text-right">Total Score</th>
+                    <th class="py-3 px-4 font-bold text-right">Time Logged</th>
                   </tr>
                 </thead>
-                <tbody id="leaderboard-tbody" class="divide-y divide-foliage-700/30 font-sans">
+                <tbody id="leaderboard-tbody" class="divide-y border-t border-stone-200 font-sans">
                   <tr>
-                    <td colspan="6" class="text-center py-8 text-parchment-300 font-medium">Loading standings from MySQL...</td>
+                    <td colspan="6" class="text-center py-8 text-stone-500 font-hand text-base">Loading standings ledger from MySQL...</td>
                   </tr>
                 </tbody>
               </table>
@@ -753,37 +766,37 @@
         </section>
 
         <!-- ============================================================== -->
-        <!-- 4. COMMUNITY INITIATIVES & QUESTS (view-competitions) -->
+        <!-- 4. CONTEST CALENDAR (view-competitions) -->
         <!-- ============================================================== -->
         <section id="view-competitions" class="dashboard-view space-y-6 max-w-7xl mx-auto">
           
-          <!-- Competitions Filter Bar -->
-          <div class="bio-panel p-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 border border-foliage-600/30">
+          <!-- Calendar Filter Bar -->
+          <div class="sketch-card p-5 bg-pastel-blue border-2 border-ink flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             <div>
-              <h2 class="font-display text-xl font-bold text-white flex items-center gap-2">
-                <span>🌾</span> Initiatives & Sustainability Quests
+              <h2 class="font-hand text-2xl font-bold text-ink flex items-center gap-2">
+                <span>🗓️</span> Event Calendar & Schedules
               </h2>
-              <p class="text-xs text-parchment-300 mt-0.5">Community hackathons, coding contests, and technical quizzes.</p>
+              <p class="text-xs text-stone-600 font-sans">Weekly competition horizons, hackathons, and quiz dates.</p>
             </div>
 
             <!-- Filter Buttons -->
             <div class="flex flex-wrap items-center gap-2">
-              <button onclick="window.app.filterCompetitions('ALL')" data-filter="ALL" class="comp-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-foliage-500 text-biome-950 font-bold transition-all shadow-sm">
-                All
+              <button onclick="window.app.filterCompetitions('ALL')" data-filter="ALL" class="comp-filter-btn sketch-btn px-4 py-2 bg-pastel-yellow font-bold text-sm">
+                All Events
               </button>
-              <button onclick="window.app.filterCompetitions('ACTIVE')" data-filter="ACTIVE" class="comp-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-biome-900 text-parchment-200 hover:text-white transition-all">
+              <button onclick="window.app.filterCompetitions('ACTIVE')" data-filter="ACTIVE" class="comp-filter-btn sketch-btn px-4 py-2 bg-white text-stone-700 text-sm">
                 Active Now
               </button>
-              <button onclick="window.app.filterCompetitions('UPCOMING')" data-filter="UPCOMING" class="comp-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-biome-900 text-parchment-200 hover:text-white transition-all">
+              <button onclick="window.app.filterCompetitions('UPCOMING')" data-filter="UPCOMING" class="comp-filter-btn sketch-btn px-4 py-2 bg-white text-stone-700 text-sm">
                 Upcoming
               </button>
-              <button onclick="window.app.filterCompetitions('COMPLETED')" data-filter="COMPLETED" class="comp-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-biome-900 text-parchment-200 hover:text-white transition-all">
-                Completed
+              <button onclick="window.app.filterCompetitions('COMPLETED')" data-filter="COMPLETED" class="comp-filter-btn sketch-btn px-4 py-2 bg-white text-stone-700 text-sm">
+                Concluded
               </button>
             </div>
           </div>
 
-          <!-- Initiatives Grid -->
+          <!-- Competitions Grid -->
           <div id="competitions-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Dynamically populated -->
           </div>
@@ -791,76 +804,78 @@
         </section>
 
         <!-- ============================================================== -->
-        <!-- 5. INNOVATOR BIO-HUB (view-students) -->
+        <!-- 5. STUDENT ROSTER (view-students) -->
         <!-- ============================================================== -->
         <section id="view-students" class="dashboard-view space-y-6 max-w-7xl mx-auto">
           
           <div class="grid lg:grid-cols-12 gap-6">
             
-            <!-- Left: Roster List -->
+            <!-- Left: Class Roster Cards -->
             <div class="lg:col-span-7 space-y-4">
-              <div class="bio-panel p-5 flex items-center justify-between border border-foliage-600/30">
+              <div class="sketch-card p-5 bg-pastel-pink border-2 border-ink flex items-center justify-between">
                 <div>
-                  <h2 class="font-display text-lg font-bold text-white flex items-center gap-2">
-                    <span>🪴</span> Active Innovator Community
+                  <h2 class="font-hand text-2xl font-bold text-ink flex items-center gap-2">
+                    <span>👥</span> Student Class Directory
                   </h2>
-                  <p class="text-xs text-parchment-300 mt-0.5">Enrolled participants across all campus departments.</p>
+                  <p class="text-xs text-stone-600 font-sans">All enrolled students recorded in the database.</p>
                 </div>
-                <span id="student-count-badge" class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-foliage-500/20 text-foliage-300 border border-foliage-500/30">
-                  0 Innovators
+                <span id="student-count-badge" class="px-3 py-1 rounded-full text-xs font-hand font-bold bg-white border border-ink">
+                  0 Students
                 </span>
               </div>
 
               <!-- Student Cards Container -->
-              <div id="students-list-container" class="bio-panel p-4 divide-y divide-foliage-700/30 max-h-[600px] overflow-y-auto space-y-1">
+              <div id="students-list-container" class="sketch-card p-4 bg-white border-2 border-ink divide-y border-stone-200 max-h-[600px] overflow-y-auto space-y-1">
                 <!-- Dynamically populated -->
               </div>
             </div>
 
-            <!-- Right: Registration Form -->
+            <!-- Right: Student Registration Slip -->
             <div class="lg:col-span-5 space-y-4">
-              <div class="bio-panel p-6 sm:p-7 space-y-4 border border-foliage-600/40 shadow-organic">
-                <div class="border-b border-foliage-700/40 pb-3">
-                  <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
-                    <span>🌱</span> Welcome a New Innovator
+              <div class="sketch-card p-6 bg-pastel-yellow border-2 border-ink space-y-4 relative">
+                <div class="washi-tape washi-tape-mint"></div>
+
+                <div class="border-b-2 border-dashed border-stone-300 pb-3">
+                  <h3 class="font-hand text-2xl font-bold text-ink flex items-center gap-2">
+                    <span>📝</span> New Student Registration Slip
                   </h3>
-                  <p class="text-xs text-parchment-300 mt-0.5">Register a community member profile into MySQL.</p>
+                  <p class="text-xs text-stone-600 font-sans">Fill out to plant an official student record in MySQL.</p>
                 </div>
 
                 <form id="student-register-form" onsubmit="window.app.handleStudentRegister(event)" class="space-y-4">
                   <div>
-                    <label class="block text-xs font-mono text-solargold-400 mb-1">Full Innovator Name:</label>
-                    <input type="text" id="reg-student-name" placeholder="e.g. Sanjai Prasad" class="w-full p-3 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white focus:border-solargold-400 focus:outline-none" required>
+                    <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Student Full Name:</label>
+                    <input type="text" id="reg-student-name" placeholder="e.g. Sanjai Prasad" class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-sans text-ink focus:outline-none" required>
                   </div>
 
                   <div>
-                    <label class="block text-xs font-mono text-solargold-400 mb-1">Campus Email:</label>
-                    <input type="email" id="reg-student-email" placeholder="e.g. sanjai@campus.edu" class="w-full p-3 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white focus:border-solargold-400 focus:outline-none" required>
+                    <label class="block font-hand text-sm font-bold text-stone-700 mb-1">College Email Address:</label>
+                    <input type="email" id="reg-student-email" placeholder="e.g. sanjai@campus.edu" class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-sans text-ink focus:outline-none" required>
                   </div>
 
                   <div>
-                    <label class="block text-xs font-mono text-solargold-400 mb-1">Academic Department:</label>
-                    <select id="reg-student-dept" class="w-full p-3 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white focus:border-solargold-400 focus:outline-none" required>
-                      <option value="Computer Science" class="bg-biome-900">Computer Science</option>
-                      <option value="Information Technology" class="bg-biome-900">Information Technology</option>
-                      <option value="Artificial Intelligence" class="bg-biome-900">Artificial Intelligence</option>
-                      <option value="Data Science" class="bg-biome-900">Data Science</option>
-                      <option value="Electronics & Communication" class="bg-biome-900">Electronics & Communication</option>
+                    <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Department:</label>
+                    <select id="reg-student-dept" class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-hand text-ink focus:outline-none" required>
+                      <option value="Computer Science">Computer Science</option>
+                      <option value="Information Technology">Information Technology</option>
+                      <option value="Artificial Intelligence">Artificial Intelligence</option>
+                      <option value="Data Science">Data Science</option>
+                      <option value="Electronics & Communication">Electronics & Communication</option>
                     </select>
                   </div>
 
                   <div>
-                    <label class="block text-xs font-mono text-solargold-400 mb-1">Year of Study:</label>
-                    <select id="reg-student-year" class="w-full p-3 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white focus:border-solargold-400 focus:outline-none" required>
-                      <option value="1" class="bg-biome-900">Year 1 (Sprout)</option>
-                      <option value="2" class="bg-biome-900">Year 2 (Sapling)</option>
-                      <option value="3" selected class="bg-biome-900">Year 3 (Branch)</option>
-                      <option value="4" class="bg-biome-900">Year 4 (Canopy)</option>
+                    <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Year of Study:</label>
+                    <select id="reg-student-year" class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-hand text-ink focus:outline-none" required>
+                      <option value="1">Year 1 (Freshman)</option>
+                      <option value="2">Year 2 (Sophomore)</option>
+                      <option value="3" selected>Year 3 (Junior)</option>
+                      <option value="4">Year 4 (Senior)</option>
                     </select>
                   </div>
 
-                  <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-foliage-500 to-skywater-500 hover:from-foliage-400 hover:to-skywater-400 text-biome-950 font-bold text-xs tracking-wider uppercase transition-all shadow-solar-glow">
-                    Plant Innovator Record
+                  <button type="submit" class="sketch-btn w-full py-3 bg-pastel-mint hover:bg-pastel-mintdark text-ink font-bold text-base">
+                    Save to Student Roster ➔
                   </button>
                 </form>
               </div>
@@ -871,135 +886,135 @@
         </section>
 
         <!-- ============================================================== -->
-        <!-- 6. BIOSPHERE WORKSHOP (view-organizer) -->
+        <!-- 6. ORGANIZER STUDIO (view-organizer) -->
         <!-- ============================================================== -->
         <section id="view-organizer" class="dashboard-view space-y-6 max-w-7xl mx-auto">
           
           <!-- Organizer Sub-Navigation -->
-          <div class="bio-panel p-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 border border-foliage-600/30">
+          <div class="sketch-card p-5 bg-pastel-terracotta border-2 border-ink flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             <div>
-              <h2 class="font-display text-xl font-bold text-white flex items-center gap-2">
-                <span>🏛️</span> Biosphere Workshop
+              <h2 class="font-hand text-2xl font-bold text-ink flex items-center gap-2">
+                <span>🎨</span> Organizer Studio & Grading Desk
               </h2>
-              <p class="text-xs text-parchment-300 mt-0.5">Author community challenges, nurture problem sets, and review harvests.</p>
+              <p class="text-xs text-stone-600 font-sans">Draft new contests, attach challenge assignments, and grade papers.</p>
             </div>
 
             <!-- Sub Tabs -->
             <div class="flex flex-wrap items-center gap-2">
-              <button onclick="window.app.switchOrganizerTab('create-comp')" id="tab-btn-create-comp" class="px-4 py-2 rounded-xl text-xs font-semibold bg-foliage-500 text-biome-950 font-bold transition-all shadow-sm">
-                ➕ Plant Initiative
+              <button onclick="window.app.switchOrganizerTab('create-comp')" id="tab-btn-create-comp" class="sketch-btn px-4 py-2 bg-pastel-yellow text-ink font-bold text-sm">
+                ➕ Draft Contest
               </button>
-              <button onclick="window.app.switchOrganizerTab('add-challenge')" id="tab-btn-add-challenge" class="px-4 py-2 rounded-xl text-xs font-semibold bg-biome-900 text-parchment-200 hover:text-white transition-all">
-                🧩 Add Challenge
+              <button onclick="window.app.switchOrganizerTab('add-challenge')" id="tab-btn-add-challenge" class="sketch-btn px-4 py-2 bg-white text-stone-700 text-sm">
+                🧩 Add Assignment
               </button>
-              <button onclick="window.app.switchOrganizerTab('review-submissions')" id="tab-btn-review-submissions" class="px-4 py-2 rounded-xl text-xs font-semibold bg-biome-900 text-parchment-200 hover:text-white transition-all">
-                📝 Grade Submissions
+              <button onclick="window.app.switchOrganizerTab('review-submissions')" id="tab-btn-review-submissions" class="sketch-btn px-4 py-2 bg-white text-stone-700 text-sm">
+                📝 Grade Papers
               </button>
             </div>
           </div>
 
-          <!-- Tab 1: Create Initiative -->
-          <div id="tab-create-comp" class="bio-panel p-6 sm:p-8 rounded-2xl border border-foliage-600/40 max-w-3xl mx-auto">
-            <h3 class="font-display font-bold text-lg text-white mb-4 border-b border-foliage-700/40 pb-2">
-              Plant a New Community Tournament
+          <!-- Tab 1: Create Competition -->
+          <div id="tab-create-comp" class="sketch-card p-6 sm:p-8 bg-white border-2 border-ink max-w-3xl mx-auto relative">
+            <div class="washi-tape washi-tape-pink"></div>
+            <h3 class="font-hand text-2xl font-bold text-ink mb-4 border-b-2 border-dashed border-stone-200 pb-2">
+              Create a New Competition Agenda
             </h3>
 
             <form onsubmit="window.app.handleCreateCompetition(event)" class="space-y-4">
               <div class="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-xs font-mono text-solargold-400 mb-1">Initiative Title:</label>
-                  <input type="text" id="new-comp-name" placeholder="e.g. Solar Solvers Hackathon" class="w-full p-3 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white focus:border-solargold-400 focus:outline-none" required>
+                  <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Contest Title:</label>
+                  <input type="text" id="new-comp-name" placeholder="e.g. Winter Algorithmic Invitational" class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-sans text-ink focus:outline-none" required>
                 </div>
                 <div>
-                  <label class="block text-xs font-mono text-solargold-400 mb-1">Category / Type:</label>
-                  <select id="new-comp-type" class="w-full p-3 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white focus:border-solargold-400 focus:outline-none">
-                    <option value="Coding Contest" class="bg-biome-900">Coding Contest</option>
-                    <option value="Technical Challenge" class="bg-biome-900">Technical Challenge</option>
-                    <option value="Quiz" class="bg-biome-900">Technical Quiz</option>
-                    <option value="Hackathon" class="bg-biome-900">Sustainability Hackathon</option>
+                  <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Category / Type:</label>
+                  <select id="new-comp-type" class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-hand text-ink focus:outline-none">
+                    <option value="Coding Contest">Coding Contest</option>
+                    <option value="Technical Challenge">Technical Challenge</option>
+                    <option value="Quiz">Technical Quiz</option>
+                    <option value="Hackathon">Creative Hackathon</option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label class="block text-xs font-mono text-solargold-400 mb-1">Ecosystem Vision & Description:</label>
-                <textarea id="new-comp-desc" rows="3" placeholder="Explain the purpose, rules, and collaborative goals..." class="w-full p-3 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white focus:border-solargold-400 focus:outline-none" required></textarea>
+                <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Description & Guidelines:</label>
+                <textarea id="new-comp-desc" rows="3" placeholder="Explain the focus, rules, and problem types..." class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-sans text-ink focus:outline-none" required></textarea>
               </div>
 
               <div class="grid sm:grid-cols-3 gap-4">
                 <div>
-                  <label class="block text-xs font-mono text-solargold-400 mb-1">Start Time:</label>
-                  <input type="datetime-local" id="new-comp-start" class="w-full p-2.5 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white focus:border-solargold-400 focus:outline-none" required>
+                  <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Start Date/Time:</label>
+                  <input type="datetime-local" id="new-comp-start" class="w-full p-2 rounded-xl bg-white border-2 border-ink text-xs font-sans text-ink focus:outline-none" required>
                 </div>
                 <div>
-                  <label class="block text-xs font-mono text-solargold-400 mb-1">End Time:</label>
-                  <input type="datetime-local" id="new-comp-end" class="w-full p-2.5 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white focus:border-solargold-400 focus:outline-none" required>
+                  <label class="block font-hand text-sm font-bold text-stone-700 mb-1">End Date/Time:</label>
+                  <input type="datetime-local" id="new-comp-end" class="w-full p-2 rounded-xl bg-white border-2 border-ink text-xs font-sans text-ink focus:outline-none" required>
                 </div>
                 <div>
-                  <label class="block text-xs font-mono text-solargold-400 mb-1">Participant Capacity:</label>
-                  <input type="number" id="new-comp-max" value="50" min="5" max="500" class="w-full p-2.5 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white focus:border-solargold-400 focus:outline-none" required>
+                  <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Class Limit:</label>
+                  <input type="number" id="new-comp-max" value="50" min="5" max="500" class="w-full p-2 rounded-xl bg-white border-2 border-ink text-xs font-sans text-ink focus:outline-none" required>
                 </div>
               </div>
 
-              <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-foliage-500 to-solargold-500 hover:from-foliage-400 hover:to-solargold-400 text-biome-950 font-bold text-xs tracking-wider uppercase transition-all shadow-solar-glow">
-                Launch Initiative
+              <button type="submit" class="sketch-btn w-full py-3.5 bg-pastel-mint hover:bg-pastel-mintdark text-ink font-bold text-base">
+                Publish Contest to Calendar ➔
               </button>
             </form>
           </div>
 
           <!-- Tab 2: Add Challenge -->
-          <div id="tab-add-challenge" class="bio-panel p-6 sm:p-8 rounded-2xl border border-foliage-600/40 max-w-3xl mx-auto hidden">
-            <h3 class="font-display font-bold text-lg text-white mb-4 border-b border-foliage-700/40 pb-2">
-              Attach Challenge Node to Initiative
+          <div id="tab-add-challenge" class="sketch-card p-6 sm:p-8 bg-white border-2 border-ink max-w-3xl mx-auto relative hidden">
+            <div class="washi-tape washi-tape-yellow"></div>
+            <h3 class="font-hand text-2xl font-bold text-ink mb-4 border-b-2 border-dashed border-stone-200 pb-2">
+              Attach Challenge Problem to Contest
             </h3>
 
             <form onsubmit="window.app.handleAddChallenge(event)" class="space-y-4">
               <div class="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-xs font-mono text-solargold-400 mb-1">Target Initiative:</label>
-                  <select id="challenge-target-comp" class="w-full p-3 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white focus:border-solargold-400 focus:outline-none" required>
+                  <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Target Competition:</label>
+                  <select id="challenge-target-comp" class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-hand text-ink focus:outline-none" required>
                     <!-- Dynamically populated -->
                   </select>
                 </div>
                 <div>
-                  <label class="block text-xs font-mono text-solargold-400 mb-1">Points Allocation:</label>
-                  <input type="number" id="new-ch-points" value="20" min="5" max="100" class="w-full p-3 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white focus:border-solargold-400 focus:outline-none" required>
+                  <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Points Weight:</label>
+                  <input type="number" id="new-ch-points" value="20" min="5" max="100" class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-sans text-ink focus:outline-none" required>
                 </div>
               </div>
 
               <div>
-                <label class="block text-xs font-mono text-solargold-400 mb-1">Challenge Title:</label>
-                <input type="text" id="new-ch-title" placeholder="e.g. Optimal Solar Storage Route" class="w-full p-3 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white focus:border-solargold-400 focus:outline-none" required>
+                <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Challenge Title:</label>
+                <input type="text" id="new-ch-title" placeholder="e.g. Reverse Linked List" class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-sans text-ink focus:outline-none" required>
               </div>
 
               <div>
-                <label class="block text-xs font-mono text-solargold-400 mb-1">Problem Specification:</label>
-                <textarea id="new-ch-desc" rows="3" placeholder="Provide problem constraints and format requirements..." class="w-full p-3 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white focus:border-solargold-400 focus:outline-none" required></textarea>
+                <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Problem Specification:</label>
+                <textarea id="new-ch-desc" rows="3" placeholder="Provide problem constraints and format requirements..." class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-sans text-ink focus:outline-none" required></textarea>
               </div>
 
               <div>
-                <label class="block text-xs font-mono text-solargold-400 mb-1">Ground Truth Answer Key:</label>
-                <input type="text" id="new-ch-answer" placeholder="Exact expected solution or output" class="w-full p-3 rounded-2xl bg-biome-900 border border-foliage-700/50 text-xs text-white font-mono focus:border-solargold-400 focus:outline-none" required>
+                <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Correct Answer Key:</label>
+                <input type="text" id="new-ch-answer" placeholder="Exact expected solution or output" class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-mono text-ink focus:outline-none" required>
               </div>
 
-              <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-skywater-500 to-foliage-500 hover:from-skywater-400 hover:to-foliage-400 text-biome-950 font-bold text-xs tracking-wider uppercase transition-all shadow-solar-glow">
-                Seed Challenge Problem
+              <button type="submit" class="sketch-btn w-full py-3.5 bg-pastel-lavender hover:bg-pastel-lavenderdark text-ink font-bold text-base">
+                Pin Challenge to Contest ➔
               </button>
             </form>
           </div>
 
           <!-- Tab 3: Review & Grade Submissions -->
-          <div id="tab-review-submissions" class="bio-panel rounded-2xl overflow-hidden shadow-organic border border-foliage-600/40 hidden">
-            <div class="p-4.5 border-b border-foliage-700/40 flex flex-wrap items-center justify-between gap-4 bg-biome-900/60">
+          <div id="tab-review-submissions" class="sketch-card bg-white border-2 border-ink overflow-hidden hidden">
+            <div class="p-4 border-b-2 border-ink flex flex-wrap items-center justify-between gap-4 bg-pastel-yellow">
               <div>
-                <h4 class="font-bold text-sm text-white flex items-center gap-2">
-                  <span>📝</span> Community Submissions Inspection
-                </h4>
-                <p class="text-xs text-parchment-300">Examine answers and perform manual score adjustments.</p>
+                <h4 class="font-hand text-xl font-bold text-ink">Review & Grade Exam Papers</h4>
+                <p class="text-xs text-stone-600 font-sans">Inspect student answer submissions and adjust marks.</p>
               </div>
-              <div class="flex items-center gap-2 bg-biome-900 border border-foliage-700/50 px-3.5 py-2 rounded-xl text-xs">
-                <span class="font-mono text-solargold-400">Initiative:</span>
-                <select id="review-comp-select" class="bg-transparent font-semibold text-white outline-none cursor-pointer max-w-xs" onchange="window.app.loadSubmissionsForReview(this.value)">
+              <div class="flex items-center gap-2 bg-white border-2 border-ink px-3 py-1.5 rounded-xl text-xs">
+                <span class="font-hand text-stone-500 font-bold text-sm">Contest:</span>
+                <select id="review-comp-select" class="bg-transparent font-hand font-bold text-sm text-ink outline-none cursor-pointer max-w-xs" onchange="window.app.loadSubmissionsForReview(this.value)">
                   <!-- Dynamically populated -->
                 </select>
               </div>
@@ -1008,19 +1023,19 @@
             <div class="overflow-x-auto">
               <table class="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr class="border-b border-foliage-700/40 text-foliage-300 font-mono text-[11px] bg-biome-950/70">
-                    <th class="py-3 px-4 font-semibold">Sub ID</th>
-                    <th class="py-3 px-4 font-semibold">Innovator</th>
-                    <th class="py-3 px-4 font-semibold">Challenge</th>
-                    <th class="py-3 px-4 font-semibold">Submitted Answer</th>
-                    <th class="py-3 px-4 font-semibold">Score</th>
-                    <th class="py-3 px-4 font-semibold">Status</th>
-                    <th class="py-3 px-4 font-semibold text-right">Action</th>
+                  <tr class="border-b-2 border-ink text-stone-700 font-hand text-sm bg-pastel-mint">
+                    <th class="py-3 px-4 font-bold">Paper #</th>
+                    <th class="py-3 px-4 font-bold">Student</th>
+                    <th class="py-3 px-4 font-bold">Problem</th>
+                    <th class="py-3 px-4 font-bold">Student Answer</th>
+                    <th class="py-3 px-4 font-bold">Marks</th>
+                    <th class="py-3 px-4 font-bold">Status</th>
+                    <th class="py-3 px-4 font-bold text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody id="review-submissions-tbody" class="divide-y divide-foliage-700/30 font-sans">
+                <tbody id="review-submissions-tbody" class="divide-y border-stone-200 font-sans">
                   <tr>
-                    <td colspan="7" class="py-6 text-center text-parchment-300">Select an initiative to inspect submissions.</td>
+                    <td colspan="7" class="py-6 text-center text-stone-500 font-hand text-base">Select a contest to grade submissions.</td>
                   </tr>
                 </tbody>
               </table>
@@ -1030,16 +1045,16 @@
         </section>
 
         <!-- ============================================================== -->
-        <!-- 7. SEASON ARCHIVES & HISTORY (view-history) -->
+        <!-- 7. MEMORY SCRAPBOOK (view-history) -->
         <!-- ============================================================== -->
         <section id="view-history" class="dashboard-view space-y-6 max-w-7xl mx-auto">
           
-          <div class="bio-panel p-5 flex items-center justify-between border border-foliage-600/30">
+          <div class="sketch-card p-5 bg-pastel-blue border-2 border-ink flex items-center justify-between">
             <div>
-              <h2 class="font-display text-xl font-bold text-white flex items-center gap-2">
-                <span>📜</span> Season Archives & Ecosystem Hall of Fame
+              <h2 class="font-hand text-2xl font-bold text-ink flex items-center gap-2">
+                <span>📜</span> Memory Scrapbook & Past Seasons
               </h2>
-              <p class="text-xs text-parchment-300 mt-0.5">Historical records and podium standings of completed sustainability initiatives.</p>
+              <p class="text-xs text-stone-600 font-sans">Historical records, final podiums, and past champion awards.</p>
             </div>
           </div>
 
@@ -1057,36 +1072,38 @@
   </div>
 
   <!-- ============================================================== -->
-  <!-- MODALS -->
+  <!-- SKETCHED MODALS -->
   <!-- ============================================================== -->
 
   <!-- Registration Modal -->
-  <div id="registration-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bio-panel p-6 sm:p-8 rounded-3xl border border-foliage-500/50 max-w-md w-full shadow-2xl space-y-4 bg-biome-900/95">
-      <div class="flex items-center justify-between border-b border-foliage-700/40 pb-3">
-        <h3 class="font-display font-bold text-lg text-white flex items-center gap-2">
-          <span>🌿</span> Enroll in Initiative
+  <div id="registration-modal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="sketch-card p-6 sm:p-8 bg-pastel-yellow border-2 border-ink max-w-md w-full shadow-sketch-lg space-y-4 relative">
+      <div class="washi-tape washi-tape-pink"></div>
+      
+      <div class="flex items-center justify-between border-b-2 border-dashed border-stone-300 pb-3">
+        <h3 class="font-hand text-2xl font-bold text-ink flex items-center gap-2">
+          <span>📝</span> Enroll in Competition
         </h3>
-        <button onclick="window.app.closeRegistrationModal()" class="text-parchment-300 hover:text-white text-lg">✕</button>
+        <button onclick="window.app.closeRegistrationModal()" class="text-stone-700 hover:text-black font-hand text-2xl font-bold">✕</button>
       </div>
 
       <div>
-        <h4 id="modal-comp-name" class="font-bold text-solargold-400 text-sm">Initiative Title</h4>
-        <p id="modal-comp-meta" class="text-xs text-parchment-300 mt-0.5">Collaborative Contest • Closes Soon</p>
+        <h4 id="modal-comp-name" class="font-hand text-xl font-bold text-rose-600">Competition Title</h4>
+        <p id="modal-comp-meta" class="text-xs text-stone-600 font-sans mt-0.5">Coding Contest • Closes Soon</p>
       </div>
 
       <div class="space-y-2">
-        <label class="block text-xs font-mono text-foliage-400">Select Innovator to Register:</label>
-        <select id="modal-student-select" class="w-full p-3 rounded-2xl bg-biome-950 border border-foliage-700/60 text-xs text-white focus:border-solargold-400 focus:outline-none">
+        <label class="block font-hand text-sm font-bold text-stone-700">Select Student to Enroll:</label>
+        <select id="modal-student-select" class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-hand text-ink focus:outline-none">
           <!-- Dynamically populated -->
         </select>
       </div>
 
       <div class="flex items-center gap-3 pt-2">
-        <button onclick="window.app.confirmRegistration()" class="flex-1 py-3 rounded-2xl bg-gradient-to-r from-foliage-500 to-solargold-500 hover:from-foliage-400 hover:to-solargold-400 text-biome-950 font-bold text-xs tracking-wider uppercase transition-all shadow-solar-glow">
-          Confirm Enrollment
+        <button onclick="window.app.confirmRegistration()" class="sketch-btn flex-1 py-2.5 bg-pastel-mint hover:bg-pastel-mintdark text-ink font-bold text-base">
+          Confirm Sign-up ➔
         </button>
-        <button onclick="window.app.closeRegistrationModal()" class="py-3 px-4 rounded-2xl bg-biome-800 hover:bg-biome-700 text-parchment-200 text-xs font-semibold transition-colors">
+        <button onclick="window.app.closeRegistrationModal()" class="sketch-btn py-2.5 px-4 bg-white hover:bg-stone-100 text-stone-700 text-sm font-bold">
           Cancel
         </button>
       </div>
@@ -1094,38 +1111,40 @@
   </div>
 
   <!-- Grading Modal -->
-  <div id="grading-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bio-panel p-6 rounded-3xl border border-foliage-500/50 max-w-sm w-full shadow-2xl space-y-4 bg-biome-900/95">
-      <div class="flex items-center justify-between border-b border-foliage-700/40 pb-3">
-        <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
-          <span>📝</span> Grade Solution
+  <div id="grading-modal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="sketch-card p-6 bg-pastel-lavender border-2 border-ink max-w-sm w-full shadow-sketch-lg space-y-4 relative">
+      <div class="washi-tape washi-tape-yellow"></div>
+
+      <div class="flex items-center justify-between border-b-2 border-dashed border-stone-300 pb-3">
+        <h3 class="font-hand text-xl font-bold text-ink flex items-center gap-2">
+          <span>✏️</span> Grade Exam Paper
         </h3>
-        <button onclick="window.app.closeGradingModal()" class="text-parchment-300 hover:text-white">✕</button>
+        <button onclick="window.app.closeGradingModal()" class="text-stone-700 hover:text-black font-hand text-2xl font-bold">✕</button>
       </div>
 
       <input type="hidden" id="grade-sub-id">
 
       <div class="space-y-3">
         <div>
-          <label class="block text-xs font-mono text-solargold-400 mb-1">Score Awarded:</label>
-          <input type="number" id="grade-sub-score" min="0" max="100" class="w-full p-2.5 rounded-xl bg-biome-950 border border-foliage-700/60 text-xs text-white focus:border-solargold-400 focus:outline-none">
+          <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Score Awarded:</label>
+          <input type="number" id="grade-sub-score" min="0" max="100" class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-sans text-ink focus:outline-none">
         </div>
 
         <div>
-          <label class="block text-xs font-mono text-solargold-400 mb-1">Evaluation Status:</label>
-          <select id="grade-sub-status" class="w-full p-2.5 rounded-xl bg-biome-950 border border-foliage-700/60 text-xs text-white focus:border-solargold-400 focus:outline-none">
-            <option value="EVALUATED" class="bg-biome-900">EVALUATED</option>
-            <option value="PENDING" class="bg-biome-900">PENDING</option>
-            <option value="FLAGGED" class="bg-biome-900">FLAGGED</option>
+          <label class="block font-hand text-sm font-bold text-stone-700 mb-1">Evaluation Status:</label>
+          <select id="grade-sub-status" class="w-full p-2.5 rounded-xl bg-white border-2 border-ink text-xs font-hand text-ink focus:outline-none">
+            <option value="EVALUATED">EVALUATED</option>
+            <option value="PENDING">PENDING</option>
+            <option value="FLAGGED">FLAGGED</option>
           </select>
         </div>
       </div>
 
       <div class="flex items-center gap-2 pt-2">
-        <button onclick="window.app.saveGrading()" class="flex-1 py-3 rounded-2xl bg-gradient-to-r from-foliage-500 to-solargold-500 hover:from-foliage-400 hover:to-solargold-400 text-biome-950 font-bold text-xs tracking-wider uppercase transition-all shadow-solar-glow">
-          Save Grade
+        <button onclick="window.app.saveGrading()" class="sketch-btn flex-1 py-2.5 bg-pastel-mint hover:bg-pastel-mintdark text-ink font-bold text-base">
+          Save Grade ➔
         </button>
-        <button onclick="window.app.closeGradingModal()" class="py-3 px-4 rounded-2xl bg-biome-800 hover:bg-biome-700 text-parchment-200 text-xs font-semibold transition-colors">
+        <button onclick="window.app.closeGradingModal()" class="sketch-btn py-2.5 px-4 bg-white hover:bg-stone-100 text-stone-700 text-sm font-bold">
           Cancel
         </button>
       </div>

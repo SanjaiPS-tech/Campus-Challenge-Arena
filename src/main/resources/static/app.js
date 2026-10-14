@@ -1,6 +1,6 @@
 /**
- * Campus Challenge Arena - Solarpunk Community Platform Controller
- * Lush Aesthetics • Dynamic Leaderboard • Mycelium MySQL Integration
+ * Campus Challenge Arena - Hand-Drawn Creative Planner Controller
+ * Sketch Aesthetics • Playful Animations • MySQL Integration
  */
 
 (function () {
@@ -23,59 +23,56 @@
     spotlightCompId: null,
   };
 
-  // Solarpunk Sections Metadata
+  // Planner Sections Metadata
   const SECTIONS_META = {
     dashboard: {
-      title: 'The Commons',
-      subtitle: 'Community Ecosystem • Sustainable Abundance & Active Innovations'
+      title: 'Planner Overview',
+      subtitle: 'Daily agenda, active challenges, and sketched milestones'
     },
     arena: {
-      title: 'Innovation Arena',
-      subtitle: 'Collaborative Problem Solver • Real-time Clean Code Verification'
+      title: 'Solve Arena',
+      subtitle: 'Problem Scratchpad & Instant Pencil Checks'
     },
     leaderboard: {
-      title: 'Canopy Rankings Bloom',
-      subtitle: 'Real-time Points, Solved Challenges & Mycelium Standings'
+      title: 'Goal Tracker & Scoreboard',
+      subtitle: 'Cumulative student scores, solved problems, and ranking medals'
     },
     competitions: {
-      title: 'Initiatives & Sustainability Quests',
-      subtitle: 'Browse, Filter, and Plant Seeds for Community Events'
+      title: 'Event Calendar & Schedules',
+      subtitle: 'Weekly competition horizons, hackathons, and quiz dates'
     },
     students: {
-      title: 'Innovator Bio-Hub',
-      subtitle: 'Participant Community Roster & Profile Cultivation'
+      title: 'Student Class Directory',
+      subtitle: 'All enrolled students recorded in the database'
     },
     organizer: {
-      title: 'Biosphere Workshop',
-      subtitle: 'Ecosystem Builder, Challenge Seeder & Submission Review'
+      title: 'Organizer Studio & Grading Desk',
+      subtitle: 'Draft new contests, attach challenge assignments, and grade papers'
     },
     history: {
-      title: 'Season Archives & Ecosystem Hall of Fame',
-      subtitle: 'Honoring Past Innovators, Podiums & Harvests'
+      title: 'Memory Scrapbook & Past Seasons',
+      subtitle: 'Historical records, final podiums, and past champion awards'
     }
   };
 
-  // Toast Helper
+  // Toast Helper (Sketched Sticky Note Alert)
   function showToast(title, message, isError = false) {
     const toast = document.getElementById('toast');
     const toastCard = document.getElementById('toast-card');
     const toastTitle = document.getElementById('toast-title');
     const toastMsg = document.getElementById('toast-msg');
     const toastIcon = document.getElementById('toast-icon');
-    const toastIconWrap = document.getElementById('toast-icon-wrap');
 
     if (!toast) return;
 
     toastTitle.textContent = title;
     toastMsg.textContent = message;
-    toastIcon.textContent = isError ? '⚠️' : '🌱';
+    toastIcon.textContent = isError ? '⚠️' : '✏️';
 
     if (isError) {
-      if (toastCard) toastCard.className = 'bio-panel border border-terracotta-500/50 p-4 rounded-2xl shadow-organic flex items-center gap-3.5 max-w-md bg-biome-900/95 text-parchment-50';
-      if (toastIconWrap) toastIconWrap.className = 'w-10 h-10 rounded-xl bg-terracotta-500/20 text-terracotta-400 flex items-center justify-center font-bold text-xl flex-shrink-0';
+      if (toastCard) toastCard.className = 'sketch-box p-4 bg-pastel-pink border-2 border-ink shadow-sketch-lg flex items-center gap-3 max-w-md relative rotate-1';
     } else {
-      if (toastCard) toastCard.className = 'bio-panel border border-solargold-500/50 p-4 rounded-2xl shadow-solar-glow flex items-center gap-3.5 max-w-md bg-biome-900/95 text-parchment-50';
-      if (toastIconWrap) toastIconWrap.className = 'w-10 h-10 rounded-xl bg-solargold-500/20 text-solargold-400 flex items-center justify-center font-bold text-xl flex-shrink-0';
+      if (toastCard) toastCard.className = 'sketch-box p-4 bg-pastel-yellow border-2 border-ink shadow-sketch-lg flex items-center gap-3 max-w-md relative rotate-1';
     }
 
     toast.classList.remove('-translate-y-28', 'opacity-0', 'pointer-events-none');
@@ -105,7 +102,7 @@
     }
   }
 
-  // Garden Navigation: Section Switching Logic
+  // Planner Tab Switching Logic
   function switchSection(sectionId, updateHash = true) {
     if (!SECTIONS_META[sectionId]) {
       sectionId = 'dashboard';
@@ -113,7 +110,7 @@
 
     AppState.currentSection = sectionId;
 
-    // 1. Hide all views and reveal chosen living space
+    // 1. Hide all pages and show target page with page-turn animation
     document.querySelectorAll('.dashboard-view').forEach(view => {
       view.classList.remove('active');
     });
@@ -122,33 +119,44 @@
       targetView.classList.add('active');
     }
 
-    // 2. Update navigation item styles with vibrant sunbeam & foliage accents
+    // 2. Update navigation item styles as colorful tabbed dividers
+    const tabColors = {
+      dashboard: 'bg-pastel-yellow',
+      arena: 'bg-pastel-mint',
+      leaderboard: 'bg-pastel-lavender',
+      competitions: 'bg-pastel-blue',
+      students: 'bg-pastel-pink',
+      organizer: 'bg-pastel-terracotta',
+      history: 'bg-stone-200'
+    };
+
     document.querySelectorAll('.nav-item').forEach(btn => {
-      btn.className = 'nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-semibold transition-all text-parchment-300 hover:text-white hover:bg-biome-850/60 border border-transparent';
+      btn.className = 'nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-stone-100 transition-all text-left';
     });
     const activeNavBtn = document.getElementById(`nav-btn-${sectionId}`);
     if (activeNavBtn) {
-      activeNavBtn.className = 'nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-semibold transition-all text-white bg-foliage-600/20 border border-foliage-500/30 shadow-foliage-glow';
+      const colorClass = tabColors[sectionId] || 'bg-pastel-yellow';
+      activeNavBtn.className = `nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-ink text-sm font-hand text-ink ${colorClass} shadow-sketch-sm transition-all text-left`;
     }
 
-    // 3. Update top header title & ecological subtitle
+    // 3. Update top header title & subtitle
     const titleEl = document.getElementById('topbar-section-title');
     const subtitleEl = document.getElementById('topbar-section-subtitle');
     if (titleEl) titleEl.textContent = SECTIONS_META[sectionId].title;
     if (subtitleEl) subtitleEl.textContent = SECTIONS_META[sectionId].subtitle;
 
-    // 4. Update window hash if requested
+    // 4. Update window hash
     if (updateHash) {
       history.replaceState(null, null, `#${sectionId}`);
     }
 
-    // Close mobile drawer if open
+    // Close mobile sidebar if open
     const sidebar = document.getElementById('app-sidebar');
     if (sidebar && sidebar.classList.contains('mobile-open')) {
       sidebar.classList.remove('mobile-open');
     }
 
-    // Scroll smoothly to top
+    // Scroll to top of open notebook page
     const mainEl = document.querySelector('main');
     if (mainEl) mainEl.scrollTop = 0;
   }
@@ -160,7 +168,7 @@
     }
   }
 
-  // Handle URL hash changes
+  // Handle URL hash routing
   function handleHashRoute() {
     const hash = window.location.hash.replace('#', '').trim();
     if (hash && SECTIONS_META[hash]) {
@@ -170,7 +178,7 @@
     }
   }
 
-  // Initial Seed & Load
+  // Initial Load
   async function init() {
     await loadSystemStats();
     await loadStudents();
@@ -182,7 +190,7 @@
     handleHashRoute();
     window.addEventListener('hashchange', handleHashRoute);
 
-    // Periodic refresh for canopy leaderboard (every 8s)
+    // Periodic refresh for leaderboard (every 8s)
     if (AppState.refreshTimer) clearInterval(AppState.refreshTimer);
     AppState.refreshTimer = setInterval(() => {
       if (!AppState.isGlobalLeaderboard && AppState.currentLeaderboardId && AppState.currentSection === 'leaderboard') {
@@ -203,7 +211,7 @@
     if (endInput && !endInput.value) endInput.value = endStr;
   }
 
-  // System Biosphere Stats
+  // System Stats
   async function loadSystemStats() {
     const res = await api('/system/stats');
     if (res.success && res.data) {
@@ -235,7 +243,7 @@
     }, 30);
   }
 
-  // Load Innovators
+  // Load Students
   async function loadStudents() {
     const res = await api('/students');
     if (res.success && res.data) {
@@ -260,9 +268,9 @@
     const modalSelect = document.getElementById('modal-student-select');
 
     const makeOptions = (includeDefault = false) => {
-      let html = includeDefault ? '<option value="" class="bg-biome-900">-- Choose Innovator --</option>' : '';
+      let html = includeDefault ? '<option value="">-- Choose Student --</option>' : '';
       students.forEach(s => {
-        html += `<option value="${s.studentId}" class="bg-biome-900">${escapeHtml(s.studentName)} (${escapeHtml(s.department)} • Yr ${s.yearOfStudy})</option>`;
+        html += `<option value="${s.studentId}">${escapeHtml(s.studentName)} (${escapeHtml(s.department)} • Yr ${s.yearOfStudy})</option>`;
       });
       return html;
     };
@@ -283,30 +291,30 @@
     const badge = document.getElementById('student-count-badge');
     if (!container) return;
 
-    if (badge) badge.textContent = `${students.length} Innovators`;
+    if (badge) badge.textContent = `${students.length} Students`;
 
     if (students.length === 0) {
-      container.innerHTML = `<p class="p-6 text-xs text-parchment-300 text-center">No community innovators registered yet. Plant your first profile below.</p>`;
+      container.innerHTML = `<p class="p-6 text-sm font-hand text-stone-500 text-center">No students registered on the roster yet. Fill out the slip on the right.</p>`;
       return;
     }
 
     container.innerHTML = students.map(s => `
-      <div class="py-3 px-3.5 flex items-center justify-between gap-3 hover:bg-biome-850/50 rounded-2xl transition-colors">
+      <div class="py-3 px-3.5 flex items-center justify-between gap-3 hover:bg-stone-50 rounded-xl transition-colors">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-foliage-500/15 border border-foliage-500/30 flex items-center justify-center font-display text-sm font-bold text-foliage-300">
-            🌱
+          <div class="w-9 h-9 rounded-full border-2 border-ink bg-pastel-mint flex items-center justify-center font-hand text-sm font-bold text-ink">
+            #${s.studentId}
           </div>
           <div>
-            <div class="font-semibold text-xs text-white flex items-center gap-2">
+            <div class="font-hand font-bold text-base text-ink flex items-center gap-2">
               ${escapeHtml(s.studentName)}
-              ${AppState.activeStudentId == s.studentId ? '<span class="bg-solargold-500 text-biome-950 text-[9px] px-2 py-0.2 font-bold uppercase rounded-full">Active</span>' : ''}
+              ${AppState.activeStudentId == s.studentId ? '<span class="bg-pastel-pink border border-ink text-ink text-[10px] px-2 py-0.2 font-bold uppercase rounded-full">★ Active</span>' : ''}
             </div>
-            <div class="text-[11px] text-parchment-300 font-mono">${escapeHtml(s.email)}</div>
+            <div class="text-xs text-stone-600 font-sans">${escapeHtml(s.email)}</div>
           </div>
         </div>
         <div class="text-right">
-          <div class="font-medium text-xs text-skywater-400">${escapeHtml(s.department)}</div>
-          <div class="text-[11px] text-foliage-400">Year ${s.yearOfStudy}</div>
+          <div class="font-hand font-bold text-sm text-rose-600">${escapeHtml(s.department)}</div>
+          <div class="text-xs font-hand text-stone-500">Year ${s.yearOfStudy}</div>
         </div>
       </div>
     `).join('');
@@ -321,10 +329,10 @@
       loadStudentSubmissionsInArena();
     }
     const student = AppState.students.find(s => s.studentId == AppState.activeStudentId);
-    showToast('Innovator Connected', student ? `Acting as ${student.studentName}` : `Innovator #${studentId} selected`);
+    showToast('Participant Switched', student ? `Acting as ${student.studentName}` : `Student #${studentId} selected`);
   }
 
-  // Load Initiatives
+  // Load Competitions
   async function loadCompetitions() {
     const res = await api('/competitions/summaries');
     if (res.success && res.data) {
@@ -352,7 +360,7 @@
     let options = summaries.map(s => {
       const c = s.competition;
       const statusIcon = c.competitionStatus === 'ACTIVE' ? '🟢' : (c.competitionStatus === 'UPCOMING' ? '⏳' : '🏁');
-      return `<option value="${c.competitionId}" class="bg-biome-900">${statusIcon} ${escapeHtml(c.competitionName)} [${c.competitionStatus}]</option>`;
+      return `<option value="${c.competitionId}">${statusIcon} ${escapeHtml(c.competitionName)} [${c.competitionStatus}]</option>`;
     }).join('');
 
     if (lbSelect) {
@@ -361,7 +369,7 @@
     }
 
     if (arenaSelect) {
-      arenaSelect.innerHTML = `<option value="" class="bg-biome-900">Choose initiative...</option>` + options;
+      arenaSelect.innerHTML = `<option value="">Choose competition...</option>` + options;
       const activeSummary = summaries.find(s => s.competition.competitionStatus === 'ACTIVE') || summaries[0];
       if (activeSummary && !arenaSelect.value) {
         arenaSelect.value = activeSummary.competition.competitionId;
@@ -401,7 +409,7 @@
     if (!container) return;
 
     if (summaries.length === 0) {
-      container.innerHTML = `<p class="p-4 text-xs text-parchment-300">No initiatives planted yet.</p>`;
+      container.innerHTML = `<p class="p-4 text-xs font-hand text-stone-500">No scheduled events found.</p>`;
       return;
     }
 
@@ -409,18 +417,18 @@
       const c = s.competition;
       const isLive = c.competitionStatus === 'ACTIVE';
       return `
-        <div class="bio-panel p-4 flex items-center justify-between gap-4 border border-foliage-700/40 hover:border-solargold-400/40 transition-colors">
+        <div class="sketch-card p-4 bg-white border-2 border-ink flex items-center justify-between gap-4">
           <div>
             <div class="flex items-center gap-2">
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full ${isLive ? 'bg-foliage-500/20 text-foliage-300' : 'bg-biome-800 text-parchment-300'} uppercase font-bold">
+              <span class="text-xs font-hand px-2 py-0.5 rounded-full border border-ink ${isLive ? 'bg-pastel-mint text-ink font-bold' : 'bg-stone-100 text-stone-600'}">
                 ${c.competitionStatus}
               </span>
-              <span class="text-xs text-foliage-400 font-mono">${escapeHtml(c.competitionType)}</span>
+              <span class="text-xs text-stone-500 font-sans">${escapeHtml(c.competitionType)}</span>
             </div>
-            <h4 class="font-bold text-sm text-white mt-1">${escapeHtml(c.competitionName)}</h4>
-            <p class="text-xs text-parchment-300 mt-0.5">${s.totalChallenges} Challenges • ${s.registeredParticipants}/${c.maxParticipants} Enrolled</p>
+            <h4 class="font-hand text-xl font-bold text-ink mt-1">${escapeHtml(c.competitionName)}</h4>
+            <p class="text-xs text-stone-600 font-sans mt-0.5">${s.totalChallenges} Challenges • ${s.registeredParticipants}/${c.maxParticipants} Students Enrolled</p>
           </div>
-          <button onclick="window.app.jumpToArena(${c.competitionId})" class="px-3.5 py-1.5 rounded-xl bg-foliage-500 hover:bg-foliage-400 text-biome-950 font-bold text-xs transition-colors flex-shrink-0">
+          <button onclick="window.app.jumpToArena(${c.competitionId})" class="sketch-btn px-4 py-1.5 bg-pastel-mint hover:bg-pastel-mintdark text-ink font-bold text-sm flex-shrink-0">
             Solve ➔
           </button>
         </div>
@@ -451,9 +459,9 @@
     AppState.currentFilter = filter;
     document.querySelectorAll('.comp-filter-btn').forEach(btn => {
       if (btn.dataset.filter === filter) {
-        btn.className = 'comp-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-foliage-500 text-biome-950 font-bold transition-all shadow-sm';
+        btn.className = 'comp-filter-btn sketch-btn px-4 py-2 bg-pastel-yellow font-bold text-sm shadow-sketch-sm';
       } else {
-        btn.className = 'comp-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-biome-900 text-parchment-200 hover:text-white transition-all';
+        btn.className = 'comp-filter-btn sketch-btn px-4 py-2 bg-white text-stone-700 text-sm';
       }
     });
 
@@ -471,95 +479,100 @@
 
     if (filtered.length === 0) {
       container.innerHTML = `
-        <div class="col-span-full bio-panel p-12 text-center border border-foliage-700/40">
-          <div class="font-display text-2xl text-solargold-400 mb-2">No Initiatives Found</div>
-          <p class="text-xs text-parchment-300">No initiatives match the selected filter. Switch tabs or plant a new quest in the Biosphere Workshop.</p>
+        <div class="col-span-full sketch-card p-12 text-center bg-white border-2 border-ink">
+          <div class="font-hand text-3xl text-rose-600 mb-2">No Scheduled Events</div>
+          <p class="text-sm font-hand text-stone-600">No events match the selected filter. Draft a new one in the Organizer Studio.</p>
         </div>
       `;
       return;
     }
 
-    container.innerHTML = filtered.map(s => {
+    const washiColors = ['washi-tape-pink', 'washi-tape-mint', 'washi-tape-blue', ''];
+
+    container.innerHTML = filtered.map((s, idx) => {
       const c = s.competition;
       const pct = Math.min(100, Math.round((s.registeredParticipants / c.maxParticipants) * 100));
+      const washi = washiColors[idx % washiColors.length];
 
       let statusBadge = '';
       if (c.competitionStatus === 'ACTIVE') {
-        statusBadge = '<span class="bg-foliage-500/20 text-foliage-300 border border-foliage-500/40 text-[10px] font-mono font-bold px-3 py-0.5 rounded-full flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-solargold-400 pulse-dot"></span>ACTIVE NOW</span>';
+        statusBadge = '<span class="bg-pastel-mint border border-ink text-ink font-hand text-xs font-bold px-2.5 py-0.5 rounded-full">★ ACTIVE NOW</span>';
       } else if (c.competitionStatus === 'UPCOMING') {
-        statusBadge = '<span class="bg-solargold-500/20 text-solargold-300 border border-solargold-500/40 text-[10px] font-mono font-bold px-3 py-0.5 rounded-full">⏳ UPCOMING</span>';
+        statusBadge = '<span class="bg-pastel-yellow border border-ink text-ink font-hand text-xs font-bold px-2.5 py-0.5 rounded-full">⏳ UPCOMING</span>';
       } else {
-        statusBadge = '<span class="bg-biome-800 text-parchment-300 border border-foliage-700/40 text-[10px] font-mono font-bold px-3 py-0.5 rounded-full">🏁 COMPLETED</span>';
+        statusBadge = '<span class="bg-stone-200 border border-ink text-stone-700 font-hand text-xs font-bold px-2.5 py-0.5 rounded-full">🏁 CONCLUDED</span>';
       }
 
       return `
-        <div class="bio-panel-interactive p-6 flex flex-col justify-between border border-foliage-700/40">
+        <div class="sketch-card p-6 bg-white border-2 border-ink flex flex-col justify-between relative">
+          <div class="washi-tape ${washi}"></div>
+
           <div>
             <div class="flex items-center justify-between gap-2 mb-3">
-              <span class="text-[11px] font-mono font-bold text-solargold-400 uppercase tracking-wide border border-solargold-500/30 px-2.5 py-0.5 rounded-lg bg-solargold-500/10">
+              <span class="text-xs font-hand font-bold text-stone-700 uppercase tracking-wide border border-ink px-2 py-0.5 rounded bg-pastel-yellow">
                 ${escapeHtml(c.competitionType)}
               </span>
               ${statusBadge}
             </div>
 
-            <h3 class="font-display text-xl font-bold text-white mb-2 leading-snug">
+            <h3 class="font-hand text-2xl font-bold text-ink mb-1.5 leading-snug">
               ${escapeHtml(c.competitionName)}
             </h3>
 
-            <p class="text-xs text-parchment-300 mb-4 line-clamp-2 leading-relaxed font-sans">
+            <p class="text-xs text-stone-600 mb-4 line-clamp-2 leading-relaxed font-sans">
               ${escapeHtml(c.description || 'No description provided')}
             </p>
 
             <!-- Metadata Box -->
-            <div class="space-y-1.5 bg-biome-900/90 border border-foliage-700/40 p-3.5 rounded-xl mb-4 text-xs font-mono">
+            <div class="space-y-1.5 bg-[#FFFDF9] border-2 border-dashed border-stone-300 p-3 rounded-xl mb-4 text-xs font-sans">
               <div class="flex justify-between">
-                <span class="text-foliage-400">Begins:</span>
-                <span class="text-white font-medium">${formatDateTime(c.startTime)}</span>
+                <span class="text-stone-500 font-hand text-sm">Starts:</span>
+                <span class="font-medium text-ink">${formatDateTime(c.startTime)}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-foliage-400">Concludes:</span>
-                <span class="text-white font-medium">${formatDateTime(c.endTime)}</span>
+                <span class="text-stone-500 font-hand text-sm">Ends:</span>
+                <span class="font-medium text-ink">${formatDateTime(c.endTime)}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-foliage-400">Challenges:</span>
-                <span class="text-skywater-400 font-semibold">${s.totalChallenges} Questions (${s.totalPoints} Pts)</span>
+                <span class="text-stone-500 font-hand text-sm">Challenge Tasks:</span>
+                <span class="font-bold text-rose-600 font-hand text-sm">${s.totalChallenges} Questions (${s.totalPoints} Pts)</span>
               </div>
             </div>
 
             <!-- Participant Capacity Meter -->
             <div class="mb-4">
-              <div class="flex justify-between text-[11px] font-mono mb-1.5">
-                <span class="text-solargold-400">Ecosystem Capacity</span>
-                <span class="${s.isFull ? 'text-terracotta-400 font-bold' : 'text-parchment-200'}">
+              <div class="flex justify-between text-xs font-hand mb-1">
+                <span class="text-stone-600">Class Enrollment</span>
+                <span class="${s.isFull ? 'text-rose-600 font-bold' : 'text-ink font-bold'}">
                   ${s.registeredParticipants} / ${c.maxParticipants} (${pct}%)
                 </span>
               </div>
-              <div class="w-full bg-biome-950 h-2.5 rounded-full overflow-hidden border border-foliage-700/50">
-                <div class="h-full ${s.isFull ? 'bg-terracotta-500' : 'bg-gradient-to-r from-foliage-500 to-solargold-400'}" style="width: ${pct}%"></div>
+              <div class="w-full bg-stone-100 h-3 rounded-full overflow-hidden border-2 border-ink">
+                <div class="h-full ${s.isFull ? 'bg-rose-400' : 'bg-pastel-mintdark'}" style="width: ${pct}%"></div>
               </div>
             </div>
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-foliage-700/40">
+          <div class="flex flex-wrap items-center gap-2 pt-3 border-t-2 border-dashed border-stone-200">
             ${c.competitionStatus === 'ACTIVE' ? `
-              <button onclick="window.app.jumpToArena(${c.competitionId})" class="flex-1 py-2.5 px-3 rounded-xl bg-foliage-500 hover:bg-foliage-400 text-biome-950 font-bold text-xs text-center transition-colors shadow-sm">
-                ⚡ Solve Arena
+              <button onclick="window.app.jumpToArena(${c.competitionId})" class="sketch-btn flex-1 py-2 px-3 bg-pastel-mint hover:bg-pastel-mintdark text-ink font-bold text-sm text-center">
+                ✏️ Solve Arena
               </button>
             ` : ''}
 
             ${s.isRegistrationOpen ? `
-              <button onclick="window.app.openRegistrationModal(${c.competitionId})" class="py-2.5 px-3.5 rounded-xl bg-biome-800 hover:bg-biome-700 text-white font-semibold text-xs border border-foliage-700/50 transition-colors">
-                + Enroll
+              <button onclick="window.app.openRegistrationModal(${c.competitionId})" class="sketch-btn py-2 px-3 bg-pastel-pink hover:bg-pastel-pinkdark text-ink font-bold text-sm">
+                + Sign Up
               </button>
             ` : `
-              <span class="text-[11px] text-parchment-300 italic py-1">
-                ${s.isFull ? 'Capacity Full' : 'Closed'}
+              <span class="text-xs font-hand text-stone-500 italic py-1">
+                ${s.isFull ? 'Class Full' : 'Registration Closed'}
               </span>
             `}
 
-            <button onclick="window.app.loadLeaderboard(${c.competitionId}); window.app.switchSection('leaderboard');" class="py-2.5 px-3 rounded-xl bg-biome-900 hover:bg-biome-800 text-solargold-400 font-semibold text-xs border border-solargold-500/30 transition-colors" title="View Standings">
-              🌻 Standings
+            <button onclick="window.app.loadLeaderboard(${c.competitionId}); window.app.switchSection('leaderboard');" class="sketch-btn py-2 px-3 bg-pastel-yellow hover:bg-pastel-yellowdark text-ink font-bold text-sm" title="View Standings">
+              🏆 Standings
             </button>
           </div>
         </div>
@@ -591,7 +604,7 @@
     const compId = AppState.selectedRegCompId;
 
     if (!studentId || !compId) {
-      showToast('Selection Missing', 'Please select an innovator to enroll.', true);
+      showToast('Selection Missing', 'Please select a student from the dropdown.', true);
       return;
     }
 
@@ -604,12 +617,12 @@
     });
 
     if (res.success) {
-      showToast('Enrollment Confirmed! 🌿', `Innovator enrolled in initiative.`);
+      showToast('Enrolled! 📝', `Student added to contest roster.`);
       closeRegistrationModal();
       await loadCompetitions();
       await loadSystemStats();
     } else {
-      showToast('Enrollment Issue', res.message || 'Error completing enrollment', true);
+      showToast('Enrollment Error', res.message || 'Error completing sign-up', true);
     }
   }
 
@@ -622,7 +635,7 @@
     if (compSelect) compSelect.value = competitionId;
 
     const globalBtn = document.getElementById('btn-global-standings');
-    if (globalBtn) globalBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-biome-900 hover:bg-biome-800 text-solargold-300 border border-solargold-500/40 flex items-center gap-2 transition-colors';
+    if (globalBtn) globalBtn.className = 'sketch-btn px-4 py-2 bg-white text-ink text-sm font-bold flex items-center gap-2';
 
     const comp = AppState.competitions.find(c => c.competitionId == competitionId);
     const res = await api(`/leaderboard/competition/${competitionId}`);
@@ -634,11 +647,11 @@
   async function toggleGlobalLeaderboard() {
     AppState.isGlobalLeaderboard = true;
     const globalBtn = document.getElementById('btn-global-standings');
-    if (globalBtn) globalBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-solargold-500 text-biome-950 border border-solargold-400 flex items-center gap-2 shadow-solar-glow';
+    if (globalBtn) globalBtn.className = 'sketch-btn px-4 py-2 bg-pastel-yellow text-ink font-bold text-sm flex items-center gap-2 shadow-sketch-sm';
 
     const res = await api('/leaderboard/global');
     if (res.success && res.data) {
-      renderLeaderboard(res.data, { competitionName: 'Global Biome Hall of Fame' });
+      renderLeaderboard(res.data, { competitionName: 'Global Campus Honor Roll' });
     }
   }
 
@@ -648,7 +661,7 @@
     } else if (AppState.currentLeaderboardId) {
       loadLeaderboard(AppState.currentLeaderboardId);
     }
-    if (notify) showToast('Canopy Refreshed', 'Latest points gathered from MySQL');
+    if (notify) showToast('Scores Updated', 'Latest grades loaded from MySQL');
   }
 
   function renderLeaderboard(entries, competition) {
@@ -658,53 +671,53 @@
     const tbody = document.getElementById('leaderboard-tbody');
 
     if (tableTitle && competition) {
-      tableTitle.textContent = `${competition.competitionName} • Live Standings`;
+      tableTitle.textContent = `${competition.competitionName} • Goal Tracker`;
     }
     if (countBadge) countBadge.textContent = `${entries.length} Ranked`;
 
-    // Render Solarpunk Top 3 Podium
+    // Render Sketched Top 3 Podium
     if (podiumContainer) {
       if (entries.length === 0) {
         podiumContainer.innerHTML = `
-          <div class="col-span-full bio-panel p-8 text-center border border-foliage-700/40">
-            <span class="font-display text-xl text-solargold-400 font-bold block mb-1">NO HARVESTED SCORES YET</span>
-            <p class="text-xs text-parchment-300">Submit a solution in the Innovation Arena to claim the golden canopy spot!</p>
+          <div class="col-span-full sketch-card p-8 text-center bg-white border-2 border-ink">
+            <span class="font-hand text-2xl text-rose-600 font-bold block mb-1">NO SCORES RECORDED YET</span>
+            <p class="text-sm font-hand text-stone-600">Solve assignments in the Solve Arena to claim top podium honors!</p>
           </div>
         `;
       } else {
         const top3 = entries.slice(0, 3);
         const rankThemes = [
-          { border: 'border-solargold-400/60', badge: 'bg-solargold-500/20 text-solargold-300 border-solargold-500/40', medal: '🥇 GOLD SUNFLOWER • 1ST' },
-          { border: 'border-foliage-400/60', badge: 'bg-foliage-500/20 text-foliage-300 border-foliage-500/40', medal: '🥈 SILVER FERN • 2ND' },
-          { border: 'border-terracotta-400/60', badge: 'bg-terracotta-500/20 text-terracotta-300 border-terracotta-500/40', medal: '🥉 TERRACOTTA BLOOM • 3RD' }
+          { bg: 'bg-pastel-yellow', medal: '🥇 GOLD MEDAL • 1ST PLACE' },
+          { bg: 'bg-pastel-lavender', medal: '🥈 SILVER RIBBON • 2ND PLACE' },
+          { bg: 'bg-pastel-pink', medal: '🥉 BRONZE STAR • 3RD PLACE' }
         ];
 
         podiumContainer.innerHTML = top3.map((e, idx) => `
-          <div class="bio-panel p-6 rounded-2xl border ${rankThemes[idx].border} relative overflow-hidden shadow-organic">
-            <div class="flex items-center justify-between mb-3.5">
-              <span class="font-mono font-bold text-[10px] tracking-wider uppercase px-3 py-1 rounded-full border ${rankThemes[idx].badge}">
+          <div class="sketch-card p-6 ${rankThemes[idx].bg} border-2 border-ink relative">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-hand font-bold text-xs uppercase px-2.5 py-0.5 rounded-full border border-ink bg-white">
                 ${rankThemes[idx].medal}
               </span>
-              <span class="font-display text-3xl font-bold text-foliage-400">
+              <span class="font-hand text-3xl font-bold text-ink">
                 #0${e.rank}
               </span>
             </div>
 
-            <div class="font-display text-2xl font-bold text-white truncate mb-1">
+            <div class="font-hand text-3xl font-bold text-ink truncate mb-1">
               ${escapeHtml(e.studentName)}
             </div>
-            <div class="text-xs text-parchment-300 font-mono mb-4 truncate">
-              ${escapeHtml(e.department)} • Yr ${e.yearOfStudy}
+            <div class="text-xs text-stone-700 font-sans mb-4 truncate">
+              ${escapeHtml(e.department)} • Year ${e.yearOfStudy}
             </div>
 
-            <div class="flex items-center justify-between border-t border-foliage-700/40 pt-3">
+            <div class="flex items-center justify-between border-t-2 border-dashed border-stone-300 pt-3">
               <div>
-                <span class="text-[10px] uppercase font-mono text-solargold-400 block">Canopy Score</span>
-                <span class="font-display text-3xl font-bold text-solargold-400">${e.totalScore} <span class="text-xs font-mono text-parchment-300">PTS</span></span>
+                <span class="text-xs font-hand text-stone-600 block">Total Marks</span>
+                <span class="font-hand text-4xl font-bold text-ink">${e.totalScore} <span class="text-xs font-sans text-stone-600">PTS</span></span>
               </div>
               <div class="text-right">
-                <span class="text-[10px] uppercase font-mono text-foliage-400 block">Problems</span>
-                <span class="font-semibold text-xs text-skywater-400">${e.challengesSolved} Solved</span>
+                <span class="text-xs font-hand text-stone-600 block">Completed</span>
+                <span class="font-hand font-bold text-base text-rose-600">${e.challengesSolved} Solved</span>
               </div>
             </div>
           </div>
@@ -717,8 +730,8 @@
       if (entries.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="6" class="text-center py-8 text-parchment-300 font-medium">
-              No registered innovators have submitted solutions yet.
+            <td colspan="6" class="text-center py-8 text-stone-500 font-hand text-base">
+              No registered students have submitted answers for this contest yet.
             </td>
           </tr>
         `;
@@ -726,28 +739,28 @@
       }
 
       tbody.innerHTML = entries.map(e => `
-        <tr class="hover:bg-biome-850/50 transition-colors">
-          <td class="py-3 px-4 font-display text-base font-bold text-white">
+        <tr class="hover:bg-pastel-mint/30 transition-colors">
+          <td class="py-3 px-4 font-hand text-lg font-bold text-ink">
             #${e.rank}
             ${e.rank === 1 ? '🥇' : (e.rank === 2 ? '🥈' : (e.rank === 3 ? '🥉' : ''))}
           </td>
           <td class="py-3 px-4">
-            <div class="font-semibold text-white text-xs">${escapeHtml(e.studentName)}</div>
-            <div class="text-[11px] text-parchment-300 font-mono">${escapeHtml(e.email)}</div>
+            <div class="font-hand font-bold text-base text-ink">${escapeHtml(e.studentName)}</div>
+            <div class="text-xs text-stone-500 font-sans">${escapeHtml(e.email)}</div>
           </td>
-          <td class="py-3 px-4 text-xs">
-            <span class="font-medium text-skywater-400">${escapeHtml(e.department)}</span>
-            <span class="text-foliage-400 block font-mono text-[11px]">Year ${e.yearOfStudy}</span>
+          <td class="py-3 px-4 text-xs font-sans">
+            <span class="font-bold text-stone-700">${escapeHtml(e.department)}</span>
+            <span class="text-stone-500 block font-hand text-sm">Year ${e.yearOfStudy}</span>
           </td>
-          <td class="py-3 px-4 text-center font-mono font-bold text-xs">
-            <span class="bg-biome-900 border border-foliage-700/60 px-2.5 py-0.5 rounded-full text-parchment-100">
+          <td class="py-3 px-4 text-center font-hand font-bold text-base">
+            <span class="bg-pastel-yellow border border-ink px-2.5 py-0.5 rounded-full">
               ${e.challengesSolved}
             </span>
           </td>
-          <td class="py-3 px-4 text-right font-display text-xl font-bold text-solargold-400">
+          <td class="py-3 px-4 text-right font-hand text-2xl font-bold text-ink">
             ${e.totalScore}
           </td>
-          <td class="py-3 px-4 text-right text-xs text-parchment-300 font-mono">
+          <td class="py-3 px-4 text-right text-xs text-stone-600 font-sans">
             ${e.lastSubmissionTime ? formatDateTime(e.lastSubmissionTime) : '—'}
           </td>
         </tr>
@@ -755,7 +768,7 @@
     }
   }
 
-  // Innovation Arena Logic
+  // Solve Arena Logic
   async function onArenaCompetitionSelect(competitionId) {
     if (!competitionId) return;
     AppState.currentArenaCompId = parseInt(competitionId);
@@ -768,10 +781,10 @@
     if (res.success && res.data) {
       AppState.arenaChallenges = res.data;
       if (res.data.length === 0) {
-        challengeSelect.innerHTML = `<option value="" class="bg-biome-900">No challenges in this initiative yet</option>`;
+        challengeSelect.innerHTML = `<option value="">No assignments in this contest yet</option>`;
       } else {
-        challengeSelect.innerHTML = `<option value="" class="bg-biome-900">-- Choose Challenge Node --</option>` + res.data.map(ch => `
-          <option value="${ch.challengeId}" class="bg-biome-900">[${ch.points} Pts] ${escapeHtml(ch.challengeTitle)}</option>
+        challengeSelect.innerHTML = `<option value="">-- Choose Challenge Task --</option>` + res.data.map(ch => `
+          <option value="${ch.challengeId}">[${ch.points} Pts] ${escapeHtml(ch.challengeTitle)}</option>
         `).join('');
 
         challengeSelect.value = res.data[0].challengeId;
@@ -809,21 +822,26 @@
     const res = await api(`/submissions/student/${studentId}/competition/${compId}`);
     if (res.success && res.data && res.data.length > 0) {
       container.innerHTML = res.data.slice(0, 5).map(sub => `
-        <div class="p-3 rounded-xl border border-foliage-700/40 bg-biome-900 flex items-center justify-between text-xs">
-          <div>
-            <span class="font-semibold text-white">${escapeHtml(sub.challengeTitle || 'Challenge')}</span>
-            <span class="text-parchment-300 block font-mono text-[11px] truncate max-w-xs">Ans: "${escapeHtml(sub.submittedAnswer)}"</span>
+        <div class="p-2.5 rounded-xl border-2 border-stone-300 bg-[#FFFDF9] flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="sketch-check ${sub.score > 0 ? 'bg-pastel-mint border-emerald-700' : 'bg-pastel-pink border-rose-700'}">
+              ${sub.score > 0 ? '✓' : '✕'}
+            </span>
+            <div>
+              <span class="font-hand font-bold text-sm text-ink">${escapeHtml(sub.challengeTitle || 'Challenge')}</span>
+              <span class="text-stone-500 block font-mono text-[11px] truncate max-w-xs">Ans: "${escapeHtml(sub.submittedAnswer)}"</span>
+            </div>
           </div>
           <div class="text-right">
-            <span class="${sub.score > 0 ? 'text-foliage-400 font-bold' : 'text-terracotta-400 font-bold'}">
+            <span class="font-hand font-bold text-sm ${sub.score > 0 ? 'text-emerald-700' : 'text-rose-600'}">
               ${sub.score} / ${sub.maxPoints || 0} Pts
             </span>
-            <span class="text-[10px] text-foliage-400 block font-mono">${formatDateTime(sub.submissionTime)}</span>
+            <span class="text-[10px] text-stone-500 block font-sans">${formatDateTime(sub.submissionTime)}</span>
           </div>
         </div>
       `).join('');
     } else {
-      container.innerHTML = `<p class="text-xs text-parchment-300 italic py-2">No submissions by this innovator for this quest yet.</p>`;
+      container.innerHTML = `<p class="text-xs text-stone-500 italic py-2 font-hand">No submissions by this student for this contest yet.</p>`;
     }
   }
 
@@ -842,14 +860,14 @@
     const answer = answerInput ? answerInput.value.trim() : '';
 
     if (!compId || !chId || !stId || !answer) {
-      showToast('Form Incomplete', 'Please select initiative, challenge, innovator, and provide an answer.', true);
+      showToast('Incomplete Form', 'Please choose competition, challenge, student, and write an answer.', true);
       return;
     }
 
     const btn = document.getElementById('btn-submit-answer');
     if (btn) {
       btn.disabled = true;
-      btn.innerHTML = `<span>⏳</span> Verifying Solution...`;
+      btn.innerHTML = `<span>⏳</span> Grading Solution...`;
     }
 
     const res = await api('/submissions', {
@@ -863,7 +881,7 @@
 
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = `<span>⚡</span> Submit & Verify`;
+      btn.innerHTML = `<span>✏️</span> Submit & Check Grade`;
     }
 
     if (resultBox) resultBox.classList.remove('hidden');
@@ -873,28 +891,28 @@
       const isCorrect = sub.score > 0;
 
       if (isCorrect) {
-        showToast('SOLUTION VERIFIED! 🎉', `+${sub.score} Points added to your standing.`);
+        showToast('CORRECT ANSWER! 🎉', `+${sub.score} Points awarded.`);
         if (resultBox) {
           resultBox.innerHTML = `
-            <div class="p-4 rounded-2xl border border-foliage-400/40 bg-foliage-500/15 text-foliage-200 text-xs">
-              <div class="font-bold flex items-center gap-2 text-sm text-foliage-300">
-                <span>🌱</span> HARVEST VERIFIED — CORRECT ANSWER!
+            <div class="p-4 rounded-xl border-2 border-emerald-700 bg-pastel-mint text-emerald-900 text-xs">
+              <div class="font-hand font-bold flex items-center gap-2 text-base text-emerald-950">
+                <span>✅</span> CORRECT ANSWER! FULL MARKS AWARDED
               </div>
-              <div class="mt-1">Awarded: <strong>+${sub.score} Points</strong> • Status: <strong>${sub.evaluationStatus}</strong></div>
-              <div class="text-[11px] text-foliage-400 mt-2 font-mono">Canopy leaderboard updated in MySQL.</div>
+              <div class="mt-1 font-hand text-sm">Awarded: <strong>+${sub.score} Points</strong> • Status: <strong>${sub.evaluationStatus}</strong></div>
+              <div class="text-[11px] text-emerald-800 mt-2 font-mono">Live leaderboard score updated in MySQL.</div>
             </div>
           `;
         }
       } else {
-        showToast('INCORRECT ANSWER', '0 points awarded. Try again!', true);
+        showToast('NEEDS REVISION', '0 marks awarded. Try again!', true);
         if (resultBox) {
           resultBox.innerHTML = `
-            <div class="p-4 rounded-2xl border border-solargold-400/40 bg-solargold-500/15 text-solargold-200 text-xs">
-              <div class="font-bold flex items-center gap-2 text-sm text-solargold-300">
-                <span>🌾</span> SOLUTION REJECTED — INCORRECT
+            <div class="p-4 rounded-xl border-2 border-rose-500 bg-pastel-pink text-rose-950 text-xs">
+              <div class="font-hand font-bold flex items-center gap-2 text-base text-rose-900">
+                <span>❌</span> INCORRECT ANSWER
               </div>
-              <div class="mt-1">Score: <strong>0 Points</strong> • Status: <strong>${sub.evaluationStatus}</strong></div>
-              <div class="text-[11px] text-solargold-400 mt-2 font-mono">The answer did not match the expected ground truth key.</div>
+              <div class="mt-1 font-hand text-sm">Score: <strong>0 Points</strong> • Status: <strong>${sub.evaluationStatus}</strong></div>
+              <div class="text-[11px] text-rose-800 mt-2 font-mono">The answer did not match the expected answer key.</div>
             </div>
           `;
         }
@@ -906,15 +924,15 @@
         loadLeaderboard(compId);
       }
     } else {
-      showToast('Validation Failed', res.message || 'Error processing submission', true);
+      showToast('Validation Error', res.message || 'Error processing submission', true);
       if (resultBox) {
         resultBox.innerHTML = `
-          <div class="p-4 rounded-2xl border border-terracotta-500/40 bg-terracotta-500/15 text-terracotta-200 text-xs">
-            <div class="font-bold flex items-center gap-2 text-sm text-terracotta-300">
-              <span>⛔</span> ECOSYSTEM GUARD REJECTION
+          <div class="p-4 rounded-xl border-2 border-rose-500 bg-pastel-pink text-rose-900 text-xs">
+            <div class="font-hand font-bold flex items-center gap-2 text-base">
+              <span>⛔</span> SUBMISSION NOT ACCEPTED
             </div>
             <div class="mt-1 font-semibold">${escapeHtml(res.message || 'Validation failed')}</div>
-            <div class="text-[11px] text-terracotta-400 mt-2 font-mono">Ensure the innovator is enrolled and initiative is ACTIVE.</div>
+            <div class="text-[11px] text-rose-800 mt-2 font-sans">Make sure the student is enrolled and the competition is currently ACTIVE.</div>
           </div>
         `;
       }
@@ -956,13 +974,13 @@
     });
 
     if (res.success && res.data) {
-      showToast('Innovator Planted!', `Welcome ${res.data.studentName} (#${res.data.studentId})`);
+      showToast('Student Added!', `Welcome ${res.data.studentName} (#${res.data.studentId})`);
       document.getElementById('student-register-form').reset();
       AppState.activeStudentId = res.data.studentId;
       await loadStudents();
       await loadSystemStats();
     } else {
-      showToast('Registration Error', res.message || 'Failed to plant student profile', true);
+      showToast('Registration Error', res.message || 'Failed to add student', true);
     }
   }
 
@@ -974,10 +992,10 @@
       const btn = document.getElementById(`tab-btn-${t}`);
       if (t === tabName) {
         if (panel) panel.classList.remove('hidden');
-        if (btn) btn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-foliage-500 text-biome-950 font-bold transition-all shadow-sm';
+        if (btn) btn.className = 'sketch-btn px-4 py-2 bg-pastel-yellow text-ink font-bold text-sm shadow-sketch-sm';
       } else {
         if (panel) panel.classList.add('hidden');
-        if (btn) btn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-biome-900 text-parchment-200 hover:text-white transition-all';
+        if (btn) btn.className = 'sketch-btn px-4 py-2 bg-white text-stone-700 text-sm';
       }
     });
   }
@@ -1005,14 +1023,14 @@
     });
 
     if (res.success && res.data) {
-      showToast('Initiative Planted!', `Created ${res.data.competitionName}`);
+      showToast('Contest Published!', `Created ${res.data.competitionName}`);
       event.target.reset();
       setupDefaultDates();
       await loadCompetitions();
       await loadSystemStats();
       switchOrganizerTab('add-challenge');
     } else {
-      showToast('Creation Failed', res.message || 'Error creating initiative', true);
+      showToast('Creation Failed', res.message || 'Error creating competition', true);
     }
   }
 
@@ -1037,7 +1055,7 @@
     });
 
     if (res.success && res.data) {
-      showToast('Challenge Attached!', `"${res.data.challengeTitle}" (${res.data.points} Pts) added.`);
+      showToast('Challenge Pinned!', `"${res.data.challengeTitle}" (${res.data.points} Pts) added.`);
       document.getElementById('new-ch-title').value = '';
       document.getElementById('new-ch-desc').value = '';
       document.getElementById('new-ch-answer').value = '';
@@ -1053,31 +1071,31 @@
     const tbody = document.getElementById('review-submissions-tbody');
     if (!tbody || !competitionId) return;
 
-    tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-parchment-300">Loading submissions...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center font-hand text-base text-stone-500">Loading exam papers...</td></tr>`;
 
     const res = await api(`/submissions/competition/${competitionId}`);
     if (res.success && res.data) {
       if (res.data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-parchment-300">No submissions recorded for this initiative.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center font-hand text-base text-stone-500">No student answers turned in for this contest yet.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = res.data.map(sub => `
-        <tr class="hover:bg-biome-850/50 transition-colors">
-          <td class="py-3 px-4 font-mono font-bold text-white">#${sub.submissionId}</td>
-          <td class="py-3 px-4 font-semibold text-white">${escapeHtml(sub.studentName || 'Innovator #' + sub.studentId)}</td>
-          <td class="py-3 px-4 text-parchment-200">${escapeHtml(sub.challengeTitle || 'Challenge #' + sub.challengeId)}</td>
-          <td class="py-3 px-4 font-mono text-[11px] text-foliage-400 max-w-xs truncate">${escapeHtml(sub.submittedAnswer)}</td>
-          <td class="py-3 px-4 font-bold ${sub.score > 0 ? 'text-foliage-400' : 'text-terracotta-400'}">
+        <tr class="hover:bg-stone-50 transition-colors">
+          <td class="py-3 px-4 font-hand font-bold text-base text-ink">#${sub.submissionId}</td>
+          <td class="py-3 px-4 font-bold text-ink">${escapeHtml(sub.studentName || 'Student #' + sub.studentId)}</td>
+          <td class="py-3 px-4 font-hand text-sm text-stone-700">${escapeHtml(sub.challengeTitle || 'Challenge #' + sub.challengeId)}</td>
+          <td class="py-3 px-4 font-mono text-[11px] text-stone-600 max-w-xs truncate">${escapeHtml(sub.submittedAnswer)}</td>
+          <td class="py-3 px-4 font-hand text-base font-bold ${sub.score > 0 ? 'text-emerald-700' : 'text-rose-600'}">
             ${sub.score} / ${sub.maxPoints || 0}
           </td>
           <td class="py-3 px-4">
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${sub.evaluationStatus === 'EVALUATED' ? 'bg-foliage-500/20 text-foliage-300' : 'bg-solargold-500/20 text-solargold-300'}">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-hand font-bold border border-ink ${sub.evaluationStatus === 'EVALUATED' ? 'bg-pastel-mint text-emerald-950' : 'bg-pastel-yellow text-amber-950'}">
               ${sub.evaluationStatus}
             </span>
           </td>
           <td class="py-3 px-4 text-right">
-            <button onclick="window.app.openGradingModal(${sub.submissionId}, ${sub.score}, '${sub.evaluationStatus}')" class="px-3 py-1 rounded-xl bg-biome-800 hover:bg-foliage-500 hover:text-biome-950 text-parchment-100 text-xs font-semibold transition-colors">
+            <button onclick="window.app.openGradingModal(${sub.submissionId}, ${sub.score}, '${sub.evaluationStatus}')" class="sketch-btn px-3 py-1 bg-white hover:bg-pastel-mint text-ink text-xs font-bold">
               Grade ✎
             </button>
           </td>
@@ -1108,17 +1126,17 @@
     });
 
     if (res.success) {
-      showToast('Score Updated', `Submission #${subId} graded.`);
+      showToast('Grade Saved', `Submission #${subId} marks updated.`);
       closeGradingModal();
       const reviewCompSelect = document.getElementById('review-comp-select');
       if (reviewCompSelect) loadSubmissionsForReview(reviewCompSelect.value);
       if (AppState.currentLeaderboardId) loadLeaderboard(AppState.currentLeaderboardId);
     } else {
-      showToast('Grading Issue', res.message || 'Failed to update score', true);
+      showToast('Grading Error', res.message || 'Failed to update score', true);
     }
   }
 
-  // Season Archives & History
+  // Memory Scrapbook & History
   async function loadHistory() {
     const container = document.getElementById('history-container');
     if (!container) return;
@@ -1127,9 +1145,9 @@
     if (res.success && res.data) {
       if (res.data.length === 0) {
         container.innerHTML = `
-          <div class="bio-panel p-8 text-center border border-foliage-700/40">
-            <div class="font-display text-xl text-solargold-400 font-bold mb-1">NO ARCHIVED INITIATIVES YET</div>
-            <p class="text-xs text-parchment-300">When community quests conclude, seasonal podiums and standings are stored in the historical archive.</p>
+          <div class="sketch-card p-8 text-center bg-white border-2 border-ink">
+            <div class="font-hand text-2xl text-rose-600 font-bold mb-1">NO PAST SEASONS RECORDED YET</div>
+            <p class="text-xs text-stone-600 font-sans">When competitions reach completion, their final award podiums appear here in the scrapbook.</p>
           </div>
         `;
         return;
@@ -1142,69 +1160,71 @@
         const thirdPlace = h.thirdPlace;
 
         return `
-          <div class="bio-panel p-6 sm:p-8 rounded-3xl border border-foliage-600/40 shadow-organic">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-foliage-700/40 pb-4 mb-6">
+          <div class="sketch-card p-6 sm:p-8 bg-white border-2 border-ink relative">
+            <div class="washi-tape washi-tape-blue"></div>
+
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-dashed border-stone-300 pb-4 mb-6">
               <div>
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="bg-biome-900 text-foliage-400 font-mono text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase border border-foliage-700/50">
-                    CONCLUDED QUEST
+                  <span class="bg-stone-200 text-stone-800 font-hand text-xs font-bold px-2 py-0.5 rounded-full border border-ink">
+                    PAST SEASON
                   </span>
-                  <span class="text-xs font-mono text-solargold-400">
+                  <span class="text-xs font-hand text-rose-600 font-bold">
                     ${escapeHtml(c.competitionType)}
                   </span>
                 </div>
-                <h3 class="font-display text-2xl font-bold text-white">
+                <h3 class="font-hand text-3xl font-bold text-ink">
                   ${escapeHtml(c.competitionName)}
                 </h3>
-                <p class="text-xs text-parchment-300 mt-0.5">
-                  Concluded: ${formatDateTime(c.endTime)} • ${h.totalParticipants} Innovators • ${h.totalSubmissions} Harvested Solutions
+                <p class="text-xs text-stone-600 font-sans mt-0.5">
+                  Concluded: ${formatDateTime(c.endTime)} • ${h.totalParticipants} Participants • ${h.totalSubmissions} Solutions Turned In
                 </p>
               </div>
 
               <div>
-                <button onclick="window.app.loadLeaderboard(${c.competitionId}); window.app.switchSection('leaderboard');" class="px-4.5 py-2.5 rounded-2xl bg-gradient-to-r from-foliage-500 to-solargold-500 hover:from-foliage-400 hover:to-solargold-400 text-biome-950 font-bold text-xs tracking-wider uppercase transition-all shadow-solar-glow">
-                  View Full Standings 🌻
+                <button onclick="window.app.loadLeaderboard(${c.competitionId}); window.app.switchSection('leaderboard');" class="sketch-btn px-4 py-2 bg-pastel-yellow hover:bg-pastel-yellowdark text-ink font-bold text-sm">
+                  View Full Standings 🏆
                 </button>
               </div>
             </div>
 
-            <!-- Hall of Fame Podium Display -->
+            <!-- Scrapbook Podium Display -->
             <div class="grid sm:grid-cols-3 gap-4">
               <!-- Winner Gold -->
-              <div class="p-4.5 rounded-2xl border border-solargold-400/50 bg-solargold-500/10 shadow-sm">
-                <div class="font-mono font-bold text-[10px] uppercase tracking-wider text-solargold-300 mb-1 flex items-center gap-1">
-                  <span>🥇</span> GOLD SUNFLOWER CHAMPION
+              <div class="sketch-box p-4 bg-pastel-yellow border-2 border-ink">
+                <div class="font-hand font-bold text-xs uppercase tracking-wider text-amber-900 mb-1 flex items-center gap-1">
+                  <span>🥇</span> GOLD MEDAL CHAMPION
                 </div>
-                <div class="font-display text-xl font-bold text-white truncate">
+                <div class="font-hand text-2xl font-bold text-ink truncate">
                   ${winner ? escapeHtml(winner.studentName) : 'No Submissions'}
                 </div>
-                <div class="text-xs text-parchment-300 font-mono mt-0.5">
+                <div class="text-xs text-stone-700 font-sans mt-0.5">
                   ${winner ? `${escapeHtml(winner.department)} • ${winner.totalScore} Pts` : '—'}
                 </div>
               </div>
 
               <!-- Runner up Silver -->
-              <div class="p-4.5 rounded-2xl border border-foliage-400/50 bg-foliage-500/10 shadow-sm">
-                <div class="font-mono font-bold text-[10px] uppercase tracking-wider text-foliage-300 mb-1 flex items-center gap-1">
-                  <span>🥈</span> SILVER FERN RUNNER-UP
+              <div class="sketch-box p-4 bg-pastel-lavender border-2 border-ink">
+                <div class="font-hand font-bold text-xs uppercase tracking-wider text-purple-900 mb-1 flex items-center gap-1">
+                  <span>🥈</span> SILVER RIBBON RUNNER-UP
                 </div>
-                <div class="font-display text-xl font-bold text-white truncate">
+                <div class="font-hand text-2xl font-bold text-ink truncate">
                   ${runnerUp ? escapeHtml(runnerUp.studentName) : '—'}
                 </div>
-                <div class="text-xs text-parchment-300 font-mono mt-0.5">
+                <div class="text-xs text-stone-700 font-sans mt-0.5">
                   ${runnerUp ? `${escapeHtml(runnerUp.department)} • ${runnerUp.totalScore} Pts` : '—'}
                 </div>
               </div>
 
               <!-- Third place Bronze -->
-              <div class="p-4.5 rounded-2xl border border-terracotta-400/50 bg-terracotta-500/10 shadow-sm">
-                <div class="font-mono font-bold text-[10px] uppercase tracking-wider text-terracotta-300 mb-1 flex items-center gap-1">
-                  <span>🥉</span> TERRACOTTA BLOOM
+              <div class="sketch-box p-4 bg-pastel-pink border-2 border-ink">
+                <div class="font-hand font-bold text-xs uppercase tracking-wider text-rose-900 mb-1 flex items-center gap-1">
+                  <span>🥉</span> BRONZE STAR THIRD PLACE
                 </div>
-                <div class="font-display text-xl font-bold text-white truncate">
+                <div class="font-hand text-2xl font-bold text-ink truncate">
                   ${thirdPlace ? escapeHtml(thirdPlace.studentName) : '—'}
                 </div>
-                <div class="text-xs text-parchment-300 font-mono mt-0.5">
+                <div class="text-xs text-stone-700 font-sans mt-0.5">
                   ${thirdPlace ? `${escapeHtml(thirdPlace.department)} • ${thirdPlace.totalScore} Pts` : '—'}
                 </div>
               </div>
@@ -1218,13 +1238,13 @@
 
   // Database Reset and Seed
   async function resetAndSeedData() {
-    showToast('Cultivating Biome...', 'Restoring demonstration records in MySQL.');
+    showToast('Re-Sketching Planner...', 'Restoring sample records in MySQL.');
     const res = await api('/system/reset-seed', { method: 'POST' });
     if (res.success) {
-      showToast('Biome Rejuvenated! ☀️', 'Fresh innovators, active quests, and harvests restored.');
+      showToast('Notebook Re-Seeded! ✏️', 'Fresh students, contests, and assignments restored.');
       await init();
     } else {
-      showToast('Cultivation Failed', res.message || 'Error rejuvenating database', true);
+      showToast('Reset Failed', res.message || 'Error re-seeding database', true);
     }
   }
 
