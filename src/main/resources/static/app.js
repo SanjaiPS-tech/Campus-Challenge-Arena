@@ -8,6 +8,8 @@
 
   const AppState = {
     currentSection: 'dashboard',
+    currentRole: 'STUDENT',
+    selectedLoginRole: 'STUDENT',
     students: [],
     competitions: [],
     summaries: [],
@@ -108,6 +110,12 @@
       sectionId = 'dashboard';
     }
 
+    // Role-based access validation
+    if (sectionId === 'organizer' && AppState.currentRole === 'STUDENT') {
+      showToast('Faculty Area 🔒', 'Organizer Studio is reserved for Teachers & Admins. Switch role to access.', true);
+      sectionId = 'dashboard';
+    }
+
     AppState.currentSection = sectionId;
 
     // 1. Hide all pages and show target page with page-turn animation
@@ -178,13 +186,492 @@
     }
   }
 
+  // ==============================================================
+  // ROLE-BASED AUTHENTICATION & ACCESS CONTROL
+  // Roles: STUDENT | TEACHER | ADMIN
+  // ==============================================================
+
+  function openLoginModal() {
+    const modal = document.getElementById('login-modal');
+    if (!modal) return;
+    AppState.selectedLoginRole = AppState.currentRole;
+    modal.classList.remove('hidden');
+    selectLoginRole(AppState.selectedLoginRole);
+  }
+
+  function closeLoginModal() {
+    const modal = document.getElementById('login-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function selectLoginRole(role) {
+    AppState.selectedLoginRole = role;
+
+    ['STUDENT', 'TEACHER', 'ADMIN'].forEach(r => {
+      const tab = document.getElementById(`role-tab-${r}`);
+      if (tab) {
+        if (r === role) {
+          const activeBg = r === 'STUDENT' ? 'bg-pastel-mint' : (r === 'TEACHER' ? 'bg-pastel-lavender' : 'bg-pastel-yellow');
+          tab.className = `sketch-box p-3.5 ${activeBg} border-2 border-ink text-left transition-all shadow-sketch-sm scale-[1.02]`;
+        } else {
+          tab.className = `sketch-box p-3.5 bg-white hover:bg-stone-50 border-2 border-stone-300 text-left transition-all`;
+        }
+      }
+    });
+
+    renderLoginRolePanel();
+  }
+
+  function renderLoginRolePanel() {
+    const panel = document.getElementById('login-role-panel');
+    if (!panel) return;
+
+    const role = AppState.selectedLoginRole || 'STUDENT';
+
+    if (role === 'STUDENT') {
+      const studentsOptions = AppState.students.map(s => `
+        <option value="${s.studentId}" ${s.studentId == AppState.activeStudentId ? 'selected' : ''}>
+          ${escapeHtml(s.studentName)} (${escapeHtml(s.department)} • Yr ${s.yearOfStudy})
+        </option>
+      `).join('');
+
+      panel.innerHTML = `
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-hand font-bold text-base text-ink flex items-center gap-1.5">
+              <span>🎓</span> Student Persona Profile
+            </span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-pastel-mint border border-ink font-hand font-bold">
+              Solve & Enroll Mode
+            </span>
+          </div>
+
+          <div class="space-y-1">
+            <label class="block font-hand text-xs font-bold text-stone-600">Select Student Account:</label>
+            <select id="modal-role-student-select" class="w-full p-2 rounded-xl bg-pastel-mint/30 border-2 border-ink text-xs font-hand text-ink focus:outline-none">
+              ${studentsOptions}
+            </select>
+          </div>
+
+          <div class="bg-stone-50 p-3 rounded-xl border border-stone-200 text-xs font-sans text-stone-600 space-y-1">
+            <div>✓ Solve challenges in the Arena & run instant pencil checks</div>
+            <div>✓ Enroll into live competitions and track leaderboard medals</div>
+            <div class="text-stone-400">✗ Creation of contests and assignments is reserved for Faculty</div>
+          </div>
+
+          <button onclick="window.app.confirmRoleLogin('STUDENT', document.getElementById('modal-role-student-select').value)" class="sketch-btn w-full py-2.5 bg-pastel-mint hover:bg-pastel-mintdark text-ink font-bold text-base">
+            Log In as Student ➔
+          </button>
+        </div>
+      `;
+    } else if (role === 'TEACHER') {
+      panel.innerHTML = `
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-hand font-bold text-base text-ink flex items-center gap-1.5">
+              <span>👨‍🏫</span> Faculty Instructor Account
+            </span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-pastel-lavender border border-ink font-hand font-bold">
+              Organizer Desk
+            </span>
+          </div>
+
+          <div class="p-3 bg-pastel-lavender/30 border-2 border-ink rounded-xl space-y-1">
+            <div class="font-hand font-bold text-lg text-ink">Prof. Vikram Sarabhai</div>
+            <div class="text-xs text-stone-600 font-sans">Dept. of Computer Science & Engineering • Faculty ID: FAC-2026-CS</div>
+            <div class="text-xs text-stone-600 font-sans">Email: prof.sarabhai@campus.edu</div>
+          </div>
+
+          <div class="bg-stone-50 p-3 rounded-xl border border-stone-200 text-xs font-sans text-stone-600 space-y-1">
+            <div>✓ Full access to Organizer Studio (Draft contests, assignments)</div>
+            <div>✓ Grade student submissions and assign marks</div>
+            <div>✓ Access Student Class Directory & roster analytics</div>
+            <div class="text-stone-400">✗ Solving questions in Arena is disabled for faculty</div>
+          </div>
+
+          <button onclick="window.app.confirmRoleLogin('TEACHER')" class="sketch-btn w-full py-2.5 bg-pastel-lavender hover:bg-pastel-lavenderdark text-ink font-bold text-base">
+            Log In as Teacher ➔
+          </button>
+        </div>
+      `;
+    } else if (role === 'ADMIN') {
+      panel.innerHTML = `
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-hand font-bold text-base text-ink flex items-center gap-1.5">
+              <span>🛡️</span> System Administrator Console
+            </span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-pastel-yellow border border-ink font-hand font-bold">
+              Superuser Root
+            </span>
+          </div>
+
+          <div class="p-3 bg-pastel-yellow/30 border-2 border-ink rounded-xl space-y-1">
+            <div class="font-hand font-bold text-lg text-ink">Admin Console (Root)</div>
+            <div class="text-xs text-stone-600 font-sans">Full Database & Application Governance • ID: ROOT-01</div>
+            <div class="text-xs text-stone-600 font-sans">Email: admin@campus.edu</div>
+          </div>
+
+          <div class="bg-stone-50 p-3 rounded-xl border border-stone-200 text-xs font-sans text-stone-600 space-y-1">
+            <div>✓ Toggle competition lifecycle states (Active, Upcoming, Concluded)</div>
+            <div>✓ One-click database reset and seed demo records in MySQL</div>
+            <div>✓ Register and edit student directory slips</div>
+            <div>✓ Full authoring and grading permissions</div>
+          </div>
+
+          <button onclick="window.app.confirmRoleLogin('ADMIN')" class="sketch-btn w-full py-2.5 bg-pastel-yellow hover:bg-pastel-yellowdark text-ink font-bold text-base">
+            Log In as Administrator ➔
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function confirmRoleLogin(role, studentId = null) {
+    AppState.currentRole = role;
+    localStorage.setItem('campus_arena_role', role);
+
+    if (role === 'STUDENT' && studentId) {
+      AppState.activeStudentId = parseInt(studentId);
+    }
+
+    closeLoginModal();
+    applyRolePermissions();
+
+    const titleMap = {
+      STUDENT: 'Logged in as Student 🎓',
+      TEACHER: 'Logged in as Faculty Teacher 👨‍🏫',
+      ADMIN: 'Logged in as System Administrator 🛡️'
+    };
+
+    const descMap = {
+      STUDENT: 'Student desk unlocked: Solve challenges & view leaderboard goals.',
+      TEACHER: 'Organizer Studio unlocked: Draft contests & grade papers.',
+      ADMIN: 'Admin Console unlocked: Full system & lifecycle privileges active.'
+    };
+
+    showToast(titleMap[role] || 'Logged In', descMap[role] || 'Role updated');
+
+    if (role === 'TEACHER' && AppState.currentSection === 'arena') {
+      switchSection('organizer');
+    } else if (role === 'STUDENT' && AppState.currentSection === 'organizer') {
+      switchSection('dashboard');
+    }
+  }
+
+  function applyRolePermissions() {
+    const role = AppState.currentRole || 'STUDENT';
+
+    // 1. Sidebar role badge
+    const roleBadge = document.getElementById('sidebar-role-badge');
+    if (roleBadge) {
+      if (role === 'STUDENT') {
+        roleBadge.className = 'inline-flex items-center gap-1 text-[11px] font-hand font-bold px-2 py-0.5 rounded-full border border-ink bg-pastel-mint text-ink';
+        roleBadge.innerHTML = '🎓 Student Mode';
+      } else if (role === 'TEACHER') {
+        roleBadge.className = 'inline-flex items-center gap-1 text-[11px] font-hand font-bold px-2 py-0.5 rounded-full border border-ink bg-pastel-lavender text-ink';
+        roleBadge.innerHTML = '👨‍🏫 Teacher Mode';
+      } else {
+        roleBadge.className = 'inline-flex items-center gap-1 text-[11px] font-hand font-bold px-2 py-0.5 rounded-full border border-ink bg-pastel-yellow text-ink';
+        roleBadge.innerHTML = '🛡️ Admin Mode';
+      }
+    }
+
+    // 2. Nav mode label
+    const navMode = document.getElementById('nav-mode-label');
+    if (navMode) navMode.textContent = role;
+
+    // 3. User tag & persona details in footer
+    const userTag = document.getElementById('current-user-role-tag');
+    const userName = document.getElementById('current-user-name');
+    const studentWrapper = document.getElementById('student-persona-wrapper');
+
+    if (role === 'STUDENT') {
+      if (userTag) {
+        userTag.className = 'text-[10px] font-mono px-1.5 rounded bg-pastel-mint font-bold border border-ink';
+        userTag.textContent = 'STUDENT';
+      }
+      const student = AppState.students.find(s => s.studentId == AppState.activeStudentId);
+      if (userName) userName.textContent = student ? student.studentName : 'Student Account';
+      if (studentWrapper) studentWrapper.classList.remove('hidden');
+    } else if (role === 'TEACHER') {
+      if (userTag) {
+        userTag.className = 'text-[10px] font-mono px-1.5 rounded bg-pastel-lavender font-bold border border-ink';
+        userTag.textContent = 'FACULTY';
+      }
+      if (userName) userName.textContent = 'Prof. Vikram Sarabhai';
+      if (studentWrapper) studentWrapper.classList.add('hidden');
+    } else {
+      if (userTag) {
+        userTag.className = 'text-[10px] font-mono px-1.5 rounded bg-pastel-yellow font-bold border border-ink';
+        userTag.textContent = 'ROOT ADMIN';
+      }
+      if (userName) userName.textContent = 'System Administrator';
+      if (studentWrapper) studentWrapper.classList.add('hidden');
+    }
+
+    // 4. Topbar role label
+    const topbarRole = document.getElementById('topbar-role-label');
+    if (topbarRole) {
+      if (role === 'STUDENT') {
+        const student = AppState.students.find(s => s.studentId == AppState.activeStudentId);
+        topbarRole.textContent = `Student (${student ? student.studentName.split(' ')[0] : 'Active'}) ▾`;
+      } else if (role === 'TEACHER') {
+        topbarRole.textContent = 'Teacher (Prof. Vikram) ▾';
+      } else {
+        topbarRole.textContent = 'Admin Console ▾';
+      }
+    }
+
+    // 5. Navigation elements visibility
+    document.querySelectorAll('.nav-student').forEach(el => {
+      el.style.display = (role === 'STUDENT' || role === 'ADMIN') ? '' : 'none';
+    });
+
+    document.querySelectorAll('.nav-teacher').forEach(el => {
+      el.style.display = (role === 'TEACHER' || role === 'ADMIN') ? '' : 'none';
+    });
+
+    document.querySelectorAll('.nav-admin').forEach(el => {
+      el.style.display = (role === 'ADMIN') ? '' : 'none';
+    });
+
+    document.querySelectorAll('.nav-staff-header').forEach(el => {
+      el.style.display = (role === 'STUDENT') ? 'none' : '';
+    });
+
+    // 6. Topbar quick actions visibility
+    const topSolve = document.getElementById('topbar-btn-solve');
+    const topDraft = document.getElementById('topbar-btn-draft');
+    const topSeed = document.getElementById('topbar-btn-seed');
+
+    if (topSolve) topSolve.style.display = (role === 'STUDENT' || role === 'ADMIN') ? 'inline-flex' : 'none';
+    if (topDraft) topDraft.style.display = (role === 'TEACHER' || role === 'ADMIN') ? 'inline-flex' : 'none';
+    if (topSeed) topSeed.style.display = (role === 'ADMIN') ? 'inline-flex' : 'none';
+
+    // 7. Dashboard welcome banner
+    const welcomeIcon = document.getElementById('role-welcome-icon');
+    const welcomeTitle = document.getElementById('role-welcome-title');
+    const welcomeDesc = document.getElementById('role-welcome-desc');
+
+    if (role === 'STUDENT') {
+      const student = AppState.students.find(s => s.studentId == AppState.activeStudentId);
+      if (welcomeIcon) welcomeIcon.textContent = '🎓';
+      if (welcomeTitle) welcomeTitle.textContent = `Welcome to the Student Arena, ${student ? student.studentName : 'Student'}!`;
+      if (welcomeDesc) welcomeDesc.textContent = 'Solve active problem sets, track your goals on the leaderboard, and submit answers.';
+    } else if (role === 'TEACHER') {
+      if (welcomeIcon) welcomeIcon.textContent = '👨‍🏫';
+      if (welcomeTitle) welcomeTitle.textContent = 'Welcome to Faculty Desk, Prof. Vikram!';
+      if (welcomeDesc) welcomeDesc.textContent = 'Draft new competitions, attach challenge assignments, grade papers, and inspect class rosters.';
+    } else {
+      if (welcomeIcon) welcomeIcon.textContent = '🛡️';
+      if (welcomeTitle) welcomeTitle.textContent = 'Welcome System Administrator!';
+      if (welcomeDesc) welcomeDesc.textContent = 'Full platform governance: manage contest lifecycle states (Active/Upcoming/Completed), seed MySQL database, and oversee student submissions.';
+    }
+
+    // 8. Role-Tailored Dashboard Actions
+    renderDashboardRoleActions();
+
+    // 9. Re-render competitions grid for admin controls
+    renderCompetitionsGrid(AppState.summaries);
+  }
+
+  function renderDashboardRoleActions() {
+    const container = document.getElementById('dashboard-role-actions');
+    if (!container) return;
+
+    if (AppState.currentRole === 'STUDENT') {
+      const student = AppState.students.find(s => s.studentId == AppState.activeStudentId);
+      const studentName = student ? student.studentName : 'Student';
+      container.innerHTML = `
+        <div class="space-y-2.5">
+          <div class="flex items-center gap-2 border-b-2 border-dashed border-stone-200 pb-2">
+            <span class="text-xl">🎓</span>
+            <div>
+              <div class="font-hand font-bold text-base text-ink">Student Desk • ${escapeHtml(studentName)}</div>
+              <div class="text-[11px] text-stone-500 font-sans">Enrolled in active campus rounds</div>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <button onclick="window.app.switchSection('arena')" class="w-full sketch-btn p-3 bg-pastel-mint hover:bg-pastel-mintdark text-ink text-left flex items-center justify-between group">
+              <div>
+                <div class="font-hand font-bold text-base flex items-center gap-1.5">
+                  <span>✏️</span> Jump to Solve Arena
+                </div>
+                <div class="text-[11px] text-stone-600 font-sans">Select challenge task & verify answers</div>
+              </div>
+              <span class="text-lg group-hover:translate-x-1 transition-transform">➔</span>
+            </button>
+
+            <button onclick="window.app.switchSection('leaderboard')" class="w-full sketch-btn p-3 bg-pastel-lavender hover:bg-pastel-lavenderdark text-ink text-left flex items-center justify-between group">
+              <div>
+                <div class="font-hand font-bold text-base flex items-center gap-1.5">
+                  <span>🏆</span> Check Standings & Badges
+                </div>
+                <div class="text-[11px] text-stone-600 font-sans">Track personal rank and solved problems</div>
+              </div>
+              <span class="text-lg group-hover:translate-x-1 transition-transform">➔</span>
+            </button>
+
+            <button onclick="window.app.switchSection('competitions')" class="w-full sketch-btn p-3 bg-pastel-blue hover:bg-pastel-bluedark text-ink text-left flex items-center justify-between group">
+              <div>
+                <div class="font-hand font-bold text-base flex items-center gap-1.5">
+                  <span>🗓️</span> Browse Contest Calendar
+                </div>
+                <div class="text-[11px] text-stone-600 font-sans">Sign up for upcoming hackathons & quizzes</div>
+              </div>
+              <span class="text-lg group-hover:translate-x-1 transition-transform">➔</span>
+            </button>
+          </div>
+        </div>
+      `;
+    } else if (AppState.currentRole === 'TEACHER') {
+      container.innerHTML = `
+        <div class="space-y-2.5">
+          <div class="flex items-center gap-2 border-b-2 border-dashed border-stone-200 pb-2">
+            <span class="text-xl">👨‍🏫</span>
+            <div>
+              <div class="font-hand font-bold text-base text-ink">Faculty Studio • Prof. Vikram Sarabhai</div>
+              <div class="text-[11px] text-stone-500 font-sans">Curator & Examination Evaluator</div>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <button onclick="window.app.switchOrganizerTab('create-comp'); window.app.switchSection('organizer');" class="w-full sketch-btn p-3 bg-pastel-yellow hover:bg-pastel-yellowdark text-ink text-left flex items-center justify-between group">
+              <div>
+                <div class="font-hand font-bold text-base flex items-center gap-1.5">
+                  <span>➕</span> Draft New Competition
+                </div>
+                <div class="text-[11px] text-stone-600 font-sans">Publish quizzes, coding rounds, & deadlines</div>
+              </div>
+              <span class="text-lg group-hover:translate-x-1 transition-transform">➔</span>
+            </button>
+
+            <button onclick="window.app.switchOrganizerTab('add-challenge'); window.app.switchSection('organizer');" class="w-full sketch-btn p-3 bg-pastel-mint hover:bg-pastel-mintdark text-ink text-left flex items-center justify-between group">
+              <div>
+                <div class="font-hand font-bold text-base flex items-center gap-1.5">
+                  <span>🧩</span> Attach Challenge Question
+                </div>
+                <div class="text-[11px] text-stone-600 font-sans">Add problem statement, points, and answer key</div>
+              </div>
+              <span class="text-lg group-hover:translate-x-1 transition-transform">➔</span>
+            </button>
+
+            <button onclick="window.app.switchOrganizerTab('review-submissions'); window.app.switchSection('organizer');" class="w-full sketch-btn p-3 bg-pastel-lavender hover:bg-pastel-lavenderdark text-ink text-left flex items-center justify-between group">
+              <div>
+                <div class="font-hand font-bold text-base flex items-center gap-1.5">
+                  <span>📝</span> Grade Student Submissions
+                </div>
+                <div class="text-[11px] text-stone-600 font-sans">Review answers and award manual marks</div>
+              </div>
+              <span class="text-lg group-hover:translate-x-1 transition-transform">➔</span>
+            </button>
+
+            <button onclick="window.app.switchSection('students')" class="w-full sketch-btn p-3 bg-pastel-pink hover:bg-pastel-pinkdark text-ink text-left flex items-center justify-between group">
+              <div>
+                <div class="font-hand font-bold text-base flex items-center gap-1.5">
+                  <span>👥</span> Student Class Directory
+                </div>
+                <div class="text-[11px] text-stone-600 font-sans">View enrolled students and class sizes</div>
+              </div>
+              <span class="text-lg group-hover:translate-x-1 transition-transform">➔</span>
+            </button>
+          </div>
+        </div>
+      `;
+    } else if (AppState.currentRole === 'ADMIN') {
+      container.innerHTML = `
+        <div class="space-y-2.5">
+          <div class="flex items-center gap-2 border-b-2 border-dashed border-stone-200 pb-2">
+            <span class="text-xl">🛡️</span>
+            <div>
+              <div class="font-hand font-bold text-base text-ink">System Administrator Console</div>
+              <div class="text-[11px] text-stone-500 font-sans">Full Platform Superuser Privileges</div>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <button onclick="window.app.switchSection('competitions')" class="w-full sketch-btn p-3 bg-pastel-blue hover:bg-pastel-bluedark text-ink text-left flex items-center justify-between group">
+              <div>
+                <div class="font-hand font-bold text-base flex items-center gap-1.5">
+                  <span>⚡</span> Contest Lifecycle Controls
+                </div>
+                <div class="text-[11px] text-stone-600 font-sans">Toggle status (ACTIVE, UPCOMING, CONCLUDED)</div>
+              </div>
+              <span class="text-lg group-hover:translate-x-1 transition-transform">➔</span>
+            </button>
+
+            <button onclick="window.app.resetAndSeedData()" class="w-full sketch-btn p-3 bg-pastel-yellow hover:bg-pastel-yellowdark text-ink text-left flex items-center justify-between group">
+              <div>
+                <div class="font-hand font-bold text-base flex items-center gap-1.5">
+                  <span>↻</span> Seed / Reset MySQL Database
+                </div>
+                <div class="text-[11px] text-stone-600 font-sans">Clean restore of demo records in campus_challenge</div>
+              </div>
+              <span class="text-lg group-hover:translate-x-1 transition-transform">➔</span>
+            </button>
+
+            <button onclick="window.app.switchSection('students')" class="w-full sketch-btn p-3 bg-pastel-pink hover:bg-pastel-pinkdark text-ink text-left flex items-center justify-between group">
+              <div>
+                <div class="font-hand font-bold text-base flex items-center gap-1.5">
+                  <span>📝</span> Register New Student Slip
+                </div>
+                <div class="text-[11px] text-stone-600 font-sans">Insert fresh student profile into MySQL</div>
+              </div>
+              <span class="text-lg group-hover:translate-x-1 transition-transform">➔</span>
+            </button>
+
+            <button onclick="window.app.switchSection('organizer')" class="w-full sketch-btn p-3 bg-pastel-mint hover:bg-pastel-mintdark text-ink text-left flex items-center justify-between group">
+              <div>
+                <div class="font-hand font-bold text-base flex items-center gap-1.5">
+                  <span>🎨</span> Access Organizer Desk
+                </div>
+                <div class="text-[11px] text-stone-600 font-sans">Manage contests, assignments & evaluations</div>
+              </div>
+              <span class="text-lg group-hover:translate-x-1 transition-transform">➔</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  async function updateCompetitionStatus(competitionId, newStatus) {
+    if (AppState.currentRole !== 'ADMIN') {
+      showToast('Admin Required', 'Only system administrators can alter competition lifecycle states.', true);
+      return;
+    }
+    showToast('Updating Schedule...', `Changing competition #${competitionId} status to ${newStatus}.`);
+    const res = await api(`/competitions/${competitionId}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status: newStatus })
+    });
+    if (res.success) {
+      showToast('Contest Updated! 🎯', `Competition status changed to ${newStatus}.`);
+      await loadCompetitions();
+      await loadSystemStats();
+    } else {
+      showToast('Status Update Failed', res.message || 'Could not update status', true);
+    }
+  }
+
   // Initial Load
   async function init() {
+    // Restore saved role from localStorage
+    const savedRole = localStorage.getItem('campus_arena_role');
+    if (savedRole && ['STUDENT', 'TEACHER', 'ADMIN'].includes(savedRole)) {
+      AppState.currentRole = savedRole;
+      AppState.selectedLoginRole = savedRole;
+    }
+
     await loadSystemStats();
     await loadStudents();
     await loadCompetitions();
     await loadHistory();
     setupDefaultDates();
+
+    applyRolePermissions();
 
     // Check initial hash route
     handleHashRoute();
@@ -330,6 +817,7 @@
     }
     const student = AppState.students.find(s => s.studentId == AppState.activeStudentId);
     showToast('Participant Switched', student ? `Acting as ${student.studentName}` : `Student #${studentId} selected`);
+    applyRolePermissions();
   }
 
   // Load Competitions
@@ -575,6 +1063,33 @@
               🏆 Standings
             </button>
           </div>
+
+          <!-- Admin Lifecycle Override Controls -->
+          ${AppState.currentRole === 'ADMIN' ? `
+            <div class="mt-3 pt-2.5 border-t-2 border-dashed border-stone-300 bg-pastel-yellow/30 p-2.5 rounded-xl">
+              <div class="text-[10px] font-hand font-bold text-stone-600 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                <span class="flex items-center gap-1 font-bold text-ink">🛡️ Admin Lifecycle Override</span>
+                <span class="font-mono text-[10px] text-stone-500 font-bold">ID #${c.competitionId}</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-1.5">
+                ${c.competitionStatus !== 'ACTIVE' ? `
+                  <button onclick="window.app.updateCompetitionStatus(${c.competitionId}, 'ACTIVE')" class="sketch-btn px-2.5 py-1 bg-pastel-mint hover:bg-pastel-mintdark text-ink font-bold text-xs" title="Make Competition Live Now">
+                    ▶ Set Active
+                  </button>
+                ` : ''}
+                ${c.competitionStatus !== 'COMPLETED' ? `
+                  <button onclick="window.app.updateCompetitionStatus(${c.competitionId}, 'COMPLETED')" class="sketch-btn px-2.5 py-1 bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold text-xs" title="Conclude Competition">
+                    ⏹ Conclude
+                  </button>
+                ` : ''}
+                ${c.competitionStatus !== 'UPCOMING' ? `
+                  <button onclick="window.app.updateCompetitionStatus(${c.competitionId}, 'UPCOMING')" class="sketch-btn px-2.5 py-1 bg-pastel-yellow hover:bg-pastel-yellowdark text-ink font-bold text-xs" title="Revert to Upcoming">
+                    ⏳ Set Upcoming
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          ` : ''}
         </div>
       `;
     }).join('');
@@ -848,6 +1363,24 @@
   async function handleAnswerSubmit(event) {
     event.preventDefault();
 
+    // Faculty restriction check
+    if (AppState.currentRole === 'TEACHER') {
+      showToast('Faculty Area Restricted 👨‍🏫', 'Problem submission in Solve Arena is reserved for students. Head to Organizer Studio to grade papers.', true);
+      const resultBox = document.getElementById('submission-result');
+      if (resultBox) {
+        resultBox.classList.remove('hidden');
+        resultBox.innerHTML = `
+          <div class="p-4 rounded-xl border-2 border-stone-800 bg-pastel-lavender text-ink text-xs">
+            <div class="font-hand font-bold flex items-center gap-2 text-base text-purple-950">
+              <span>👨‍🏫</span> TEACHER MODE: SUBMISSIONS RESERVED FOR STUDENTS
+            </div>
+            <div class="mt-1 font-sans text-stone-700">Teachers draft challenges and review submissions. Switch to <strong>Student Mode</strong> via the role menu if you wish to solve questions.</div>
+          </div>
+        `;
+      }
+      return;
+    }
+
     const compSelect = document.getElementById('arena-competition-select');
     const chSelect = document.getElementById('arena-challenge-select');
     const stSelect = document.getElementById('arena-student-select');
@@ -1003,6 +1536,12 @@
   // Handle Create Competition
   async function handleCreateCompetition(event) {
     event.preventDefault();
+
+    if (AppState.currentRole === 'STUDENT') {
+      showToast('Faculty Permission Required', 'Creating competitions is reserved for Teachers & Admins. Switch role to proceed.', true);
+      return;
+    }
+
     const name = document.getElementById('new-comp-name').value.trim();
     const type = document.getElementById('new-comp-type').value;
     const desc = document.getElementById('new-comp-desc').value.trim();
@@ -1037,6 +1576,12 @@
   // Handle Add Challenge
   async function handleAddChallenge(event) {
     event.preventDefault();
+
+    if (AppState.currentRole === 'STUDENT') {
+      showToast('Faculty Permission Required', 'Attaching challenges is reserved for Teachers & Admins. Switch role to proceed.', true);
+      return;
+    }
+
     const compId = parseInt(document.getElementById('challenge-target-comp').value);
     const title = document.getElementById('new-ch-title').value.trim();
     const desc = document.getElementById('new-ch-desc').value.trim();
@@ -1306,6 +1851,12 @@
     closeGradingModal,
     saveGrading,
     resetAndSeedData,
+    openLoginModal,
+    closeLoginModal,
+    selectLoginRole,
+    confirmRoleLogin,
+    applyRolePermissions,
+    updateCompetitionStatus,
   };
 
   // Launch on DOM ready

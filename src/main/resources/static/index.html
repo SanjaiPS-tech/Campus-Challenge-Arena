@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Campus Challenge Arena • Hand-Drawn Creative Planner</title>
+  <title>Campus Challenge Arena • Role-Based Creative Planner</title>
 
   <!-- Google Fonts: Hand-drawn Sketch + Clean Readability -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -111,15 +111,9 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
       z-index: 10;
     }
-    .washi-tape-pink {
-      background: rgba(251, 207, 232, 0.85);
-    }
-    .washi-tape-mint {
-      background: rgba(167, 243, 208, 0.85);
-    }
-    .washi-tape-blue {
-      background: rgba(186, 230, 253, 0.85);
-    }
+    .washi-tape-pink { background: rgba(251, 207, 232, 0.85); }
+    .washi-tape-mint { background: rgba(167, 243, 208, 0.85); }
+    .washi-tape-blue { background: rgba(186, 230, 253, 0.85); }
 
     /* Highlighter Marker Effect */
     .marker-yellow {
@@ -138,22 +132,6 @@
       border-radius: 4px;
     }
 
-    /* Custom Planner Tab Dividers */
-    .planner-tab {
-      border: 2px solid #292524;
-      border-right: none;
-      border-radius: 12px 0 0 12px;
-      box-shadow: -3px 3px 0px #292524;
-      transition: all 0.2s ease;
-      font-family: 'Patrick Hand', cursive;
-    }
-    .planner-tab.active {
-      transform: translateX(4px);
-      background-color: #FFFFFF !important;
-      border-right: 2px solid #FFFFFF;
-      font-weight: 700;
-    }
-
     /* Page-Turning Transition Effect */
     .dashboard-view {
       display: none;
@@ -164,32 +142,8 @@
     }
 
     @keyframes pageTurn {
-      0% {
-        opacity: 0;
-        transform: rotate(-0.5deg) translateY(6px);
-      }
-      100% {
-        opacity: 1;
-        transform: rotate(0deg) translateY(0);
-      }
-    }
-
-    /* Animated Pencil Strikethrough */
-    @keyframes pencilStroke {
-      0% { width: 0; }
-      100% { width: 100%; }
-    }
-    .strike-through {
-      position: relative;
-    }
-    .strike-through::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      height: 2px;
-      background: #E11D48;
-      animation: pencilStroke 0.3s ease-in forwards;
+      0% { opacity: 0; transform: rotate(-0.5deg) translateY(6px); }
+      100% { opacity: 1; transform: rotate(0deg) translateY(0); }
     }
 
     /* Hand-Drawn Checkbox */
@@ -225,7 +179,7 @@
   <div class="flex-1 flex overflow-hidden p-3 sm:p-5 gap-3 sm:gap-4 max-w-[1600px] mx-auto w-full">
 
     <!-- ============================================================== -->
-    <!-- BINDER TAB DIVIDERS (Hand-Drawn Side Navigation) -->
+    <!-- BINDER TAB DIVIDERS (Role-Aware Side Navigation) -->
     <!-- ============================================================== -->
     <aside id="app-sidebar" class="w-60 sm:w-64 bg-[#F5EFE6] border-2 border-ink rounded-3xl p-3.5 flex flex-col flex-shrink-0 z-30 shadow-sketch relative">
       
@@ -239,69 +193,75 @@
         <div class="w-6 h-3.5 bg-stone-300 border-2 border-ink rounded-full"></div>
       </div>
 
-      <!-- Journal Cover Header -->
-      <div class="pb-4 border-b-2 border-dashed border-stone-300 mb-3 px-2">
+      <!-- Journal Cover Header & Active Role Indicator -->
+      <div class="pb-3 border-b-2 border-dashed border-stone-300 mb-2.5 px-2">
         <a href="#dashboard" onclick="window.app.switchSection('dashboard')" class="block group">
           <div class="flex items-center gap-2 mb-1">
             <span class="text-2xl group-hover:rotate-12 transition-transform">📒</span>
-            <span class="font-hand text-2xl font-bold tracking-tight text-ink">My Campus Arena</span>
+            <span class="font-hand text-2xl font-bold tracking-tight text-ink">Campus Arena</span>
           </div>
-          <span class="inline-block text-[11px] font-hand text-stone-600 bg-pastel-yellow px-2 py-0.5 rounded-md border border-stone-400">
-            ★ Daily Sketch Planner & Tracker
-          </span>
+          <div class="flex items-center justify-between">
+            <span id="sidebar-role-badge" class="inline-flex items-center gap-1 text-[11px] font-hand font-bold px-2 py-0.5 rounded-full border border-ink bg-pastel-mint text-ink">
+              🎓 Student Mode
+            </span>
+            <button onclick="window.app.openLoginModal()" class="text-[11px] font-hand text-stone-600 underline hover:text-black">
+              Switch ➔
+            </button>
+          </div>
         </a>
       </div>
 
-      <!-- Colorful Tabbed Dividers -->
-      <nav class="flex-1 space-y-2 overflow-y-auto pr-1">
+      <!-- Colorful Role-Filtered Tabbed Dividers -->
+      <nav id="sidebar-nav" class="flex-1 space-y-1.5 overflow-y-auto pr-1">
         
-        <div class="px-2 pt-1 pb-0.5 text-xs font-hand text-stone-500 uppercase tracking-wider">
-          ✦ Planning Views
+        <div class="px-2 pt-1 pb-0.5 text-xs font-hand text-stone-500 uppercase tracking-wider flex items-center justify-between">
+          <span>✦ Navigation</span>
+          <span id="nav-mode-label" class="text-[10px] font-mono font-bold text-stone-600">STUDENT</span>
         </div>
 
-        <!-- 1. Planner Overview (The Commons / Dashboard) -->
+        <!-- 1. Planner Overview (All Roles) -->
         <button onclick="window.app.switchSection('dashboard')" id="nav-btn-dashboard" class="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-ink text-sm font-hand text-ink bg-pastel-yellow shadow-sketch-sm transition-all text-left">
           <span class="text-base">📅</span>
           <span class="flex-1 font-bold text-base">Planner Overview</span>
         </button>
 
-        <!-- 2. Solve Arena (Daily Tasks) -->
-        <button onclick="window.app.switchSection('arena')" id="nav-btn-arena" class="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-pastel-mint hover:border-ink transition-all text-left">
+        <!-- 2. Solve Arena (Student & Admin) -->
+        <button onclick="window.app.switchSection('arena')" id="nav-btn-arena" class="nav-item nav-student nav-admin w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-pastel-mint hover:border-ink transition-all text-left">
           <span class="text-base">✏️</span>
           <span class="flex-1 font-bold text-base">Solve Arena</span>
           <span class="text-[11px] px-1.5 py-0.2 rounded-full bg-pastel-pink border border-ink font-sans">LIVE</span>
         </button>
 
-        <!-- 3. Goal Tracker (Leaderboard) -->
+        <!-- 3. Goal Tracker / Leaderboard (All Roles) -->
         <button onclick="window.app.switchSection('leaderboard')" id="nav-btn-leaderboard" class="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-pastel-lavender hover:border-ink transition-all text-left">
           <span class="text-base">🏆</span>
           <span class="flex-1 font-bold text-base">Goal Leaderboard</span>
         </button>
 
-        <!-- 4. Contest Calendar (Competitions Directory) -->
+        <!-- 4. Contest Calendar (All Roles) -->
         <button onclick="window.app.switchSection('competitions')" id="nav-btn-competitions" class="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-pastel-blue hover:border-ink transition-all text-left">
           <span class="text-base">🗓️</span>
           <span class="flex-1 font-bold text-base">Event Calendar</span>
           <span id="nav-badge-competitions" class="text-xs font-hand px-2 py-0.5 rounded-md bg-stone-200 border border-ink">0</span>
         </button>
 
-        <div class="px-2 pt-3 pb-0.5 text-xs font-hand text-stone-500 uppercase tracking-wider">
-          ✦ Organizer Studio
+        <div class="px-2 pt-2.5 pb-0.5 text-xs font-hand text-stone-500 uppercase tracking-wider nav-staff-header">
+          ✦ Faculty & Admin Tools
         </div>
 
-        <!-- 5. Student Index (Student Portal) -->
-        <button onclick="window.app.switchSection('students')" id="nav-btn-students" class="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-pastel-pink hover:border-ink transition-all text-left">
+        <!-- 5. Student Index (Teacher & Admin) -->
+        <button onclick="window.app.switchSection('students')" id="nav-btn-students" class="nav-item nav-teacher nav-admin w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-pastel-pink hover:border-ink transition-all text-left">
           <span class="text-base">👥</span>
           <span class="flex-1 font-bold text-base">Student Roster</span>
         </button>
 
-        <!-- 6. Teacher Desk (Organizer Console) -->
-        <button onclick="window.app.switchSection('organizer')" id="nav-btn-organizer" class="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-pastel-terracotta hover:border-ink transition-all text-left">
+        <!-- 6. Teacher Desk / Organizer Studio (Teacher & Admin) -->
+        <button onclick="window.app.switchSection('organizer')" id="nav-btn-organizer" class="nav-item nav-teacher nav-admin w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-pastel-terracotta hover:border-ink transition-all text-left">
           <span class="text-base">🎨</span>
           <span class="flex-1 font-bold text-base">Organizer Studio</span>
         </button>
 
-        <!-- 7. Memory Scrapbook (History) -->
+        <!-- 7. Memory Scrapbook (All Roles) -->
         <button onclick="window.app.switchSection('history')" id="nav-btn-history" class="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-transparent text-sm font-hand text-stone-700 hover:bg-stone-200 hover:border-ink transition-all text-left">
           <span class="text-base">📜</span>
           <span class="flex-1 font-bold text-base">Past Seasons</span>
@@ -309,21 +269,29 @@
 
       </nav>
 
-      <!-- Active Participant Sticky Note Footer -->
-      <div class="pt-3 border-t-2 border-dashed border-stone-300 space-y-2">
+      <!-- Active User Profile Sticky Footer -->
+      <div class="pt-2.5 border-t-2 border-dashed border-stone-300 space-y-2">
         <div class="p-2.5 bg-white border-2 border-ink rounded-2xl shadow-sketch-sm">
-          <div class="text-[11px] font-hand text-stone-500 mb-0.5">👤 Active Student:</div>
-          <select id="active-student-select" class="w-full bg-pastel-mint border border-ink rounded-lg text-xs font-hand text-ink py-1 px-1.5 outline-none cursor-pointer truncate" onchange="window.app.onActiveStudentChange(this.value)">
-            <option value="">Choose Student...</option>
-          </select>
+          <div class="flex items-center justify-between mb-0.5">
+            <span class="text-[11px] font-hand text-stone-500">Active Persona:</span>
+            <span id="current-user-role-tag" class="text-[10px] font-mono px-1.5 rounded bg-pastel-mint font-bold border border-ink">STUDENT</span>
+          </div>
+          <div id="current-user-name" class="font-hand font-bold text-base text-ink truncate">
+            Aarav Sharma
+          </div>
+          <!-- Student select dropdown (Hidden for pure teacher/admin, shown for student) -->
+          <div id="student-persona-wrapper" class="mt-1">
+            <select id="active-student-select" class="w-full bg-pastel-mint border border-ink rounded-lg text-xs font-hand text-ink py-1 px-1.5 outline-none cursor-pointer truncate" onchange="window.app.onActiveStudentChange(this.value)">
+              <option value="">Choose Student...</option>
+            </select>
+          </div>
         </div>
 
         <div class="flex items-center justify-between text-xs font-hand text-stone-600 px-1">
-          <span class="flex items-center gap-1.5">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-ink"></span>
-            MySQL Connected
-          </span>
-          <span class="text-[11px] text-stone-500">v8.0+</span>
+          <button onclick="window.app.openLoginModal()" class="font-bold underline hover:text-black flex items-center gap-1">
+            <span>🔑</span> Switch Role / Log Out
+          </button>
+          <span class="text-[11px] text-stone-500 font-mono">MySQL 8.0</span>
         </div>
       </div>
 
@@ -354,16 +322,24 @@
         <!-- Right Quick Planner Actions -->
         <div class="flex items-center gap-2.5">
           
-          <button onclick="window.app.switchSection('arena')" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-ink bg-pastel-mint hover:bg-pastel-mintdark text-ink font-hand text-sm shadow-sketch-sm transition-all">
+          <!-- Role Switcher Button -->
+          <button onclick="window.app.openLoginModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-ink bg-white hover:bg-stone-100 text-ink font-hand text-sm shadow-sketch-sm transition-all">
+            <span>👤</span> <span id="topbar-role-label">Switch Role</span>
+          </button>
+
+          <!-- Student solve action -->
+          <button onclick="window.app.switchSection('arena')" id="topbar-btn-solve" class="role-student role-admin hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-ink bg-pastel-mint hover:bg-pastel-mintdark text-ink font-hand text-sm shadow-sketch-sm transition-all">
             <span>✏️</span> Solve Today
           </button>
 
-          <button onclick="window.app.switchSection('organizer')" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-ink bg-pastel-lavender hover:bg-pastel-lavenderdark text-ink font-hand text-sm shadow-sketch-sm transition-all">
-            <span>➕</span> New Task / Contest
+          <!-- Teacher/Admin contest draft action -->
+          <button onclick="window.app.switchSection('organizer')" id="topbar-btn-draft" class="role-teacher role-admin hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-ink bg-pastel-lavender hover:bg-pastel-lavenderdark text-ink font-hand text-sm shadow-sketch-sm transition-all">
+            <span>➕</span> Host Contest
           </button>
 
-          <button onclick="window.app.resetAndSeedData()" title="Re-sketch clean demo database records" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-ink bg-pastel-yellow hover:bg-pastel-yellowdark text-ink font-hand text-sm shadow-sketch-sm transition-all">
-            <span>↻</span> Re-Seed Notebook
+          <!-- Admin-Only Seed Tool -->
+          <button onclick="window.app.resetAndSeedData()" id="topbar-btn-seed" title="Re-sketch clean demo database records (Admin tool)" class="role-admin inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-ink bg-pastel-yellow hover:bg-pastel-yellowdark text-ink font-hand text-sm shadow-sketch-sm transition-all">
+            <span>↻</span> Seed DB
           </button>
 
         </div>
@@ -377,6 +353,20 @@
         <!-- ============================================================== -->
         <section id="view-dashboard" class="dashboard-view active space-y-6 max-w-7xl mx-auto">
           
+          <!-- Role-Tailored Greeting Banner -->
+          <div id="role-welcome-banner" class="sketch-card p-4 sm:p-5 bg-white border-2 border-ink flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <span id="role-welcome-icon" class="text-3xl">🎓</span>
+              <div>
+                <h3 id="role-welcome-title" class="font-hand text-2xl font-bold text-ink">Welcome to the Student Arena, Aarav!</h3>
+                <p id="role-welcome-desc" class="text-xs text-stone-600 font-sans">Solve active problem sets, track your goals on the leaderboard, and submit answers.</p>
+              </div>
+            </div>
+            <button onclick="window.app.openLoginModal()" class="sketch-btn px-3 py-1.5 bg-pastel-yellow text-ink text-xs font-bold whitespace-nowrap">
+              Change Account
+            </button>
+          </div>
+
           <!-- Pinned Spotlight Agenda Card (Open Post-it Note) -->
           <div class="sketch-card p-6 sm:p-8 bg-pastel-yellow border-2 border-ink relative">
             <div class="washi-tape washi-tape-pink"></div>
@@ -415,7 +405,7 @@
 
               <!-- Planner CTAs -->
               <div class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-end">
-                <button onclick="window.app.enterSpotlightContest()" class="sketch-btn px-5 py-3 bg-pastel-mint hover:bg-pastel-mintdark text-ink font-bold text-base flex items-center justify-center gap-2">
+                <button onclick="window.app.enterSpotlightContest()" id="spotlight-action-enter" class="sketch-btn px-5 py-3 bg-pastel-mint hover:bg-pastel-mintdark text-ink font-bold text-base flex items-center justify-center gap-2">
                   <span>✏️</span> Open in Solve Arena
                 </button>
                 <button onclick="window.app.viewSpotlightLeaderboard()" class="sketch-btn px-5 py-3 bg-white hover:bg-stone-50 text-ink font-bold text-base flex items-center justify-center gap-2">
@@ -429,7 +419,6 @@
           <!-- Sticky Note Doodled Stats Grid -->
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             
-            <!-- Sticky 1: Competitions -->
             <div class="sketch-card p-5 bg-pastel-mint border-2 border-ink relative rotate-[-1deg]">
               <div class="text-xs font-hand text-stone-600 mb-1">Total Competitions 📌</div>
               <div class="flex items-baseline justify-between">
@@ -439,7 +428,6 @@
               <div class="text-[11px] text-stone-600 mt-2 font-sans">Active & upcoming schedules</div>
             </div>
 
-            <!-- Sticky 2: Students -->
             <div class="sketch-card p-5 bg-pastel-pink border-2 border-ink relative rotate-[1deg]">
               <div class="text-xs font-hand text-stone-600 mb-1">Enrolled Students 📝</div>
               <div class="flex items-baseline justify-between">
@@ -449,7 +437,6 @@
               <div class="text-[11px] text-stone-600 mt-2 font-sans">Across all campus batches</div>
             </div>
 
-            <!-- Sticky 3: Challenges -->
             <div class="sketch-card p-5 bg-pastel-lavender border-2 border-ink relative rotate-[-1.5deg]">
               <div class="text-xs font-hand text-stone-600 mb-1">Challenge Tasks 🧩</div>
               <div class="flex items-baseline justify-between">
@@ -459,7 +446,6 @@
               <div class="text-[11px] text-stone-600 mt-2 font-sans">Problem sets to solve</div>
             </div>
 
-            <!-- Sticky 4: Submissions -->
             <div class="sketch-card p-5 bg-pastel-blue border-2 border-ink relative rotate-[1deg]">
               <div class="text-xs font-hand text-stone-600 mb-1">Graded Solutions ✨</div>
               <div class="flex items-baseline justify-between">
@@ -471,7 +457,7 @@
 
           </div>
 
-          <!-- Planner Spread: Event Agenda & Quick Shortcuts -->
+          <!-- Planner Spread: Event Agenda & Role Actions -->
           <div class="grid lg:grid-cols-12 gap-6">
             
             <!-- Left: Weekly Event Cards -->
@@ -491,58 +477,14 @@
               </div>
             </div>
 
-            <!-- Right: Creative Planner Quick Tools -->
+            <!-- Right: Role-Customized Quick Actions -->
             <div class="lg:col-span-5 space-y-4">
               <h3 class="font-hand text-xl font-bold text-ink flex items-center gap-2">
-                <span>✏️</span> Creative Tools
+                <span>✏️</span> Role Workspace
               </h3>
 
-              <div class="sketch-card p-5 bg-white border-2 border-ink space-y-3">
-                
-                <button onclick="window.app.switchSection('arena')" class="w-full flex items-center justify-between p-3 rounded-xl border-2 border-dashed border-stone-300 hover:border-ink hover:bg-pastel-mint transition-all text-left group">
-                  <div class="flex items-center gap-3">
-                    <span class="text-2xl">✏️</span>
-                    <div>
-                      <div class="font-hand text-base font-bold text-ink">Solve Problem of the Day</div>
-                      <div class="text-xs text-stone-500 font-sans">Open the solver scratchpad</div>
-                    </div>
-                  </div>
-                  <span class="font-hand text-lg text-stone-400 group-hover:text-ink">➔</span>
-                </button>
-
-                <button onclick="window.app.switchSection('leaderboard')" class="w-full flex items-center justify-between p-3 rounded-xl border-2 border-dashed border-stone-300 hover:border-ink hover:bg-pastel-yellow transition-all text-left group">
-                  <div class="flex items-center gap-3">
-                    <span class="text-2xl">🏆</span>
-                    <div>
-                      <div class="font-hand text-base font-bold text-ink">Check Goal Tracker</div>
-                      <div class="text-xs text-stone-500 font-sans">View student ranking tallies</div>
-                    </div>
-                  </div>
-                  <span class="font-hand text-lg text-stone-400 group-hover:text-ink">➔</span>
-                </button>
-
-                <button onclick="window.app.switchSection('organizer')" class="w-full flex items-center justify-between p-3 rounded-xl border-2 border-dashed border-stone-300 hover:border-ink hover:bg-pastel-lavender transition-all text-left group">
-                  <div class="flex items-center gap-3">
-                    <span class="text-2xl">🎨</span>
-                    <div>
-                      <div class="font-hand text-base font-bold text-ink">Draft New Contest</div>
-                      <div class="text-xs text-stone-500 font-sans">Create and schedule challenge tasks</div>
-                    </div>
-                  </div>
-                  <span class="font-hand text-lg text-stone-400 group-hover:text-ink">➔</span>
-                </button>
-
-                <button onclick="window.app.switchSection('students')" class="w-full flex items-center justify-between p-3 rounded-xl border-2 border-dashed border-stone-300 hover:border-ink hover:bg-pastel-pink transition-all text-left group">
-                  <div class="flex items-center gap-3">
-                    <span class="text-2xl">👥</span>
-                    <div>
-                      <div class="font-hand text-base font-bold text-ink">Add Student Profile</div>
-                      <div class="text-xs text-stone-500 font-sans">Register new participant to the roster</div>
-                    </div>
-                  </div>
-                  <span class="font-hand text-lg text-stone-400 group-hover:text-ink">➔</span>
-                </button>
-
+              <div id="dashboard-role-actions" class="sketch-card p-5 bg-white border-2 border-ink space-y-3">
+                <!-- Dynamically tailored by role in app.js -->
               </div>
             </div>
 
@@ -555,7 +497,6 @@
         <!-- ============================================================== -->
         <section id="view-arena" class="dashboard-view space-y-6 max-w-7xl mx-auto">
           
-          <!-- Two-Page Open Notebook Header -->
           <div class="sketch-card p-5 bg-pastel-mint border-2 border-ink flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             <div>
               <h2 class="font-hand text-2xl font-bold text-ink flex items-center gap-2">
@@ -588,7 +529,6 @@
             <!-- Left Notebook Page: Question Sheet -->
             <div class="lg:col-span-7 space-y-4">
               
-              <!-- Challenge Picker Dropdown -->
               <div class="sketch-card p-4 bg-white border-2 border-ink flex items-center justify-between gap-4">
                 <span class="font-hand font-bold text-base text-ink flex items-center gap-1.5">
                   <span>📌</span> Assignment:
@@ -694,7 +634,6 @@
         <!-- ============================================================== -->
         <section id="view-leaderboard" class="dashboard-view space-y-6 max-w-7xl mx-auto">
           
-          <!-- Leaderboard Toolbar -->
           <div class="sketch-card p-5 bg-pastel-lavender border-2 border-ink flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             <div>
               <h2 id="leaderboard-table-title" class="font-hand text-2xl font-bold text-ink flex items-center gap-2">
@@ -770,7 +709,6 @@
         <!-- ============================================================== -->
         <section id="view-competitions" class="dashboard-view space-y-6 max-w-7xl mx-auto">
           
-          <!-- Calendar Filter Bar -->
           <div class="sketch-card p-5 bg-pastel-blue border-2 border-ink flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             <div>
               <h2 class="font-hand text-2xl font-bold text-ink flex items-center gap-2">
@@ -796,7 +734,7 @@
             </div>
           </div>
 
-          <!-- Competitions Grid -->
+          <!-- Competitions Grid (with Admin Status Controls) -->
           <div id="competitions-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Dynamically populated -->
           </div>
@@ -890,7 +828,6 @@
         <!-- ============================================================== -->
         <section id="view-organizer" class="dashboard-view space-y-6 max-w-7xl mx-auto">
           
-          <!-- Organizer Sub-Navigation -->
           <div class="sketch-card p-5 bg-pastel-terracotta border-2 border-ink flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             <div>
               <h2 class="font-hand text-2xl font-bold text-ink flex items-center gap-2">
@@ -1072,8 +1009,61 @@
   </div>
 
   <!-- ============================================================== -->
-  <!-- SKETCHED MODALS -->
+  <!-- ROLE LOGIN & SWITCHER MODAL -->
   <!-- ============================================================== -->
+  <div id="login-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="sketch-card p-6 sm:p-8 bg-[#FFFDF9] border-2 border-ink max-w-lg w-full shadow-sketch-lg space-y-5 relative">
+      <div class="washi-tape washi-tape-pink"></div>
+
+      <div class="flex items-center justify-between border-b-2 border-dashed border-stone-300 pb-3">
+        <div>
+          <h3 class="font-hand text-2xl font-bold text-ink flex items-center gap-2">
+            <span>🔑</span> Select Planner Role
+          </h3>
+          <p class="text-xs text-stone-600 font-sans mt-0.5">Switch between Student, Teacher, or Admin mode.</p>
+        </div>
+        <button onclick="window.app.closeLoginModal()" class="text-stone-700 hover:text-black font-hand text-2xl font-bold">✕</button>
+      </div>
+
+      <!-- Role Selector Cards -->
+      <div class="grid sm:grid-cols-3 gap-3">
+        
+        <!-- 1. Student Card -->
+        <button onclick="window.app.selectLoginRole('STUDENT')" id="role-tab-STUDENT" class="sketch-box p-3.5 bg-pastel-mint hover:bg-pastel-mintdark text-left transition-all">
+          <div class="text-2xl mb-1">🎓</div>
+          <div class="font-hand font-bold text-lg text-ink">Student</div>
+          <div class="text-[11px] text-stone-600 font-sans leading-tight">Solve challenges & track points</div>
+        </button>
+
+        <!-- 2. Teacher Card -->
+        <button onclick="window.app.selectLoginRole('TEACHER')" id="role-tab-TEACHER" class="sketch-box p-3.5 bg-white hover:bg-pastel-lavender text-left transition-all">
+          <div class="text-2xl mb-1">👨‍🏫</div>
+          <div class="font-hand font-bold text-lg text-ink">Teacher</div>
+          <div class="text-[11px] text-stone-600 font-sans leading-tight">Create contests & grade papers</div>
+        </button>
+
+        <!-- 3. Admin Card -->
+        <button onclick="window.app.selectLoginRole('ADMIN')" id="role-tab-ADMIN" class="sketch-box p-3.5 bg-white hover:bg-pastel-yellow text-left transition-all">
+          <div class="text-2xl mb-1">🛡️</div>
+          <div class="font-hand font-bold text-lg text-ink">Admin</div>
+          <div class="text-[11px] text-stone-600 font-sans leading-tight">Full system control & DB reset</div>
+        </button>
+
+      </div>
+
+      <!-- Role Specific Controls Box -->
+      <div id="login-role-panel" class="sketch-box p-4 bg-white border-2 border-ink space-y-3">
+        <!-- Rendered dynamically in app.js -->
+      </div>
+
+      <div class="flex items-center justify-between text-xs font-hand text-stone-500 pt-1">
+        <span>Instant 1-Click Role Switching enabled for pairwise evaluation</span>
+        <button onclick="window.app.closeLoginModal()" class="font-bold underline hover:text-black">
+          Dismiss
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Registration Modal -->
   <div id="registration-modal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
