@@ -1,22 +1,58 @@
 /**
- * Campus Challenge Arena - Interactive Frontend Logic
- * Brutalist UI • Live Leaderboards • Dynamic MySQL Sync
+ * Campus Challenge Arena - Modern Dashboard Controller
+ * Sectioned Views • Dynamic Leaderboard • MySQL JDBC Integration
  */
 
 (function () {
   'use strict';
 
   const AppState = {
+    currentSection: 'dashboard',
     students: [],
     competitions: [],
     summaries: [],
     activeStudentId: null,
     currentLeaderboardId: null,
+    currentArenaCompId: null,
+    arenaChallenges: [],
     currentFilter: 'ALL',
     isGlobalLeaderboard: false,
     selectedRegCompId: null,
     activeOrganizerTab: 'create-comp',
     refreshTimer: null,
+    spotlightCompId: null,
+  };
+
+  // Section Configuration for Titles and Subtitles
+  const SECTIONS_META = {
+    dashboard: {
+      title: 'Dashboard Overview',
+      subtitle: 'Campus Competition Platform • Live Telemetry & Actions'
+    },
+    arena: {
+      title: 'Solve Arena',
+      subtitle: 'Interactive Problem Solver • Instant MySQL Answer Validation'
+    },
+    leaderboard: {
+      title: 'Live Leaderboards',
+      subtitle: 'Real-time Competition Rankings & Global Hall of Fame'
+    },
+    competitions: {
+      title: 'Tournament Directory',
+      subtitle: 'Browse, Filter, and Register for College Events'
+    },
+    students: {
+      title: 'Student Portal',
+      subtitle: 'Enrolled Participants Roster & Account Registration'
+    },
+    organizer: {
+      title: 'Organizer Command Center',
+      subtitle: 'Tournament Authoring, Challenge Builder & Submission Grading'
+    },
+    history: {
+      title: 'Tournament History & Archives',
+      subtitle: 'Completed Contests, Champions Hall of Fame & Statistics'
+    }
   };
 
   // Toast Helper
@@ -26,6 +62,7 @@
     const toastTitle = document.getElementById('toast-title');
     const toastMsg = document.getElementById('toast-msg');
     const toastIcon = document.getElementById('toast-icon');
+    const toastIconWrap = document.getElementById('toast-icon-wrap');
 
     if (!toast) return;
 
@@ -34,17 +71,19 @@
     toastIcon.textContent = isError ? '⚠️' : '⚡';
 
     if (isError) {
-      toastCard.className = 'border-4 border-brand-accent p-4 bg-red-600 text-white font-primary font-bold shadow-dark flex items-center gap-3 max-w-md';
+      if (toastCard) toastCard.className = 'glass-panel border border-red-500/50 p-4 rounded-xl shadow-2xl flex items-center gap-3.5 max-w-md bg-dark-900/95 text-white';
+      if (toastIconWrap) toastIconWrap.className = 'w-10 h-10 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center font-bold text-xl flex-shrink-0';
     } else {
-      toastCard.className = 'border-4 border-brand-accent p-4 bg-brand-primary text-text-on-primary font-primary font-bold shadow-dark flex items-center gap-3 max-w-md';
+      if (toastCard) toastCard.className = 'glass-panel border border-brand-500/50 p-4 rounded-xl shadow-2xl flex items-center gap-3.5 max-w-md bg-dark-900/95 text-white';
+      if (toastIconWrap) toastIconWrap.className = 'w-10 h-10 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center font-bold text-xl flex-shrink-0';
     }
 
-    toast.classList.remove('translate-y-32', 'opacity-0', 'pointer-events-none');
+    toast.classList.remove('-translate-y-24', 'opacity-0', 'pointer-events-none');
     toast.classList.add('translate-y-0', 'opacity-100');
 
     setTimeout(() => {
       toast.classList.remove('translate-y-0', 'opacity-100');
-      toast.classList.add('translate-y-32', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('-translate-y-24', 'opacity-0', 'pointer-events-none');
     }, 4000);
   }
 
@@ -66,6 +105,71 @@
     }
   }
 
+  // Section Switching Logic
+  function switchSection(sectionId, updateHash = true) {
+    if (!SECTIONS_META[sectionId]) {
+      sectionId = 'dashboard';
+    }
+
+    AppState.currentSection = sectionId;
+
+    // 1. Hide all views and show target view
+    document.querySelectorAll('.dashboard-view').forEach(view => {
+      view.classList.remove('active');
+    });
+    const targetView = document.getElementById(`view-${sectionId}`);
+    if (targetView) {
+      targetView.classList.add('active');
+    }
+
+    // 2. Update navigation button styles
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.className = 'nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 border border-transparent';
+    });
+    const activeNavBtn = document.getElementById(`nav-btn-${sectionId}`);
+    if (activeNavBtn) {
+      activeNavBtn.className = 'nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-white bg-brand-500/15 border border-brand-500/30 shadow-sm';
+    }
+
+    // 3. Update top header text
+    const titleEl = document.getElementById('topbar-section-title');
+    const subtitleEl = document.getElementById('topbar-section-subtitle');
+    if (titleEl) titleEl.textContent = SECTIONS_META[sectionId].title;
+    if (subtitleEl) subtitleEl.textContent = SECTIONS_META[sectionId].subtitle;
+
+    // 4. Update window hash if requested
+    if (updateHash) {
+      history.replaceState(null, null, `#${sectionId}`);
+    }
+
+    // Close mobile sidebar if open
+    const sidebar = document.getElementById('app-sidebar');
+    if (sidebar && sidebar.classList.contains('mobile-open')) {
+      sidebar.classList.remove('mobile-open');
+    }
+
+    // Scroll to top of main container
+    const mainEl = document.querySelector('main');
+    if (mainEl) mainEl.scrollTop = 0;
+  }
+
+  function toggleMobileSidebar() {
+    const sidebar = document.getElementById('app-sidebar');
+    if (sidebar) {
+      sidebar.classList.toggle('hidden');
+    }
+  }
+
+  // Handle URL hash changes
+  function handleHashRoute() {
+    const hash = window.location.hash.replace('#', '').trim();
+    if (hash && SECTIONS_META[hash]) {
+      switchSection(hash, false);
+    } else {
+      switchSection('dashboard', false);
+    }
+  }
+
   // Initial Load
   async function init() {
     await loadSystemStats();
@@ -74,10 +178,14 @@
     await loadHistory();
     setupDefaultDates();
 
-    // Setup periodic refresh for leaderboard (every 8s)
+    // Check initial hash route
+    handleHashRoute();
+    window.addEventListener('hashchange', handleHashRoute);
+
+    // Periodic refresh for leaderboard (every 8s)
     if (AppState.refreshTimer) clearInterval(AppState.refreshTimer);
     AppState.refreshTimer = setInterval(() => {
-      if (!AppState.isGlobalLeaderboard && AppState.currentLeaderboardId) {
+      if (!AppState.isGlobalLeaderboard && AppState.currentLeaderboardId && AppState.currentSection === 'leaderboard') {
         refreshCurrentLeaderboard(false);
       }
     }, 8000);
@@ -104,6 +212,9 @@
       animateNumber('stat-students', d.totalStudents || 0);
       animateNumber('stat-challenges', d.totalChallenges || 0);
       animateNumber('stat-submissions', d.totalSubmissions || 0);
+
+      const navBadge = document.getElementById('nav-badge-competitions');
+      if (navBadge) navBadge.textContent = d.totalCompetitions || 0;
     }
   }
 
@@ -151,7 +262,7 @@
     const makeOptions = (includeDefault = false) => {
       let html = includeDefault ? '<option value="">-- Choose Student --</option>' : '';
       students.forEach(s => {
-        html += `<option value="${s.studentId}">${s.studentName} (${s.department} • Yr ${s.yearOfStudy})</option>`;
+        html += `<option value="${s.studentId}">${escapeHtml(s.studentName)} (${escapeHtml(s.department)} • Yr ${s.yearOfStudy})</option>`;
       });
       return html;
     };
@@ -175,27 +286,27 @@
     if (badge) badge.textContent = `${students.length} Students`;
 
     if (students.length === 0) {
-      container.innerHTML = `<p class="p-4 text-xs text-text-secondary text-center">No students registered yet. Fill out the form to register your first student.</p>`;
+      container.innerHTML = `<p class="p-6 text-xs text-slate-500 text-center">No students registered yet. Fill out the form to register your first student.</p>`;
       return;
     }
 
     container.innerHTML = students.map(s => `
-      <div class="py-3 px-2 flex items-center justify-between gap-3 hover:bg-neutral-surface1 transition-colors">
+      <div class="py-3 px-3 flex items-center justify-between gap-3 hover:bg-slate-800/40 rounded-xl transition-colors">
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 border-2 border-brand-accent bg-neutral-surface1 flex items-center justify-center font-display text-lg font-bold text-brand-primary">
+          <div class="w-9 h-9 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center font-display text-sm font-bold text-indigo-400">
             #${s.studentId}
           </div>
           <div>
-            <div class="font-primary font-bold text-sm text-text-primary flex items-center gap-2">
+            <div class="font-semibold text-xs text-white flex items-center gap-2">
               ${escapeHtml(s.studentName)}
-              ${AppState.activeStudentId == s.studentId ? '<span class="bg-brand-primary text-white text-[9px] px-1.5 py-0.2 font-bold uppercase rounded">Active</span>' : ''}
+              ${AppState.activeStudentId == s.studentId ? '<span class="bg-brand-500 text-white text-[9px] px-1.5 py-0.2 font-bold uppercase rounded">Active</span>' : ''}
             </div>
-            <div class="text-xs text-text-secondary font-mono">${escapeHtml(s.email)}</div>
+            <div class="text-[11px] text-slate-400 font-mono">${escapeHtml(s.email)}</div>
           </div>
         </div>
         <div class="text-right">
-          <div class="font-primary font-bold text-xs text-brand-tertiary">${escapeHtml(s.department)}</div>
-          <div class="text-[11px] text-text-secondary">Year ${s.yearOfStudy}</div>
+          <div class="font-medium text-xs text-cyan-400">${escapeHtml(s.department)}</div>
+          <div class="text-[11px] text-slate-500">Year ${s.yearOfStudy}</div>
         </div>
       </div>
     `).join('');
@@ -209,7 +320,8 @@
       arenaSelect.value = AppState.activeStudentId;
       loadStudentSubmissionsInArena();
     }
-    showToast('Active Student Changed', `Now acting as student #${studentId}`);
+    const student = AppState.students.find(s => s.studentId == AppState.activeStudentId);
+    showToast('Active Participant', student ? `Acting as ${student.studentName}` : `Student #${studentId} selected`);
   }
 
   // Load Competitions
@@ -221,6 +333,7 @@
 
       renderCompetitionsGrid(res.data);
       updateSpotlightCard(res.data);
+      updateDashboardQuickCompetitions(res.data);
       populateCompetitionDropdowns(res.data);
 
       if (!AppState.currentLeaderboardId && res.data.length > 0) {
@@ -249,7 +362,6 @@
 
     if (arenaSelect) {
       arenaSelect.innerHTML = `<option value="">Choose competition...</option>` + options;
-      // Auto select first active competition if none selected
       const activeSummary = summaries.find(s => s.competition.competitionStatus === 'ACTIVE') || summaries[0];
       if (activeSummary && !arenaSelect.value) {
         arenaSelect.value = activeSummary.competition.competitionId;
@@ -269,23 +381,58 @@
     if (!active) return;
 
     const c = active.competition;
-    document.getElementById('spotlight-title').textContent = c.competitionName;
-    document.getElementById('spotlight-desc').textContent = c.description || 'No description provided';
-    document.getElementById('spotlight-type').textContent = c.competitionType;
-    document.getElementById('spotlight-challenges').textContent = `${active.totalChallenges} Questions (${active.totalPoints} Pts)`;
-    document.getElementById('spotlight-participants').textContent = `${active.registeredParticipants} / ${c.maxParticipants} Enrolled`;
+    const titleEl = document.getElementById('spotlight-title');
+    const descEl = document.getElementById('spotlight-desc');
+    const typeEl = document.getElementById('spotlight-type');
+    const challengesEl = document.getElementById('spotlight-challenges');
+    const participantsEl = document.getElementById('spotlight-participants');
+
+    if (titleEl) titleEl.textContent = c.competitionName;
+    if (descEl) descEl.textContent = c.description || 'No description provided';
+    if (typeEl) typeEl.textContent = c.competitionType;
+    if (challengesEl) challengesEl.textContent = `${active.totalChallenges} Questions (${active.totalPoints} Pts)`;
+    if (participantsEl) participantsEl.textContent = `${active.registeredParticipants} / ${c.maxParticipants} Enrolled`;
 
     AppState.spotlightCompId = c.competitionId;
   }
 
+  function updateDashboardQuickCompetitions(summaries) {
+    const container = document.getElementById('dashboard-quick-comps');
+    if (!container) return;
+
+    if (summaries.length === 0) {
+      container.innerHTML = `<p class="p-4 text-xs text-slate-500">No competitions found.</p>`;
+      return;
+    }
+
+    container.innerHTML = summaries.slice(0, 3).map(s => {
+      const c = s.competition;
+      const isLive = c.competitionStatus === 'ACTIVE';
+      return `
+        <div class="glass-panel p-4 rounded-xl border border-slate-800 flex items-center justify-between gap-4 hover:border-slate-700 transition-colors">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded ${isLive ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-800 text-slate-300'} uppercase font-bold">
+                ${c.competitionStatus}
+              </span>
+              <span class="text-xs text-slate-400 font-mono">${escapeHtml(c.competitionType)}</span>
+            </div>
+            <h4 class="font-bold text-sm text-white mt-1">${escapeHtml(c.competitionName)}</h4>
+            <p class="text-xs text-slate-400 mt-0.5">${s.totalChallenges} Challenges • ${s.registeredParticipants}/${c.maxParticipants} Participants</p>
+          </div>
+          <button onclick="window.app.jumpToArena(${c.competitionId})" class="px-3.5 py-1.5 rounded-lg bg-brand-500/20 hover:bg-brand-500 text-brand-300 hover:text-white font-semibold text-xs border border-brand-500/30 transition-all flex-shrink-0">
+            Solve ➔
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+
   function enterSpotlightContest() {
     if (AppState.spotlightCompId) {
-      const arenaSelect = document.getElementById('arena-competition-select');
-      if (arenaSelect) {
-        arenaSelect.value = AppState.spotlightCompId;
-        onArenaCompetitionSelect(AppState.spotlightCompId);
-      }
-      window.location.hash = '#arena';
+      jumpToArena(AppState.spotlightCompId);
+    } else {
+      switchSection('arena');
     }
   }
 
@@ -294,7 +441,9 @@
       const lbSelect = document.getElementById('leaderboard-competition-select');
       if (lbSelect) lbSelect.value = AppState.spotlightCompId;
       loadLeaderboard(AppState.spotlightCompId);
-      window.location.hash = '#leaderboard';
+      switchSection('leaderboard');
+    } else {
+      switchSection('leaderboard');
     }
   }
 
@@ -302,9 +451,9 @@
     AppState.currentFilter = filter;
     document.querySelectorAll('.comp-filter-btn').forEach(btn => {
       if (btn.dataset.filter === filter) {
-        btn.className = 'comp-filter-btn brutalist-btn bg-brand-accent text-text-on-primary px-4 py-2 text-xs';
+        btn.className = 'comp-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-500 text-white transition-all shadow-sm';
       } else {
-        btn.className = 'comp-filter-btn brutalist-btn bg-neutral-surface text-text-primary px-4 py-2 text-xs hover:bg-neutral-surface1';
+        btn.className = 'comp-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-dark-850 text-slate-300 hover:text-white transition-all';
       }
     });
 
@@ -322,9 +471,9 @@
 
     if (filtered.length === 0) {
       container.innerHTML = `
-        <div class="col-span-full border-4 border-brand-accent bg-neutral-surface p-12 text-center shadow-subtle">
-          <div class="font-display text-4xl text-brand-primary mb-2">NO COMPETITIONS FOUND</div>
-          <p class="text-sm text-text-secondary">No contests match the selected filter. Switch tabs or host a new one in the Organizer Console.</p>
+        <div class="col-span-full glass-panel p-12 text-center rounded-2xl border border-slate-800">
+          <div class="font-display text-2xl text-brand-400 mb-2">No Tournaments Found</div>
+          <p class="text-xs text-slate-400">No contests match the selected filter. Switch tabs or host a new one in the Organizer Hub.</p>
         </div>
       `;
       return;
@@ -336,81 +485,81 @@
 
       let statusBadge = '';
       if (c.competitionStatus === 'ACTIVE') {
-        statusBadge = '<span class="bg-emerald-600 text-white font-primary font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-white pulse-dot"></span>ACTIVE NOW</span>';
+        statusBadge = '<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span>ACTIVE NOW</span>';
       } else if (c.competitionStatus === 'UPCOMING') {
-        statusBadge = '<span class="bg-amber-600 text-white font-primary font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">⏳ UPCOMING</span>';
+        statusBadge = '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full">⏳ UPCOMING</span>';
       } else {
-        statusBadge = '<span class="bg-neutral-800 text-white font-primary font-bold text-[10px] px-2.5 py-0.5 uppercase tracking-wider">🏁 COMPLETED</span>';
+        statusBadge = '<span class="bg-slate-800 text-slate-400 border border-slate-700 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full">🏁 COMPLETED</span>';
       }
 
       return `
-        <div class="border-4 border-brand-accent bg-neutral-surface p-6 shadow-dark hover:shadow-hover transition-all flex flex-col justify-between">
+        <div class="glass-panel-interactive p-6 rounded-2xl flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between gap-2 mb-3">
-              <span class="font-primary font-bold text-[11px] text-brand-primary uppercase tracking-wide border-2 border-brand-primary px-2 py-0.5">
+              <span class="text-[11px] font-mono font-bold text-brand-400 uppercase tracking-wide border border-brand-500/30 px-2.5 py-0.5 rounded-md bg-brand-500/10">
                 ${escapeHtml(c.competitionType)}
               </span>
               ${statusBadge}
             </div>
 
-            <h3 class="font-display text-2xl font-bold text-brand-accent mb-2 leading-tight">
+            <h3 class="font-display text-xl font-bold text-white mb-2 leading-snug">
               ${escapeHtml(c.competitionName)}
             </h3>
 
-            <p class="text-xs text-text-secondary mb-4 line-clamp-2 leading-relaxed">
+            <p class="text-xs text-slate-300 mb-4 line-clamp-2 leading-relaxed">
               ${escapeHtml(c.description || 'No description provided')}
             </p>
 
             <!-- Metadata Box -->
-            <div class="space-y-2 bg-neutral-surface1 border-2 border-brand-accent p-3 mb-4 text-xs font-primary">
+            <div class="space-y-1.5 bg-dark-850/80 border border-slate-800/80 p-3 rounded-xl mb-4 text-xs font-mono">
               <div class="flex justify-between">
-                <span class="text-text-secondary">Start:</span>
-                <span class="font-bold text-text-primary">${formatDateTime(c.startTime)}</span>
+                <span class="text-slate-400">Start:</span>
+                <span class="text-white font-medium">${formatDateTime(c.startTime)}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-text-secondary">End:</span>
-                <span class="font-bold text-text-primary">${formatDateTime(c.endTime)}</span>
+                <span class="text-slate-400">End:</span>
+                <span class="text-white font-medium">${formatDateTime(c.endTime)}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-text-secondary">Questions:</span>
-                <span class="font-bold text-brand-tertiary">${s.totalChallenges} Questions (${s.totalPoints} Pts)</span>
+                <span class="text-slate-400">Challenges:</span>
+                <span class="text-cyan-400 font-semibold">${s.totalChallenges} Questions (${s.totalPoints} Pts)</span>
               </div>
             </div>
 
             <!-- Participant Capacity Meter -->
             <div class="mb-4">
-              <div class="flex justify-between text-[11px] font-primary font-bold mb-1">
-                <span>Registration Limit</span>
-                <span class="${s.isFull ? 'text-red-600 font-extrabold' : 'text-brand-accent'}">
+              <div class="flex justify-between text-[11px] font-mono mb-1">
+                <span class="text-slate-400">Enrolled Capacity</span>
+                <span class="${s.isFull ? 'text-red-400 font-bold' : 'text-slate-200'}">
                   ${s.registeredParticipants} / ${c.maxParticipants} (${pct}%)
                 </span>
               </div>
-              <div class="w-full bg-neutral-border h-2.5 border-2 border-brand-accent overflow-hidden">
-                <div class="h-full ${s.isFull ? 'bg-red-500' : 'bg-brand-primary'}" style="width: ${pct}%"></div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden border border-slate-700">
+                <div class="h-full ${s.isFull ? 'bg-red-500' : 'bg-gradient-to-r from-brand-500 to-amber-500'}" style="width: ${pct}%"></div>
               </div>
             </div>
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex flex-wrap gap-2 pt-3 border-t-2 border-neutral-border">
+          <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-800">
             ${c.competitionStatus === 'ACTIVE' ? `
-              <button onclick="window.app.jumpToArena(${c.competitionId})" class="brutalist-btn bg-brand-primary text-text-on-primary py-2 px-3 text-xs flex-1 text-center hover:bg-brand-secondary">
-                ⚡ Enter Arena
+              <button onclick="window.app.jumpToArena(${c.competitionId})" class="flex-1 py-2 px-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-xs text-center transition-colors shadow-sm">
+                ⚡ Solve Arena
               </button>
             ` : ''}
 
             ${s.isRegistrationOpen ? `
-              <button onclick="window.app.openRegistrationModal(${c.competitionId})" class="brutalist-btn bg-neutral-surface text-brand-accent py-2 px-3 text-xs hover:bg-brand-secondary hover:text-white">
+              <button onclick="window.app.openRegistrationModal(${c.competitionId})" class="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs border border-slate-700 transition-colors">
                 + Register
               </button>
             ` : `
-              <span class="text-[11px] text-text-secondary italic self-center">
-                ${s.isFull ? 'Capacity Full' : 'Registration Closed'}
+              <span class="text-[11px] text-slate-500 italic py-1">
+                ${s.isFull ? 'Capacity Full' : 'Closed'}
               </span>
             `}
 
-            <button onclick="window.app.loadLeaderboard(${c.competitionId}); window.location.hash='#leaderboard';" class="brutalist-btn bg-neutral-surface1 text-brand-tertiary py-2 px-3 text-xs hover:bg-neutral-surface">
-              Leaderboard 🏆
+            <button onclick="window.app.loadLeaderboard(${c.competitionId}); window.app.switchSection('leaderboard');" class="py-2 px-3 rounded-xl bg-dark-850 hover:bg-slate-800 text-amber-400 font-semibold text-xs border border-amber-500/20 transition-colors" title="View Standings">
+              🏆 Standings
             </button>
           </div>
         </div>
@@ -439,58 +588,57 @@
   async function confirmRegistration() {
     const studentSelect = document.getElementById('modal-student-select');
     const studentId = studentSelect ? studentSelect.value : null;
+    const compId = AppState.selectedRegCompId;
 
-    if (!studentId) {
-      showToast('Validation Error', 'Please choose a student to register.', true);
+    if (!studentId || !compId) {
+      showToast('Selection Missing', 'Please select a student to register.', true);
       return;
     }
-    if (!AppState.selectedRegCompId) return;
 
     const res = await api('/registrations', {
       method: 'POST',
       body: JSON.stringify({
-        competitionId: AppState.selectedRegCompId,
+        competitionId: compId,
         studentId: parseInt(studentId)
       })
     });
 
     if (res.success) {
-      showToast('Registration Confirmed!', res.message || 'You are registered for the competition.');
+      showToast('Registration Confirmed! 🎉', `Student enrolled in tournament.`);
       closeRegistrationModal();
       await loadCompetitions();
       await loadSystemStats();
     } else {
-      showToast('Registration Denied', res.message || 'Could not complete registration.', true);
+      showToast('Enrollment Failed', res.message || 'Error completing registration', true);
     }
   }
 
-  // Live Leaderboard
+  // Leaderboard Logic
   async function loadLeaderboard(competitionId) {
     AppState.isGlobalLeaderboard = false;
     AppState.currentLeaderboardId = parseInt(competitionId);
 
-    const btnGlobal = document.getElementById('btn-global-standings');
-    if (btnGlobal) btnGlobal.className = 'brutalist-btn bg-neutral-surface text-text-primary px-4 py-2 text-xs hover:bg-neutral-surface1';
+    const compSelect = document.getElementById('leaderboard-competition-select');
+    if (compSelect) compSelect.value = competitionId;
 
-    const select = document.getElementById('leaderboard-competition-select');
-    if (select && select.value != competitionId) select.value = competitionId;
+    const globalBtn = document.getElementById('btn-global-standings');
+    if (globalBtn) globalBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-dark-850 hover:bg-slate-800 text-amber-400 border border-amber-500/30 flex items-center gap-1.5 transition-colors';
 
+    const comp = AppState.competitions.find(c => c.competitionId == competitionId);
     const res = await api(`/leaderboard/competition/${competitionId}`);
     if (res.success && res.data) {
-      renderLeaderboard(res.data.leaderboard || [], res.data.competition);
-    } else {
-      showToast('Leaderboard Error', res.message || 'Failed to load leaderboard', true);
+      renderLeaderboard(res.data, comp);
     }
   }
 
   async function toggleGlobalLeaderboard() {
     AppState.isGlobalLeaderboard = true;
-    const btnGlobal = document.getElementById('btn-global-standings');
-    if (btnGlobal) btnGlobal.className = 'brutalist-btn bg-brand-tertiary text-text-on-primary px-4 py-2 text-xs shadow-dark';
+    const globalBtn = document.getElementById('btn-global-standings');
+    if (globalBtn) globalBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-slate-950 font-bold border border-amber-400 flex items-center gap-1.5 shadow-glow-orange';
 
     const res = await api('/leaderboard/global');
     if (res.success && res.data) {
-      renderLeaderboard(res.data, { competitionName: 'College-Wide Hall of Fame', competitionStatus: 'GLOBAL' });
+      renderLeaderboard(res.data, { competitionName: 'Global Campus Hall of Fame' });
     }
   }
 
@@ -510,7 +658,7 @@
     const tbody = document.getElementById('leaderboard-tbody');
 
     if (tableTitle && competition) {
-      tableTitle.textContent = `${competition.competitionName} • Live Rankings`;
+      tableTitle.textContent = `${competition.competitionName} • Live Standings`;
     }
     if (countBadge) countBadge.textContent = `${entries.length} Ranked`;
 
@@ -518,45 +666,45 @@
     if (podiumContainer) {
       if (entries.length === 0) {
         podiumContainer.innerHTML = `
-          <div class="col-span-full bg-neutral-surface border-3 border-brand-accent p-6 text-center shadow-subtle">
-            <span class="font-display text-2xl text-brand-primary">NO SUBMISSIONS YET</span>
-            <p class="text-xs text-text-secondary mt-1">Be the first to submit a solution in the Solve Arena to claim the #1 spot!</p>
+          <div class="col-span-full glass-panel p-8 text-center rounded-2xl border border-slate-800">
+            <span class="font-display text-xl text-brand-400 font-bold block mb-1">NO SUBMISSIONS YET</span>
+            <p class="text-xs text-slate-400">Be the first to submit a solution in the Solve Arena to claim the #1 spot!</p>
           </div>
         `;
       } else {
         const top3 = entries.slice(0, 3);
         const rankColors = [
-          { border: 'border-amber-500', bg: 'bg-amber-400', label: '1ST PLACE • GOLD' },
-          { border: 'border-slate-400', bg: 'bg-slate-300', label: '2ND PLACE • SILVER' },
-          { border: 'border-amber-700', bg: 'bg-amber-600', label: '3RD PLACE • BRONZE' }
+          { border: 'border-amber-500/50', badge: 'bg-amber-500/20 text-amber-300 border-amber-500/40', medal: '🥇 1ST PLACE • GOLD' },
+          { border: 'border-slate-400/50', badge: 'bg-slate-400/20 text-slate-300 border-slate-400/40', medal: '🥈 2ND PLACE • SILVER' },
+          { border: 'border-amber-700/50', badge: 'bg-amber-700/20 text-amber-400 border-amber-700/40', medal: '🥉 3RD PLACE • BRONZE' }
         ];
 
         podiumContainer.innerHTML = top3.map((e, idx) => `
-          <div class="border-4 border-brand-accent bg-neutral-surface p-6 shadow-dark relative">
+          <div class="glass-panel p-6 rounded-2xl border ${rankColors[idx].border} relative overflow-hidden shadow-card">
             <div class="flex items-center justify-between mb-3">
-              <span class="font-primary font-bold text-[10px] tracking-wider uppercase px-2 py-0.5 ${rankColors[idx].bg} text-brand-accent border border-brand-accent">
-                ${rankColors[idx].label}
+              <span class="font-mono font-bold text-[10px] tracking-wider uppercase px-2.5 py-0.5 rounded-full border ${rankColors[idx].badge}">
+                ${rankColors[idx].medal}
               </span>
-              <span class="font-display text-4xl font-bold text-brand-accent">
-                0${e.rank}
+              <span class="font-display text-3xl font-bold text-slate-400">
+                #0${e.rank}
               </span>
             </div>
 
-            <div class="font-display text-2xl font-bold text-brand-accent truncate mb-1">
+            <div class="font-display text-2xl font-bold text-white truncate mb-1">
               ${escapeHtml(e.studentName)}
             </div>
-            <div class="text-xs text-text-secondary font-mono mb-4 truncate">
+            <div class="text-xs text-slate-400 font-mono mb-4 truncate">
               ${escapeHtml(e.department)} • Yr ${e.yearOfStudy}
             </div>
 
-            <div class="flex items-center justify-between border-t-2 border-neutral-border pt-3">
+            <div class="flex items-center justify-between border-t border-slate-800 pt-3">
               <div>
-                <span class="text-[10px] uppercase font-bold text-text-secondary block">Total Score</span>
-                <span class="font-display text-3xl font-bold text-brand-primary">${e.totalScore} <span class="text-xs font-primary">PTS</span></span>
+                <span class="text-[10px] uppercase font-mono text-slate-400 block">Total Score</span>
+                <span class="font-display text-3xl font-bold text-brand-400">${e.totalScore} <span class="text-xs font-mono text-slate-400">PTS</span></span>
               </div>
               <div class="text-right">
-                <span class="text-[10px] uppercase font-bold text-text-secondary block">Solved</span>
-                <span class="font-primary font-bold text-sm text-brand-tertiary">${e.challengesSolved} Solved</span>
+                <span class="text-[10px] uppercase font-mono text-slate-400 block">Problems</span>
+                <span class="font-semibold text-xs text-cyan-400">${e.challengesSolved} Solved</span>
               </div>
             </div>
           </div>
@@ -569,7 +717,7 @@
       if (entries.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="6" class="text-center py-8 text-text-secondary font-bold">
+            <td colspan="6" class="text-center py-8 text-slate-500 font-medium">
               No registered participants have submitted answers yet.
             </td>
           </tr>
@@ -578,28 +726,28 @@
       }
 
       tbody.innerHTML = entries.map(e => `
-        <tr class="hover:bg-neutral-surface1 transition-colors">
-          <td class="py-3 px-4 font-display text-xl font-bold text-brand-accent">
+        <tr class="hover:bg-slate-800/40 transition-colors">
+          <td class="py-3 px-4 font-display text-base font-bold text-white">
             #${e.rank}
             ${e.rank === 1 ? '🥇' : (e.rank === 2 ? '🥈' : (e.rank === 3 ? '🥉' : ''))}
           </td>
           <td class="py-3 px-4">
-            <div class="font-bold text-text-primary text-sm">${escapeHtml(e.studentName)}</div>
-            <div class="text-[11px] text-text-secondary font-mono">${escapeHtml(e.email)}</div>
+            <div class="font-semibold text-white text-xs">${escapeHtml(e.studentName)}</div>
+            <div class="text-[11px] text-slate-400 font-mono">${escapeHtml(e.email)}</div>
           </td>
           <td class="py-3 px-4 text-xs">
-            <span class="font-semibold text-brand-tertiary">${escapeHtml(e.department)}</span>
-            <span class="text-text-secondary block">Year ${e.yearOfStudy}</span>
+            <span class="font-medium text-cyan-400">${escapeHtml(e.department)}</span>
+            <span class="text-slate-500 block font-mono text-[11px]">Year ${e.yearOfStudy}</span>
           </td>
-          <td class="py-3 px-4 text-center font-bold text-xs">
-            <span class="bg-neutral-surface1 border border-brand-accent px-2 py-0.5">
+          <td class="py-3 px-4 text-center font-mono font-bold text-xs">
+            <span class="bg-dark-850 border border-slate-700 px-2.5 py-0.5 rounded text-slate-200">
               ${e.challengesSolved}
             </span>
           </td>
-          <td class="py-3 px-4 text-right font-display text-2xl font-bold text-brand-primary">
+          <td class="py-3 px-4 text-right font-display text-xl font-bold text-brand-400">
             ${e.totalScore}
           </td>
-          <td class="py-3 px-4 text-right text-xs text-text-secondary font-mono">
+          <td class="py-3 px-4 text-right text-xs text-slate-400 font-mono">
             ${e.lastSubmissionTime ? formatDateTime(e.lastSubmissionTime) : '—'}
           </td>
         </tr>
@@ -641,15 +789,19 @@
     if (!ch) return;
 
     const card = document.getElementById('arena-challenge-card');
-    document.getElementById('arena-card-badge').textContent = `${ch.points} Points`;
-    document.getElementById('arena-card-title').textContent = ch.challengeTitle;
-    document.getElementById('arena-card-desc').textContent = ch.questionDescription;
-    card.classList.remove('hidden');
+    const badge = document.getElementById('arena-card-badge');
+    const title = document.getElementById('arena-card-title');
+    const desc = document.getElementById('arena-card-desc');
+
+    if (badge) badge.textContent = `${ch.points} Points`;
+    if (title) title.textContent = ch.challengeTitle;
+    if (desc) desc.textContent = ch.questionDescription;
+    if (card) card.classList.remove('hidden');
   }
 
   async function loadStudentSubmissionsInArena() {
     const studentSelect = document.getElementById('arena-student-select');
-    const studentId = studentSelect ? studentSelect.value : AppState.activeStudentId;
+    const studentId = studentSelect && studentSelect.value ? studentSelect.value : AppState.activeStudentId;
     const compId = AppState.currentArenaCompId;
 
     const container = document.getElementById('student-recent-submissions');
@@ -658,21 +810,21 @@
     const res = await api(`/submissions/student/${studentId}/competition/${compId}`);
     if (res.success && res.data && res.data.length > 0) {
       container.innerHTML = res.data.slice(0, 5).map(sub => `
-        <div class="p-2 border border-brand-accent bg-neutral-surface flex items-center justify-between text-xs">
+        <div class="p-2.5 rounded-lg border border-slate-800 bg-dark-850 flex items-center justify-between text-xs">
           <div>
-            <span class="font-bold text-brand-accent">${escapeHtml(sub.challengeTitle || 'Challenge')}</span>
-            <span class="text-text-secondary block font-mono text-[11px] truncate max-w-xs">Ans: "${escapeHtml(sub.submittedAnswer)}"</span>
+            <span class="font-semibold text-white">${escapeHtml(sub.challengeTitle || 'Challenge')}</span>
+            <span class="text-slate-400 block font-mono text-[11px] truncate max-w-xs">Ans: "${escapeHtml(sub.submittedAnswer)}"</span>
           </div>
           <div class="text-right">
-            <span class="${sub.score > 0 ? 'text-emerald-700 font-bold' : 'text-red-600 font-bold'}">
+            <span class="${sub.score > 0 ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">
               ${sub.score} / ${sub.maxPoints || 0} Pts
             </span>
-            <span class="text-[10px] text-text-secondary block font-mono">${formatDateTime(sub.submissionTime)}</span>
+            <span class="text-[10px] text-slate-500 block font-mono">${formatDateTime(sub.submissionTime)}</span>
           </div>
         </div>
       `).join('');
     } else {
-      container.innerHTML = `<p class="text-xs text-text-secondary italic">No submissions by this student for this contest yet.</p>`;
+      container.innerHTML = `<p class="text-xs text-slate-500 italic py-2">No submissions by this student for this contest yet.</p>`;
     }
   }
 
@@ -687,7 +839,7 @@
 
     const compId = compSelect ? compSelect.value : null;
     const chId = chSelect ? chSelect.value : null;
-    const stId = stSelect ? stSelect.value : AppState.activeStudentId;
+    const stId = stSelect && stSelect.value ? stSelect.value : AppState.activeStudentId;
     const answer = answerInput ? answerInput.value.trim() : '';
 
     if (!compId || !chId || !stId || !answer) {
@@ -696,8 +848,10 @@
     }
 
     const btn = document.getElementById('btn-submit-answer');
-    btn.disabled = true;
-    btn.innerHTML = `<span>⏳</span> Evaluating...`;
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<span>⏳</span> Evaluating...`;
+    }
 
     const res = await api('/submissions', {
       method: 'POST',
@@ -708,45 +862,43 @@
       })
     });
 
-    btn.disabled = false;
-    btn.innerHTML = `<span>⚡</span> Submit & Evaluate`;
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<span>⚡</span> Submit & Evaluate`;
+    }
 
-    resultBox.classList.remove('hidden');
+    if (resultBox) resultBox.classList.remove('hidden');
 
     if (res.success && res.data) {
       const sub = res.data;
       const isCorrect = sub.score > 0;
 
       if (isCorrect) {
-        showToast('CORRECT ANSWER! 🎉', `+${sub.score} Points added to student's score.`);
-        resultBox.innerHTML = `
-          <div class="border-3 border-emerald-700 bg-emerald-50 p-4 font-primary text-emerald-900 shadow-subtle">
-            <div class="font-bold text-sm uppercase flex items-center gap-2">
-              <span class="text-xl">✅</span> EVALUATION SUCCESSFUL — CORRECT ANSWER!
+        showToast('CORRECT ANSWER! 🎉', `+${sub.score} Points added to score.`);
+        if (resultBox) {
+          resultBox.innerHTML = `
+            <div class="p-4 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-200 text-xs">
+              <div class="font-bold flex items-center gap-2 text-sm text-emerald-300">
+                <span>✅</span> CORRECT ANSWER!
+              </div>
+              <div class="mt-1">Awarded: <strong>+${sub.score} Points</strong> • Status: <strong>${sub.evaluationStatus}</strong></div>
+              <div class="text-[11px] text-emerald-400 mt-2 font-mono">Live leaderboard updated in MySQL.</div>
             </div>
-            <div class="text-xs mt-1">
-              Awarded: <strong>+${sub.score} Points</strong> • Status: <strong>${sub.evaluationStatus}</strong>
-            </div>
-            <div class="text-[11px] text-emerald-700 mt-2 font-mono">
-              Live leaderboard updated immediately in MySQL database.
-            </div>
-          </div>
-        `;
+          `;
+        }
       } else {
         showToast('INCORRECT ANSWER', '0 points awarded. Try again!', true);
-        resultBox.innerHTML = `
-          <div class="border-3 border-amber-600 bg-amber-50 p-4 font-primary text-amber-900 shadow-subtle">
-            <div class="font-bold text-sm uppercase flex items-center gap-2">
-              <span class="text-xl">❌</span> EVALUATED — INCORRECT ANSWER
+        if (resultBox) {
+          resultBox.innerHTML = `
+            <div class="p-4 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-200 text-xs">
+              <div class="font-bold flex items-center gap-2 text-sm text-amber-300">
+                <span>❌</span> INCORRECT ANSWER
+              </div>
+              <div class="mt-1">Score: <strong>0 Points</strong> • Status: <strong>${sub.evaluationStatus}</strong></div>
+              <div class="text-[11px] text-amber-400 mt-2 font-mono">The answer did not match the expected key.</div>
             </div>
-            <div class="text-xs mt-1">
-              Score: <strong>0 Points</strong> • Status: <strong>${sub.evaluationStatus}</strong>
-            </div>
-            <div class="text-[11px] text-amber-700 mt-2 font-mono">
-              The submitted answer did not match the expected solution for this challenge.
-            </div>
-          </div>
-        `;
+          `;
+        }
       }
 
       await loadSystemStats();
@@ -756,19 +908,17 @@
       }
     } else {
       showToast('Submission Rejected', res.message || 'Error processing submission', true);
-      resultBox.innerHTML = `
-        <div class="border-3 border-red-600 bg-red-50 p-4 font-primary text-red-900 shadow-subtle">
-          <div class="font-bold text-sm uppercase flex items-center gap-2">
-            <span class="text-xl">⛔</span> VALIDATION GUARD REJECTED SUBMISSION
+      if (resultBox) {
+        resultBox.innerHTML = `
+          <div class="p-4 rounded-xl border border-rose-500/40 bg-rose-500/10 text-rose-200 text-xs">
+            <div class="font-bold flex items-center gap-2 text-sm text-rose-300">
+              <span>⛔</span> VALIDATION GUARD REJECTED
+            </div>
+            <div class="mt-1 font-semibold">${escapeHtml(res.message || 'Validation failed')}</div>
+            <div class="text-[11px] text-rose-400 mt-2 font-mono">Ensure the student is enrolled and competition is ACTIVE.</div>
           </div>
-          <div class="text-xs mt-1 font-semibold">
-            ${escapeHtml(res.message || 'Validation failed')}
-          </div>
-          <div class="text-[11px] text-red-700 mt-2 font-mono">
-            Ensure the student is registered for this competition, and the competition is currently ACTIVE.
-          </div>
-        </div>
-      `;
+        `;
+      }
     }
   }
 
@@ -785,7 +935,7 @@
       select.value = competitionId;
       onArenaCompetitionSelect(competitionId);
     }
-    window.location.hash = '#arena';
+    switchSection('arena');
   }
 
   // Student Registration Form
@@ -825,10 +975,10 @@
       const btn = document.getElementById(`tab-btn-${t}`);
       if (t === tabName) {
         if (panel) panel.classList.remove('hidden');
-        if (btn) btn.className = 'brutalist-btn bg-brand-accent text-text-on-primary px-4 py-2 text-xs';
+        if (btn) btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-brand-500 text-white transition-all shadow-sm';
       } else {
         if (panel) panel.classList.add('hidden');
-        if (btn) btn.className = 'brutalist-btn bg-neutral-surface text-text-primary px-4 py-2 text-xs hover:bg-neutral-surface1';
+        if (btn) btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-dark-850 text-slate-300 hover:text-white transition-all';
       }
     });
   }
@@ -904,31 +1054,31 @@
     const tbody = document.getElementById('review-submissions-tbody');
     if (!tbody || !competitionId) return;
 
-    tbody.innerHTML = `<tr><td colspan="7" class="py-4 text-center text-text-secondary">Loading submissions...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-500">Loading submissions...</td></tr>`;
 
     const res = await api(`/submissions/competition/${competitionId}`);
     if (res.success && res.data) {
       if (res.data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-4 text-center text-text-secondary">No submissions recorded for this contest.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-500">No submissions recorded for this contest.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = res.data.map(sub => `
-        <tr class="hover:bg-neutral-surface1 transition-colors">
-          <td class="py-2.5 px-4 font-mono font-bold">#${sub.submissionId}</td>
-          <td class="py-2.5 px-4 font-semibold text-text-primary">${escapeHtml(sub.studentName || 'Student #' + sub.studentId)}</td>
-          <td class="py-2.5 px-4">${escapeHtml(sub.challengeTitle || 'Challenge #' + sub.challengeId)}</td>
-          <td class="py-2.5 px-4 font-mono text-[11px] max-w-xs truncate">${escapeHtml(sub.submittedAnswer)}</td>
-          <td class="py-2.5 px-4 font-bold ${sub.score > 0 ? 'text-emerald-700' : 'text-red-600'}">
+        <tr class="hover:bg-slate-800/40 transition-colors">
+          <td class="py-2.5 px-4 font-mono font-bold text-white">#${sub.submissionId}</td>
+          <td class="py-2.5 px-4 font-semibold text-white">${escapeHtml(sub.studentName || 'Student #' + sub.studentId)}</td>
+          <td class="py-2.5 px-4 text-slate-300">${escapeHtml(sub.challengeTitle || 'Challenge #' + sub.challengeId)}</td>
+          <td class="py-2.5 px-4 font-mono text-[11px] text-slate-400 max-w-xs truncate">${escapeHtml(sub.submittedAnswer)}</td>
+          <td class="py-2.5 px-4 font-bold ${sub.score > 0 ? 'text-emerald-400' : 'text-rose-400'}">
             ${sub.score} / ${sub.maxPoints || 0}
           </td>
           <td class="py-2.5 px-4">
-            <span class="px-2 py-0.5 text-[10px] font-bold ${sub.evaluationStatus === 'EVALUATED' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold ${sub.evaluationStatus === 'EVALUATED' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}">
               ${sub.evaluationStatus}
             </span>
           </td>
           <td class="py-2.5 px-4 text-right">
-            <button onclick="window.app.openGradingModal(${sub.submissionId}, ${sub.score}, '${sub.evaluationStatus}')" class="brutalist-btn bg-neutral-surface text-brand-accent px-2.5 py-1 text-[11px] hover:bg-brand-primary hover:text-white">
+            <button onclick="window.app.openGradingModal(${sub.submissionId}, ${sub.score}, '${sub.evaluationStatus}')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-brand-500 hover:text-white text-slate-200 text-xs font-semibold transition-colors">
               Grade ✎
             </button>
           </td>
@@ -978,9 +1128,9 @@
     if (res.success && res.data) {
       if (res.data.length === 0) {
         container.innerHTML = `
-          <div class="border-3 border-brand-accent bg-neutral-surface p-8 text-center shadow-subtle">
-            <div class="font-display text-2xl text-brand-primary">NO ARCHIVED COMPETITIONS YET</div>
-            <p class="text-xs text-text-secondary mt-1">When competitions reach their end time or are marked COMPLETED, their final results and podiums appear here.</p>
+          <div class="glass-panel p-8 text-center rounded-2xl border border-slate-800">
+            <div class="font-display text-xl text-brand-400 font-bold mb-1">NO ARCHIVED COMPETITIONS YET</div>
+            <p class="text-xs text-slate-400">When competitions conclude or reach COMPLETED status, final podiums and score summaries will be preserved here.</p>
           </div>
         `;
         return;
@@ -993,27 +1143,27 @@
         const thirdPlace = h.thirdPlace;
 
         return `
-          <div class="border-4 border-brand-accent bg-neutral-surface p-6 sm:p-8 shadow-dark">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-neutral-border pb-4 mb-6">
+          <div class="glass-panel p-6 sm:p-8 rounded-2xl border border-slate-800 shadow-card">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4 mb-6">
               <div>
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="bg-neutral-800 text-white font-primary font-bold text-[10px] px-2 py-0.5 uppercase tracking-wider">
+                  <span class="bg-slate-800 text-slate-400 font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase">
                     COMPLETED CONTEST
                   </span>
-                  <span class="text-xs font-primary font-semibold text-brand-tertiary">
+                  <span class="text-xs font-mono text-cyan-400">
                     ${escapeHtml(c.competitionType)}
                   </span>
                 </div>
-                <h3 class="font-display text-3xl font-bold text-brand-accent">
+                <h3 class="font-display text-2xl font-bold text-white">
                   ${escapeHtml(c.competitionName)}
                 </h3>
-                <p class="text-xs text-text-secondary mt-0.5">
+                <p class="text-xs text-slate-400 mt-0.5">
                   Concluded: ${formatDateTime(c.endTime)} • ${h.totalParticipants} Participants • ${h.totalSubmissions} Submissions
                 </p>
               </div>
 
               <div>
-                <button onclick="window.app.loadLeaderboard(${c.competitionId}); window.location.hash='#leaderboard';" class="brutalist-btn bg-brand-primary text-text-on-primary px-4 py-2.5 text-xs hover:bg-brand-secondary">
+                <button onclick="window.app.loadLeaderboard(${c.competitionId}); window.app.switchSection('leaderboard');" class="px-4 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-xs tracking-wider uppercase transition-colors shadow-sm">
                   View Full Standings 🏆
                 </button>
               </div>
@@ -1022,40 +1172,40 @@
             <!-- Hall of Fame Podium Display -->
             <div class="grid sm:grid-cols-3 gap-4">
               <!-- Winner Gold -->
-              <div class="border-3 border-amber-500 bg-amber-50/50 p-4 shadow-subtle">
-                <div class="font-primary font-bold text-[10px] uppercase tracking-wider text-amber-800 mb-1 flex items-center gap-1">
+              <div class="p-4 rounded-xl border border-amber-500/40 bg-amber-500/10 shadow-sm">
+                <div class="font-mono font-bold text-[10px] uppercase tracking-wider text-amber-300 mb-1 flex items-center gap-1">
                   <span>🥇</span> CHAMPION / GOLD
                 </div>
-                <div class="font-display text-2xl font-bold text-brand-accent truncate">
+                <div class="font-display text-xl font-bold text-white truncate">
                   ${winner ? escapeHtml(winner.studentName) : 'No Submissions'}
                 </div>
-                <div class="text-xs text-text-secondary">
+                <div class="text-xs text-slate-400 font-mono mt-0.5">
                   ${winner ? `${escapeHtml(winner.department)} • ${winner.totalScore} Pts` : '—'}
                 </div>
               </div>
 
               <!-- Runner up Silver -->
-              <div class="border-3 border-slate-400 bg-slate-50 p-4 shadow-subtle">
-                <div class="font-primary font-bold text-[10px] uppercase tracking-wider text-slate-700 mb-1 flex items-center gap-1">
+              <div class="p-4 rounded-xl border border-slate-400/40 bg-slate-400/10 shadow-sm">
+                <div class="font-mono font-bold text-[10px] uppercase tracking-wider text-slate-300 mb-1 flex items-center gap-1">
                   <span>🥈</span> 2ND PLACE / SILVER
                 </div>
-                <div class="font-display text-2xl font-bold text-brand-accent truncate">
+                <div class="font-display text-xl font-bold text-white truncate">
                   ${runnerUp ? escapeHtml(runnerUp.studentName) : '—'}
                 </div>
-                <div class="text-xs text-text-secondary">
+                <div class="text-xs text-slate-400 font-mono mt-0.5">
                   ${runnerUp ? `${escapeHtml(runnerUp.department)} • ${runnerUp.totalScore} Pts` : '—'}
                 </div>
               </div>
 
               <!-- Third place Bronze -->
-              <div class="border-3 border-amber-700 bg-orange-50/40 p-4 shadow-subtle">
-                <div class="font-primary font-bold text-[10px] uppercase tracking-wider text-amber-900 mb-1 flex items-center gap-1">
+              <div class="p-4 rounded-xl border border-amber-700/40 bg-amber-700/10 shadow-sm">
+                <div class="font-mono font-bold text-[10px] uppercase tracking-wider text-amber-400 mb-1 flex items-center gap-1">
                   <span>🥉</span> 3RD PLACE / BRONZE
                 </div>
-                <div class="font-display text-2xl font-bold text-brand-accent truncate">
+                <div class="font-display text-xl font-bold text-white truncate">
                   ${thirdPlace ? escapeHtml(thirdPlace.studentName) : '—'}
                 </div>
-                <div class="text-xs text-text-secondary">
+                <div class="text-xs text-slate-400 font-mono mt-0.5">
                   ${thirdPlace ? `${escapeHtml(thirdPlace.department)} • ${thirdPlace.totalScore} Pts` : '—'}
                 </div>
               </div>
@@ -1084,7 +1234,7 @@
     if (!str) return '';
     return String(str)
       .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
+      .replace(/&/g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
@@ -1108,6 +1258,8 @@
   // Export functions to window.app for HTML callbacks
   window.app = {
     init,
+    switchSection,
+    toggleMobileSidebar,
     loadSystemStats,
     loadStudents,
     loadCompetitions,

@@ -1,1017 +1,1061 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Campus Challenge Arena • College Competition & Leaderboard System</title>
+  <title>Campus Challenge Arena • Modern Competition & Leaderboard Dashboard</title>
 
-  <link href="https://fonts.googleapis.com" rel="preconnect">
-  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-    
-    body {
-      position: relative;
-      background-color: #FFFBF7;
-      color: #1A1423;
-      font-family: 'Inter', sans-serif;
-    }
-    
-    /* Brutalist dotted background */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: radial-gradient(circle, #FF6B35 1px, transparent 1px);
-      background-size: 24px 24px;
-      z-index: -1;
-      opacity: 0.04;
-    }
-
-    .animate-on-scroll-hidden {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    
-    .animate-on-scroll-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Brutalist borders */
-    .brutalist-border {
-      border: 3px solid #1A1423;
-      position: relative;
-      background-color: #FFFFFF;
-      transition: all 0.2s ease;
-    }
-
-    .brutalist-border-shadow {
-      box-shadow: 6px 6px 0px #1A1423;
-    }
-
-    .brutalist-border-shadow-primary {
-      box-shadow: 6px 6px 0px #FF6B35;
-    }
-
-    .brutalist-border-shadow:hover {
-      box-shadow: 10px 10px 0px #1A1423;
-      transform: translate(-2px, -2px);
-    }
-
-    .brutalist-btn {
-      border: 3px solid #1A1423;
-      box-shadow: 4px 4px 0px #1A1423;
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      transition: all 0.15s ease;
-      cursor: pointer;
-    }
-
-    .brutalist-btn:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 6px 6px 0px #1A1423;
-    }
-
-    .brutalist-btn:active {
-      transform: translate(2px, 2px);
-      box-shadow: 1px 1px 0px #1A1423;
-    }
-
-    .brutalist-input {
-      border: 3px solid #1A1423;
-      background-color: #FFFFFF;
-      box-shadow: 3px 3px 0px #1A1423;
-      font-family: 'Inter', sans-serif;
-      outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .brutalist-input:focus {
-      border-color: #FF6B35;
-      box-shadow: 5px 5px 0px #FF6B35;
-    }
-
-    /* Skewed sections */
-    .skew-section {
-      transform: skewY(-1.5deg);
-      margin: 28px 0;
-    }
-
-    .skew-section > * {
-      transform: skewY(1.5deg);
-    }
-
-    /* Diagonal accent */
-    .diagonal-accent {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .diagonal-accent::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -10%;
-      width: 45%;
-      height: 200%;
-      background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
-      opacity: 0.07;
-      transform: rotate(15deg);
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    /* Pulse animation for live indicators */
-    @keyframes pulse-ring {
-      0% { transform: scale(0.95); opacity: 0.8; }
-      50% { transform: scale(1.15); opacity: 1; }
-      100% { transform: scale(0.95); opacity: 0.8; }
-    }
-    .pulse-dot {
-      animation: pulse-ring 1.8s infinite ease-in-out;
-    }
-
-    /* Toast animation */
-    #toast {
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
-    }
-  </style>
-
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            'brand-primary': '#FF6B35',
-            'brand-secondary': '#F7931E',
-            'brand-tertiary': '#004E89',
-            'brand-accent': '#1A1423',
-            'neutral-background': '#FFFBF7',
-            'neutral-surface': '#FFFFFF',
-            'neutral-surface1': '#FFF4E6',
-            'neutral-border': '#FFE4CC',
-            'neutral-border-interactive': '#FF6B35',
-            'text-primary': '#1A1423',
-            'text-secondary': '#6B5B62',
-            'text-on-primary': '#FFFBF7',
-            'text-on-primary-alt': '#1A1423',
+            brand: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              400: '#fb923c',
+              500: '#f97316', // Vibrant Orange
+              600: '#ea580c',
+              accent: '#ff6b35',
+            },
+            dark: {
+              950: '#070b14', // Deepest background
+              900: '#0d1322', // Sidebar & Header
+              850: '#11182c', // Surface Cards
+              800: '#1a233d', // Card Border / Hover
+              700: '#273456',
+            }
           },
           fontFamily: {
-            'primary': ['Space Grotesk', 'sans-serif'],
-            'secondary': ['Inter', 'sans-serif'],
-            'display': ['Bebas Neue', 'cursive'],
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
           },
           boxShadow: {
-            'card': '8px 8px 0px rgba(26, 20, 35, 0.1)',
-            'subtle': '4px 4px 0px rgba(26, 20, 35, 0.05)',
-            'bold': '8px 8px 0px #FF6B35',
-            'dark': '8px 8px 0px #1A1423',
-            'hover': '12px 12px 0px rgba(255, 107, 53, 0.35)',
+            'glow-orange': '0 0 25px -5px rgba(249, 115, 22, 0.35)',
+            'glow-cyan': '0 0 25px -5px rgba(6, 182, 212, 0.35)',
+            'glow-emerald': '0 0 25px -5px rgba(16, 185, 129, 0.35)',
+            'card': '0 10px 30px -10px rgba(0, 0, 0, 0.5)',
           }
         }
       }
     }
   </script>
+
+  <style>
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0d1322;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #273456;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #f97316;
+    }
+
+    /* Pulse animation */
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.15); }
+    }
+    .pulse-dot {
+      animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    /* Dashboard View Transition */
+    .dashboard-view {
+      display: none;
+      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .dashboard-view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Glass Effect */
+    .glass-panel {
+      background: rgba(17, 24, 44, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-panel-interactive {
+      background: rgba(17, 24, 44, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-panel-interactive:hover {
+      border-color: rgba(249, 115, 22, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.6), 0 0 20px -5px rgba(249, 115, 22, 0.15);
+    }
+  </style>
 </head>
 
-<body class="font-secondary bg-neutral-background text-text-primary overflow-x-hidden">
+<body class="h-full bg-dark-950 font-sans text-slate-200 antialiased overflow-hidden flex flex-col">
 
-  <!-- Notification Toast -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 pointer-events-none transition-all">
-    <div id="toast-card" class="border-4 border-brand-accent p-4 bg-brand-primary text-text-on-primary font-primary font-bold shadow-dark flex items-center gap-3 max-w-md">
-      <span id="toast-icon" class="text-2xl">⚡</span>
-      <div>
-        <div id="toast-title" class="text-sm uppercase tracking-wider font-extrabold">Notification</div>
-        <div id="toast-msg" class="text-xs font-normal opacity-90">Message details</div>
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed top-5 right-5 z-50 transform -translate-y-24 opacity-0 pointer-events-none transition-all duration-300 ease-out">
+    <div id="toast-card" class="glass-panel border border-brand-500/50 p-4 rounded-xl shadow-2xl flex items-center gap-3.5 max-w-md bg-dark-900/95 text-white">
+      <div id="toast-icon-wrap" class="w-10 h-10 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center font-bold text-xl flex-shrink-0">
+        <span id="toast-icon">⚡</span>
+      </div>
+      <div class="overflow-hidden">
+        <div id="toast-title" class="text-sm font-semibold text-white tracking-wide">Notification</div>
+        <div id="toast-msg" class="text-xs text-slate-300 mt-0.5 truncate">Action executed successfully.</div>
       </div>
     </div>
   </div>
 
-  <!-- Navigation Bar -->
-  <header class="border-b-4 border-brand-accent bg-neutral-background sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-      
-      <!-- Brand Logo -->
-      <a href="#" class="flex items-center gap-3 group">
-        <div class="w-12 h-12 bg-brand-primary border-3 border-brand-accent flex items-center justify-center font-display text-3xl font-bold text-text-on-primary shadow-subtle group-hover:bg-brand-secondary transition-colors">
-          CCA
-        </div>
-        <div>
-          <span class="font-display text-2xl md:text-3xl font-bold text-brand-accent tracking-tight leading-none block">
-            CAMPUS CHALLENGE ARENA
-          </span>
-          <span class="font-primary text-[10px] font-bold tracking-widest text-brand-primary uppercase">
-            MySQL • JDBC • CONTEST PLATFORM
-          </span>
-        </div>
-      </a>
+  <!-- Main App Shell Grid -->
+  <div class="flex-1 flex overflow-hidden">
 
-      <!-- Quick Nav Links -->
-      <nav class="hidden lg:flex items-center gap-6">
-        <a href="#leaderboard" class="font-primary font-bold text-text-primary hover:text-brand-primary transition-colors uppercase tracking-wider text-xs">Leaderboard</a>
-        <a href="#competitions" class="font-primary font-bold text-text-primary hover:text-brand-primary transition-colors uppercase tracking-wider text-xs">Competitions</a>
-        <a href="#arena" class="font-primary font-bold text-text-primary hover:text-brand-primary transition-colors uppercase tracking-wider text-xs">Solve Arena</a>
-        <a href="#students" class="font-primary font-bold text-text-primary hover:text-brand-primary transition-colors uppercase tracking-wider text-xs">Student Portal</a>
-        <a href="#organizer" class="font-primary font-bold text-text-primary hover:text-brand-primary transition-colors uppercase tracking-wider text-xs">Organizer Console</a>
-        <a href="#history" class="font-primary font-bold text-text-primary hover:text-brand-primary transition-colors uppercase tracking-wider text-xs">History</a>
+    <!-- ============================================================== -->
+    <!-- SIDEBAR NAVIGATION (Organized Dashboard Sidebar) -->
+    <!-- ============================================================== -->
+    <aside id="app-sidebar" class="w-64 bg-dark-900 border-r border-slate-800/80 flex flex-col flex-shrink-0 z-30 transition-all duration-300">
+      
+      <!-- Logo Header -->
+      <div class="h-16 px-5 flex items-center justify-between border-b border-slate-800/80 bg-dark-900/50">
+        <a href="#dashboard" onclick="window.app.switchSection('dashboard')" class="flex items-center gap-3 group">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center font-display font-bold text-white shadow-glow-orange group-hover:scale-105 transition-transform">
+            CCA
+          </div>
+          <div class="leading-tight">
+            <span class="font-display font-bold text-white tracking-wide text-sm block">CAMPUS ARENA</span>
+            <span class="text-[10px] font-mono font-medium text-brand-400 uppercase tracking-wider">DBMS PLATFORM</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
+        
+        <div class="px-3 pt-2 pb-1 text-[10px] font-bold tracking-wider uppercase text-slate-500 font-mono">
+          Main Console
+        </div>
+
+        <!-- 1. Dashboard Overview -->
+        <button onclick="window.app.switchSection('dashboard')" id="nav-btn-dashboard" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-white bg-brand-500/15 border border-brand-500/30 shadow-sm">
+          <span class="text-base text-brand-400">📊</span>
+          <span class="flex-1 text-left">Dashboard</span>
+        </button>
+
+        <!-- 2. Solve Arena -->
+        <button onclick="window.app.switchSection('arena')" id="nav-btn-arena" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 border border-transparent">
+          <span class="text-base text-cyan-400">⚔️</span>
+          <span class="flex-1 text-left">Solve Arena</span>
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-cyan-500/20 text-cyan-300">LIVE</span>
+        </button>
+
+        <!-- 3. Leaderboards -->
+        <button onclick="window.app.switchSection('leaderboard')" id="nav-btn-leaderboard" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 border border-transparent">
+          <span class="text-base text-amber-400">🏆</span>
+          <span class="flex-1 text-left">Leaderboards</span>
+        </button>
+
+        <!-- 4. Competitions Directory -->
+        <button onclick="window.app.switchSection('competitions')" id="nav-btn-competitions" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 border border-transparent">
+          <span class="text-base text-emerald-400">🎯</span>
+          <span class="flex-1 text-left">Competitions</span>
+          <span id="nav-badge-competitions" class="text-[10px] font-mono px-1.5 py-0.5 rounded-md bg-slate-800 text-slate-300">0</span>
+        </button>
+
+        <div class="px-3 pt-5 pb-1 text-[10px] font-bold tracking-wider uppercase text-slate-500 font-mono">
+          Administration & Portal
+        </div>
+
+        <!-- 5. Student Portal -->
+        <button onclick="window.app.switchSection('students')" id="nav-btn-students" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 border border-transparent">
+          <span class="text-base text-indigo-400">👥</span>
+          <span class="flex-1 text-left">Student Portal</span>
+        </button>
+
+        <!-- 6. Organizer Command Hub -->
+        <button onclick="window.app.switchSection('organizer')" id="nav-btn-organizer" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 border border-transparent">
+          <span class="text-base text-purple-400">🛠️</span>
+          <span class="flex-1 text-left">Organizer Hub</span>
+        </button>
+
+        <!-- 7. Tournament History -->
+        <button onclick="window.app.switchSection('history')" id="nav-btn-history" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-800/50 border border-transparent">
+          <span class="text-base text-rose-400">📜</span>
+          <span class="flex-1 text-left">Tournament History</span>
+        </button>
+
       </nav>
 
-      <!-- Active Student Selector & Seed button -->
-      <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2 border-2 border-brand-accent bg-neutral-surface px-3 py-1.5 shadow-subtle">
-          <span class="text-xs font-primary font-bold text-brand-tertiary uppercase">Active:</span>
-          <select id="active-student-select" class="bg-transparent font-primary text-xs font-bold outline-none cursor-pointer max-w-[130px] truncate" onchange="window.app.onActiveStudentChange(this.value)">
-            <option value="">Select Student...</option>
-          </select>
-        </div>
-
-        <button onclick="window.app.resetAndSeedData()" title="Reset & seed demo database records" class="brutalist-btn bg-neutral-surface1 text-brand-accent text-xs px-3 py-2 border-2 hover:bg-brand-secondary hover:text-text-on-primary">
-          ↻ Seed DB
-        </button>
-      </div>
-
-    </div>
-  </header>
-
-  <main>
-    <!-- HERO SECTION (Brutalist style) -->
-    <section class="relative px-6 pt-12 pb-16 overflow-hidden diagonal-accent border-b-4 border-brand-accent">
-      <div class="max-w-7xl mx-auto relative z-10">
-        <div class="grid lg:grid-cols-12 gap-10 items-center">
-          
-          <!-- Left Column -->
-          <div class="lg:col-span-7">
-            <div class="inline-flex items-center gap-2 bg-brand-primary text-text-on-primary font-primary font-bold px-3 py-1.5 uppercase tracking-wider text-xs mb-4 border-2 border-brand-accent shadow-subtle">
-              <span class="w-2 h-2 rounded-full bg-white pulse-dot"></span>
-              Live Inter-Collegiate Competition System
-            </div>
-
-            <h1 class="font-display text-5xl sm:text-7xl lg:text-8xl font-bold text-text-primary mb-4 leading-none tracking-tight">
-              CAMPUS<br>
-              <span class="text-brand-primary">CHALLENGE</span><br>
-              ARENA
-            </h1>
-
-            <div class="flex items-center gap-4 mb-6">
-              <div class="h-1.5 w-16 bg-brand-primary"></div>
-              <p class="font-primary text-lg sm:text-xl font-bold text-brand-tertiary uppercase tracking-wide">
-                Coding Contests • Quizzes • Live Rankings
-              </p>
-            </div>
-
-            <p class="text-base sm:text-lg text-text-secondary max-w-xl leading-relaxed mb-8">
-              A robust Java Maven platform connecting students with real-time academic coding contests. Built on strict JDBC validations, MySQL persistence, instant answer evaluation, and live leaderboards.
-            </p>
-
-            <!-- Stat Counters -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 max-w-2xl">
-              <div class="border-l-4 border-brand-primary bg-neutral-surface p-3 border-2 border-brand-accent shadow-subtle">
-                <div id="stat-competitions" class="font-display text-3xl font-bold text-brand-primary">0</div>
-                <div class="font-primary text-[10px] uppercase font-bold tracking-wider text-text-secondary">Competitions</div>
-              </div>
-              <div class="border-l-4 border-brand-secondary bg-neutral-surface p-3 border-2 border-brand-accent shadow-subtle">
-                <div id="stat-students" class="font-display text-3xl font-bold text-brand-secondary">0</div>
-                <div class="font-primary text-[10px] uppercase font-bold tracking-wider text-text-secondary">Students</div>
-              </div>
-              <div class="border-l-4 border-brand-tertiary bg-neutral-surface p-3 border-2 border-brand-accent shadow-subtle">
-                <div id="stat-challenges" class="font-display text-3xl font-bold text-brand-tertiary">0</div>
-                <div class="font-primary text-[10px] uppercase font-bold tracking-wider text-text-secondary">Challenges</div>
-              </div>
-              <div class="border-l-4 border-brand-accent bg-neutral-surface p-3 border-2 border-brand-accent shadow-subtle">
-                <div id="stat-submissions" class="font-display text-3xl font-bold text-brand-accent">0</div>
-                <div class="font-primary text-[10px] uppercase font-bold tracking-wider text-text-secondary">Submissions</div>
-              </div>
-            </div>
-
-            <!-- Hero CTAs -->
-            <div class="flex flex-wrap gap-4">
-              <a href="#competitions" class="brutalist-btn bg-brand-primary text-text-on-primary px-6 py-3.5 text-sm hover:bg-brand-secondary inline-block">
-                View Competitions →
-              </a>
-              <a href="#leaderboard" class="brutalist-btn bg-neutral-surface text-text-primary px-6 py-3.5 text-sm hover:bg-neutral-surface1 inline-block">
-                Live Leaderboard 🏆
-              </a>
-              <a href="#students" class="brutalist-btn bg-brand-tertiary text-text-on-primary px-6 py-3.5 text-sm hover:bg-brand-accent inline-block">
-                + Register Student
-              </a>
-            </div>
+      <!-- Sidebar Footer: Active Student & System Badge -->
+      <div class="p-3 border-t border-slate-800/80 bg-dark-900/60 space-y-2">
+        <!-- Active Persona Card -->
+        <div class="p-2.5 rounded-xl bg-dark-850 border border-slate-800 flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-600 to-indigo-600 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+            👤
           </div>
-
-          <!-- Right Column: Spotlight Active Contest Card -->
-          <div class="lg:col-span-5">
-            <div class="border-4 border-brand-accent bg-neutral-surface p-6 sm:p-8 shadow-dark relative">
-              <div class="absolute -top-4 -right-4 bg-brand-secondary text-text-on-primary border-3 border-brand-accent font-primary font-bold px-3 py-1 text-xs uppercase tracking-widest shadow-subtle">
-                Spotlight Arena
-              </div>
-
-              <div class="flex items-center gap-2 mb-3">
-                <span class="w-3 h-3 rounded-full bg-emerald-500 pulse-dot"></span>
-                <span class="font-primary font-bold text-xs uppercase tracking-wider text-emerald-700">Currently Active</span>
-              </div>
-
-              <h2 id="spotlight-title" class="font-display text-3xl sm:text-4xl font-bold text-brand-accent mb-2">
-                Apex CodeSprint 2026
-              </h2>
-
-              <p id="spotlight-desc" class="text-sm text-text-secondary mb-5 line-clamp-3">
-                Algorithmic speed contest solving data structures and dynamic programming questions with live rankings.
-              </p>
-
-              <div class="space-y-3 mb-6 bg-neutral-surface1 border-2 border-brand-accent p-4">
-                <div class="flex justify-between text-xs font-primary">
-                  <span class="font-bold text-text-secondary uppercase">Type:</span>
-                  <span id="spotlight-type" class="font-extrabold text-brand-tertiary">Coding Contest</span>
-                </div>
-                <div class="flex justify-between text-xs font-primary">
-                  <span class="font-bold text-text-secondary uppercase">Challenges:</span>
-                  <span id="spotlight-challenges" class="font-extrabold text-brand-accent">3 Questions (60 Pts)</span>
-                </div>
-                <div class="flex justify-between text-xs font-primary">
-                  <span class="font-bold text-text-secondary uppercase">Participants:</span>
-                  <span id="spotlight-participants" class="font-extrabold text-brand-primary">4 Enrolled</span>
-                </div>
-                <div class="flex justify-between text-xs font-primary">
-                  <span class="font-bold text-text-secondary uppercase">Status:</span>
-                  <span class="bg-emerald-600 text-white px-2 py-0.5 text-[10px] font-bold rounded">ACTIVE</span>
-                </div>
-              </div>
-
-              <div class="flex flex-col sm:flex-row gap-3">
-                <button onclick="window.app.enterSpotlightContest()" class="brutalist-btn bg-brand-primary text-text-on-primary py-3 px-4 text-xs flex-1 text-center hover:bg-brand-secondary">
-                  ⚡ Enter Arena & Solve
-                </button>
-                <button onclick="window.app.viewSpotlightLeaderboard()" class="brutalist-btn bg-neutral-surface text-brand-accent py-3 px-4 text-xs text-center hover:bg-neutral-surface1">
-                  View Standings
-                </button>
-              </div>
-
-              <!-- Database Indicator -->
-              <div class="mt-5 pt-4 border-t-2 border-neutral-border flex items-center justify-between text-[11px] font-primary text-text-secondary">
-                <span class="flex items-center gap-1.5">
-                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  MySQL: <strong class="text-brand-accent">campus_challenge</strong>
-                </span>
-                <span>JDBC Connection: <strong class="text-emerald-700">OK</strong></span>
-              </div>
-
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- LIVE LEADERBOARD SECTION (Skewed Brutalist) -->
-    <section id="leaderboard" class="py-14 px-6 skew-section bg-neutral-surface1 border-y-4 border-brand-accent">
-      <div class="max-w-7xl mx-auto">
-        
-        <!-- Header -->
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-          <div>
-            <div class="flex items-center gap-3 mb-2">
-              <div class="h-2 w-16 bg-brand-primary"></div>
-              <span class="font-primary font-bold uppercase tracking-wider text-xs text-brand-primary">Real-Time Scoring</span>
-            </div>
-            <h2 class="font-display text-4xl sm:text-6xl font-bold text-text-primary tracking-tight">
-              LIVE LEADERBOARD
-            </h2>
-          </div>
-
-          <!-- Leaderboard Selector & Controls -->
-          <div class="flex flex-wrap items-center gap-3">
-            <select id="leaderboard-competition-select" class="brutalist-input px-3 py-2 text-xs font-primary font-bold" onchange="window.app.loadLeaderboard(this.value)">
-              <!-- Options populated dynamically -->
+          <div class="min-w-0 flex-1">
+            <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Active Participant</div>
+            <select id="active-student-select" class="w-full bg-transparent text-xs font-medium text-white outline-none cursor-pointer truncate" onchange="window.app.onActiveStudentChange(this.value)">
+              <option value="">Choose Student...</option>
             </select>
-
-            <button onclick="window.app.toggleGlobalLeaderboard()" id="btn-global-standings" class="brutalist-btn bg-brand-tertiary text-text-on-primary px-4 py-2 text-xs hover:bg-brand-accent">
-              ★ Global College Standings
-            </button>
-
-            <button onclick="window.app.refreshCurrentLeaderboard()" class="brutalist-btn bg-brand-primary text-text-on-primary px-3 py-2 text-xs flex items-center gap-1.5 hover:bg-brand-secondary">
-              <span class="text-sm">↻</span> Refresh
-            </button>
           </div>
         </div>
 
-        <!-- TOP 3 PODIUM CARDS -->
-        <div id="podium-container" class="grid sm:grid-cols-3 gap-6 mb-10">
-          <!-- Dynamic Podium cards injected via JS -->
+        <!-- System DB status -->
+        <div class="px-2 py-1.5 flex items-center justify-between text-[11px] font-mono text-slate-400">
+          <span class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span>
+            MySQL Connected
+          </span>
+          <span class="text-[10px] text-slate-500">v8.0+</span>
         </div>
-
-        <!-- FULL RANKINGS TABLE -->
-        <div class="border-4 border-brand-accent bg-neutral-surface shadow-dark overflow-hidden">
-          <div class="bg-brand-accent text-text-on-primary px-6 py-3 font-primary font-bold text-xs uppercase tracking-wider flex justify-between items-center">
-            <span id="leaderboard-table-title">Competition Standings</span>
-            <span id="leaderboard-count" class="text-brand-secondary font-display text-base">0 Ranked</span>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm border-collapse">
-              <thead>
-                <tr class="border-b-3 border-brand-accent bg-neutral-surface1 text-text-primary font-primary font-bold uppercase text-xs">
-                  <th class="py-3 px-4">Rank</th>
-                  <th class="py-3 px-4">Student</th>
-                  <th class="py-3 px-4">Department & Year</th>
-                  <th class="py-3 px-4 text-center">Solved</th>
-                  <th class="py-3 px-4 text-right">Total Score</th>
-                  <th class="py-3 px-4 text-right">Last Submission</th>
-                </tr>
-              </thead>
-              <tbody id="leaderboard-tbody" class="divide-y-2 divide-neutral-border font-primary">
-                <tr>
-                  <td colspan="6" class="text-center py-8 text-text-secondary font-bold">
-                    Loading standings from MySQL...
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
       </div>
-    </section>
 
-    <!-- COMPETITIONS MANAGEMENT & BROWSER SECTION -->
-    <section id="competitions" class="py-14 px-6 bg-neutral-background">
-      <div class="max-w-7xl mx-auto">
+    </aside>
 
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
-          <div>
-            <div class="flex items-center gap-3 mb-2">
-              <div class="h-2 w-16 bg-brand-secondary"></div>
-              <span class="font-primary font-bold uppercase tracking-wider text-xs text-brand-secondary">Contest Arena</span>
-            </div>
-            <h2 class="font-display text-4xl sm:text-6xl font-bold text-text-primary tracking-tight">
-              AVAILABLE COMPETITIONS
-            </h2>
-          </div>
-
-          <!-- Status Filter Tabs -->
-          <div class="flex flex-wrap gap-2">
-            <button onclick="window.app.filterCompetitions('ALL')" class="comp-filter-btn brutalist-btn bg-brand-accent text-text-on-primary px-4 py-2 text-xs" data-filter="ALL">ALL</button>
-            <button onclick="window.app.filterCompetitions('ACTIVE')" class="comp-filter-btn brutalist-btn bg-neutral-surface text-text-primary px-4 py-2 text-xs hover:bg-neutral-surface1" data-filter="ACTIVE">🟢 ACTIVE</button>
-            <button onclick="window.app.filterCompetitions('UPCOMING')" class="comp-filter-btn brutalist-btn bg-neutral-surface text-text-primary px-4 py-2 text-xs hover:bg-neutral-surface1" data-filter="UPCOMING">⏳ UPCOMING</button>
-            <button onclick="window.app.filterCompetitions('COMPLETED')" class="comp-filter-btn brutalist-btn bg-neutral-surface text-text-primary px-4 py-2 text-xs hover:bg-neutral-surface1" data-filter="COMPLETED">🏁 COMPLETED</button>
-          </div>
-        </div>
-
-        <!-- Competitions Grid -->
-        <div id="competitions-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Populated by JS -->
-        </div>
-
-      </div>
-    </section>
-
-    <!-- SOLVE ARENA / SUBMIT ANSWERS SECTION -->
-    <section id="arena" class="py-14 px-6 bg-neutral-surface1 border-t-4 border-brand-accent">
-      <div class="max-w-7xl mx-auto">
+    <!-- ============================================================== -->
+    <!-- MAIN CONTENT VIEW AREA -->
+    <!-- ============================================================== -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-dark-950">
+      
+      <!-- Top Header Bar -->
+      <header class="h-16 border-b border-slate-800/80 bg-dark-900/80 backdrop-blur-md px-6 flex items-center justify-between gap-4 flex-shrink-0 z-20">
         
-        <div class="mb-8">
-          <div class="flex items-center gap-3 mb-2">
-            <div class="h-2 w-16 bg-brand-primary"></div>
-            <span class="font-primary font-bold uppercase tracking-wider text-xs text-brand-primary">Interactive Submission</span>
+        <!-- Mobile Menu Toggle & Title -->
+        <div class="flex items-center gap-3">
+          <button onclick="window.app.toggleMobileSidebar()" class="lg:hidden p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white">
+            ☰
+          </button>
+          <div>
+            <h1 id="topbar-section-title" class="font-display font-bold text-lg text-white tracking-tight">Dashboard Overview</h1>
+            <p id="topbar-section-subtitle" class="text-xs text-slate-400 hidden sm:block">Campus Competition Platform • Live Telemetry & Actions</p>
           </div>
-          <h2 class="font-display text-4xl sm:text-6xl font-bold text-text-primary tracking-tight">
-            CHALLENGE ARENA
-          </h2>
-          <p class="text-sm text-text-secondary mt-1">
-            Solve questions and submit quiz answers or code outputs. Submissions are strictly verified against registrations and contest deadlines.
-          </p>
         </div>
 
-        <div class="grid lg:grid-cols-12 gap-8">
+        <!-- Top Right Actions -->
+        <div class="flex items-center gap-2.5">
           
-          <!-- Left: Challenge Selection & Info -->
-          <div class="lg:col-span-5 space-y-6">
-            <div class="border-4 border-brand-accent bg-neutral-surface p-6 shadow-dark">
-              <h3 class="font-display text-2xl font-bold text-brand-accent mb-4">
-                1. SELECT CONTEST & QUESTION
-              </h3>
+          <!-- Direct Quick Jump to Arena -->
+          <button onclick="window.app.switchSection('arena')" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 transition-all">
+            <span>⚔️</span> Solve Arena
+          </button>
 
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Target Competition</label>
-                  <select id="arena-competition-select" class="w-full brutalist-input px-3 py-2 text-sm font-primary font-semibold" onchange="window.app.onArenaCompetitionSelect(this.value)">
-                    <option value="">Choose competition...</option>
-                  </select>
-                </div>
+          <!-- Organizer shortcut -->
+          <button onclick="window.app.switchSection('organizer')" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30 transition-all">
+            <span>➕</span> Host Contest
+          </button>
 
-                <div>
-                  <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Select Challenge</label>
-                  <select id="arena-challenge-select" class="w-full brutalist-input px-3 py-2 text-sm font-primary font-semibold" onchange="window.app.onArenaChallengeSelect(this.value)">
-                    <option value="">First choose a competition...</option>
-                  </select>
-                </div>
+          <!-- Reset / Seed Demo Database -->
+          <button onclick="window.app.resetAndSeedData()" title="Reset and seed clean demo MySQL records" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-500/20 hover:bg-brand-500/30 text-brand-400 border border-brand-500/40 shadow-sm transition-all">
+            <span>↻</span> Seed DB
+          </button>
 
-                <div>
-                  <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Submitting Student</label>
-                  <select id="arena-student-select" class="w-full brutalist-input px-3 py-2 text-sm font-primary font-semibold">
-                    <option value="">Choose student...</option>
-                  </select>
-                </div>
-              </div>
+        </div>
+      </header>
 
-              <!-- Challenge Details Card -->
-              <div id="arena-challenge-card" class="mt-6 p-4 bg-neutral-surface1 border-2 border-brand-accent hidden">
-                <div class="flex items-center justify-between mb-2">
-                  <span id="arena-card-badge" class="font-primary font-bold text-[10px] uppercase bg-brand-primary text-text-on-primary px-2 py-0.5">
-                    10 Points
+      <!-- Scrollable Main View Container -->
+      <main class="flex-1 overflow-y-auto px-4 sm:px-8 py-6">
+
+        <!-- ============================================================== -->
+        <!-- 1. DASHBOARD OVERVIEW SECTION (view-dashboard) -->
+        <!-- ============================================================== -->
+        <section id="view-dashboard" class="dashboard-view active space-y-6 max-w-7xl mx-auto">
+          
+          <!-- Spotlight Banner (Active Highlight) -->
+          <div class="glass-panel p-6 sm:p-8 rounded-2xl relative overflow-hidden border border-slate-800 bg-gradient-to-r from-dark-850 via-dark-900 to-dark-850">
+            <div class="absolute -right-16 -top-16 w-80 h-80 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 grid lg:grid-cols-12 gap-6 items-center">
+              
+              <div class="lg:col-span-8 space-y-3">
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span>
+                    FEATURED LIVE TOURNAMENT
                   </span>
-                  <span id="arena-card-comp-name" class="font-primary text-xs font-bold text-brand-tertiary">
+                  <span id="spotlight-type" class="px-2 py-0.5 rounded-md text-[11px] font-mono bg-slate-800 text-slate-300 border border-slate-700">
                     Coding Contest
                   </span>
                 </div>
-                <h4 id="arena-card-title" class="font-primary font-bold text-base text-brand-accent mb-2">
-                  Challenge Title
-                </h4>
-                <p id="arena-card-desc" class="text-xs text-text-secondary whitespace-pre-wrap leading-relaxed font-mono bg-white p-3 border border-neutral-border">
-                  Question description...
+
+                <h2 id="spotlight-title" class="font-display text-2xl sm:text-4xl font-bold text-white tracking-tight">
+                  Apex CodeSprint 2026
+                </h2>
+
+                <p id="spotlight-desc" class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl">
+                  The flagship inter-departmental algorithmic sprint. Solve rapid data structures and algorithmic puzzles under time pressure.
                 </p>
+
+                <!-- Tags & Capacity -->
+                <div class="flex flex-wrap items-center gap-4 pt-2 text-xs text-slate-400">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-slate-500">Challenges:</span>
+                    <span id="spotlight-challenges" class="font-semibold text-white">3 Questions (60 Pts)</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-slate-500">Participants:</span>
+                    <span id="spotlight-participants" class="font-semibold text-white">4 / 50 Enrolled</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Call to Action Buttons -->
+              <div class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-end">
+                <button onclick="window.app.enterSpotlightContest()" class="px-5 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-amber-500 hover:from-brand-600 hover:to-amber-600 text-white font-semibold text-xs tracking-wider uppercase shadow-glow-orange flex items-center justify-center gap-2 transition-all">
+                  <span>⚡</span> Enter Solve Arena
+                </button>
+                <button onclick="window.app.viewSpotlightLeaderboard()" class="px-5 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 font-semibold text-xs tracking-wider uppercase border border-slate-700/80 flex items-center justify-center gap-2 transition-all">
+                  <span>🏆</span> View Live Standings
+                </button>
               </div>
 
             </div>
+          </div>
 
-            <!-- Validation Checklist Badge -->
-            <div class="border-3 border-brand-accent bg-neutral-surface p-4 shadow-subtle text-xs font-primary space-y-2">
-              <div class="font-bold uppercase text-brand-accent mb-2">JDBC Validation Guard:</div>
-              <div class="flex items-center gap-2 text-emerald-800">
-                <span>✔</span> Only registered students can participate
+          <!-- KPI Metric Cards Grid -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <!-- Stat 1 -->
+            <div class="glass-panel p-5 rounded-xl border border-slate-800/90 relative overflow-hidden group">
+              <div class="text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-1">Competitions</div>
+              <div class="flex items-baseline justify-between">
+                <span id="stat-competitions" class="font-display text-3xl font-bold text-white">0</span>
+                <span class="text-2xl text-brand-400 group-hover:scale-110 transition-transform">🎯</span>
               </div>
-              <div class="flex items-center gap-2 text-emerald-800">
-                <span>✔</span> Submissions strictly verified against Start & End time
+              <div class="text-[11px] text-slate-500 mt-2">Active, upcoming & completed</div>
+            </div>
+
+            <!-- Stat 2 -->
+            <div class="glass-panel p-5 rounded-xl border border-slate-800/90 relative overflow-hidden group">
+              <div class="text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-1">Registered Students</div>
+              <div class="flex items-baseline justify-between">
+                <span id="stat-students" class="font-display text-3xl font-bold text-white">0</span>
+                <span class="text-2xl text-cyan-400 group-hover:scale-110 transition-transform">👥</span>
               </div>
-              <div class="flex items-center gap-2 text-emerald-800">
-                <span>✔</span> Automatic score calculation & live leaderboard updates
+              <div class="text-[11px] text-slate-500 mt-2">Enrolled across departments</div>
+            </div>
+
+            <!-- Stat 3 -->
+            <div class="glass-panel p-5 rounded-xl border border-slate-800/90 relative overflow-hidden group">
+              <div class="text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-1">Total Challenges</div>
+              <div class="flex items-baseline justify-between">
+                <span id="stat-challenges" class="font-display text-3xl font-bold text-white">0</span>
+                <span class="text-2xl text-amber-400 group-hover:scale-110 transition-transform">🧩</span>
+              </div>
+              <div class="text-[11px] text-slate-500 mt-2">Live test problem sets</div>
+            </div>
+
+            <!-- Stat 4 -->
+            <div class="glass-panel p-5 rounded-xl border border-slate-800/90 relative overflow-hidden group">
+              <div class="text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-1">Submissions Evaluated</div>
+              <div class="flex items-baseline justify-between">
+                <span id="stat-submissions" class="font-display text-3xl font-bold text-white">0</span>
+                <span class="text-2xl text-emerald-400 group-hover:scale-110 transition-transform">⚡</span>
+              </div>
+              <div class="text-[11px] text-slate-500 mt-2">Automatic MySQL scoring</div>
+            </div>
+
+          </div>
+
+          <!-- Dashboard Split Section: Quick Competitions & Leaderboard Preview -->
+          <div class="grid lg:grid-cols-12 gap-6">
+            
+            <!-- Left: Competitions Quick Preview -->
+            <div class="lg:col-span-7 space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
+                  <span>🎯</span> Active & Upcoming Events
+                </h3>
+                <button onclick="window.app.switchSection('competitions')" class="text-xs font-semibold text-brand-400 hover:text-brand-300">
+                  View All Directory ➔
+                </button>
+              </div>
+
+              <!-- Quick Competition Slider / List -->
+              <div id="dashboard-quick-comps" class="space-y-3">
+                <!-- Dynamically populated or mirrored -->
+                <div class="glass-panel p-4 rounded-xl border border-slate-800 flex items-center justify-between gap-4">
+                  <div>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 uppercase">Active Now</span>
+                    <h4 class="font-bold text-sm text-white mt-1">Apex CodeSprint 2026</h4>
+                    <p class="text-xs text-slate-400 mt-0.5">3 Algorithmic Challenges • Fast evaluation</p>
+                  </div>
+                  <button onclick="window.app.switchSection('arena')" class="px-3 py-1.5 rounded-lg bg-brand-500 hover:bg-brand-600 text-white font-semibold text-xs transition-colors">
+                    Solve ➔
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Quick Actions & System Launchpad -->
+            <div class="lg:col-span-5 space-y-4">
+              <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
+                <span>🚀</span> Quick Platform Actions
+              </h3>
+
+              <div class="glass-panel p-5 rounded-xl border border-slate-800 space-y-3">
+                
+                <button onclick="window.app.switchSection('arena')" class="w-full flex items-center justify-between p-3 rounded-lg bg-dark-850 hover:bg-slate-800/80 border border-slate-800 transition-colors text-left group">
+                  <div class="flex items-center gap-3">
+                    <span class="text-xl">⚔️</span>
+                    <div>
+                      <div class="text-xs font-semibold text-white group-hover:text-cyan-400 transition-colors">Solve Active Challenge</div>
+                      <div class="text-[11px] text-slate-400">Jump directly into the question editor</div>
+                    </div>
+                  </div>
+                  <span class="text-slate-500 group-hover:text-white">➔</span>
+                </button>
+
+                <button onclick="window.app.switchSection('leaderboard')" class="w-full flex items-center justify-between p-3 rounded-lg bg-dark-850 hover:bg-slate-800/80 border border-slate-800 transition-colors text-left group">
+                  <div class="flex items-center gap-3">
+                    <span class="text-xl">🏆</span>
+                    <div>
+                      <div class="text-xs font-semibold text-white group-hover:text-amber-400 transition-colors">View Live Rankings</div>
+                      <div class="text-[11px] text-slate-400">Current contest scores & Global Hall-of-Fame</div>
+                    </div>
+                  </div>
+                  <span class="text-slate-500 group-hover:text-white">➔</span>
+                </button>
+
+                <button onclick="window.app.switchSection('organizer')" class="w-full flex items-center justify-between p-3 rounded-lg bg-dark-850 hover:bg-slate-800/80 border border-slate-800 transition-colors text-left group">
+                  <div class="flex items-center gap-3">
+                    <span class="text-xl">🛠️</span>
+                    <div>
+                      <div class="text-xs font-semibold text-white group-hover:text-purple-400 transition-colors">Host or Grade Contest</div>
+                      <div class="text-[11px] text-slate-400">Organizer controls, question builder & grading</div>
+                    </div>
+                  </div>
+                  <span class="text-slate-500 group-hover:text-white">➔</span>
+                </button>
+
+                <button onclick="window.app.switchSection('students')" class="w-full flex items-center justify-between p-3 rounded-lg bg-dark-850 hover:bg-slate-800/80 border border-slate-800 transition-colors text-left group">
+                  <div class="flex items-center gap-3">
+                    <span class="text-xl">👥</span>
+                    <div>
+                      <div class="text-xs font-semibold text-white group-hover:text-indigo-400 transition-colors">Register New Student</div>
+                      <div class="text-[11px] text-slate-400">Add student profiles & manage enrollment</div>
+                    </div>
+                  </div>
+                  <span class="text-slate-500 group-hover:text-white">➔</span>
+                </button>
+
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- 2. SOLVE ARENA SECTION (view-arena) -->
+        <!-- ============================================================== -->
+        <section id="view-arena" class="dashboard-view space-y-6 max-w-7xl mx-auto">
+          
+          <!-- Arena Header Controls -->
+          <div class="glass-panel p-5 rounded-xl border border-slate-800 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+            <div>
+              <h2 class="font-display text-xl font-bold text-white flex items-center gap-2">
+                <span>⚔️</span> Interactive Solve Arena
+              </h2>
+              <p class="text-xs text-slate-400">Select an active competition and challenge question to submit your answer.</p>
+            </div>
+
+            <!-- Target Selection Dropdowns -->
+            <div class="flex flex-wrap items-center gap-3">
+              <div class="flex items-center gap-2 bg-dark-850 border border-slate-800 px-3 py-1.5 rounded-lg text-xs">
+                <span class="font-mono text-slate-400">Contest:</span>
+                <select id="arena-competition-select" class="bg-transparent font-medium text-white outline-none cursor-pointer max-w-xs" onchange="window.app.onArenaCompetitionSelect(this.value)">
+                  <option value="">Choose competition...</option>
+                </select>
+              </div>
+
+              <div class="flex items-center gap-2 bg-dark-850 border border-slate-800 px-3 py-1.5 rounded-lg text-xs">
+                <span class="font-mono text-slate-400">Student:</span>
+                <select id="arena-student-select" class="bg-transparent font-medium text-white outline-none cursor-pointer max-w-xs" onchange="window.app.onActiveStudentChange(this.value)">
+                  <option value="">Choose student...</option>
+                </select>
               </div>
             </div>
           </div>
 
-          <!-- Right: Submission Form & Output Preview -->
-          <div class="lg:col-span-7">
-            <div class="border-4 border-brand-accent bg-neutral-surface p-6 sm:p-8 shadow-dark">
-              <div class="flex items-center justify-between mb-4">
-                <h3 class="font-display text-2xl font-bold text-brand-accent">
-                  2. SUBMIT YOUR ANSWER
-                </h3>
-                <span class="font-primary text-xs font-bold text-brand-secondary uppercase bg-neutral-surface1 px-2.5 py-1 border border-brand-secondary">
-                  Real-Time Evaluation
+          <!-- Two-Column Solver Layout -->
+          <div class="grid lg:grid-cols-12 gap-6">
+            
+            <!-- Left Column: Challenge Details & Problem Statement -->
+            <div class="lg:col-span-7 space-y-4">
+              
+              <!-- Challenge Picker Dropdown -->
+              <div class="glass-panel p-4 rounded-xl border border-slate-800 flex items-center justify-between gap-4">
+                <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Select Problem:</span>
+                <select id="arena-challenge-select" class="flex-1 bg-dark-850 border border-slate-800 px-3 py-2 rounded-lg text-xs font-medium text-white outline-none cursor-pointer" onchange="window.app.onArenaChallengeSelect(this.value)">
+                  <option value="">-- Choose Challenge --</option>
+                </select>
+              </div>
+
+              <!-- Active Challenge Question Card -->
+              <div id="arena-challenge-card" class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4 relative overflow-hidden">
+                <div class="flex items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                  <h3 id="arena-card-title" class="font-display font-bold text-lg text-white">
+                    Array Zero Sum Pair
+                  </h3>
+                  <span id="arena-card-badge" class="px-2.5 py-1 rounded-md text-xs font-mono font-bold bg-brand-500/20 text-brand-400 border border-brand-500/30">
+                    20 Points
+                  </span>
+                </div>
+
+                <div class="space-y-2">
+                  <div class="text-[11px] font-mono text-slate-400 uppercase tracking-wider">Problem Statement:</div>
+                  <div id="arena-card-desc" class="p-4 rounded-xl bg-dark-850 border border-slate-800 text-sm font-sans text-slate-200 leading-relaxed font-medium">
+                    Given an integer array nums = [-3, 1, 2, 3, 5], find the pair that sums to zero. Return the values in ascending order separated by comma.
+                  </div>
+                </div>
+
+                <div class="p-3 rounded-lg bg-dark-900 border border-slate-800/80 text-[11px] text-slate-400 font-mono flex items-center gap-2">
+                  <span>💡</span> Note: Case-insensitive exact text matching against MySQL test keys.
+                </div>
+              </div>
+
+              <!-- Recent Submissions for this Student & Contest -->
+              <div class="glass-panel p-5 rounded-xl border border-slate-800 space-y-3">
+                <div class="flex items-center justify-between text-xs border-b border-slate-800 pb-2">
+                  <span class="font-bold text-white flex items-center gap-1.5">
+                    <span>📋</span> Your Recent Attempts
+                  </span>
+                  <span class="text-[11px] font-mono text-slate-400">Current Contest</span>
+                </div>
+                <div id="student-recent-submissions" class="space-y-2">
+                  <p class="text-xs text-slate-500 italic py-2">No submissions recorded for this contest yet.</p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Column: Submission Form & Instant Evaluation -->
+            <div class="lg:col-span-5 space-y-4">
+              
+              <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                <div class="border-b border-slate-800 pb-3">
+                  <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
+                    <span>✍️</span> Solution Editor
+                  </h3>
+                  <p class="text-xs text-slate-400 mt-0.5">Input your final output or code answer.</p>
+                </div>
+
+                <form onsubmit="window.app.handleAnswerSubmit(event)" class="space-y-4">
+                  <div>
+                    <label class="block text-xs font-mono text-slate-400 mb-1.5">Your Answer / Output:</label>
+                    <textarea id="submit-answer-text" rows="5" placeholder="Type your answer (e.g. -3, 3 or A or O(log N))..." class="w-full p-3 rounded-xl bg-dark-850 border border-slate-800 text-white font-mono text-xs focus:border-brand-500 focus:outline-none transition-colors" required></textarea>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <button type="submit" id="btn-submit-answer" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-brand-500 to-amber-500 hover:from-brand-600 hover:to-amber-600 text-white font-semibold text-xs tracking-wider uppercase shadow-glow-orange flex items-center justify-center gap-2 transition-all">
+                      <span>⚡</span> Submit & Evaluate
+                    </button>
+                    <button type="button" onclick="window.app.clearSubmissionForm()" class="py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">
+                      Clear
+                    </button>
+                  </div>
+                </form>
+
+                <!-- Evaluation Result Box (Dynamic) -->
+                <div id="submission-result" class="hidden pt-2"></div>
+              </div>
+
+              <!-- Quick Tip Card -->
+              <div class="glass-panel p-4 rounded-xl border border-slate-800 text-xs text-slate-400 space-y-1.5">
+                <div class="font-semibold text-white flex items-center gap-1.5">
+                  <span>ℹ️</span> Submission Rules
+                </div>
+                <ul class="list-disc list-inside space-y-1 text-[11px] text-slate-400">
+                  <li>Only registered students can submit solutions.</li>
+                  <li>Competitions must be in <strong class="text-emerald-400 font-mono">ACTIVE</strong> status.</li>
+                  <li>Correct answers award points directly to your leaderboard score.</li>
+                </ul>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- 3. LEADERBOARDS SECTION (view-leaderboard) -->
+        <!-- ============================================================== -->
+        <section id="view-leaderboard" class="dashboard-view space-y-6 max-w-7xl mx-auto">
+          
+          <!-- Leaderboard Toolbar -->
+          <div class="glass-panel p-5 rounded-xl border border-slate-800 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+            <div>
+              <h2 id="leaderboard-table-title" class="font-display text-xl font-bold text-white flex items-center gap-2">
+                <span>🏆</span> Live Competition Leaderboard
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">Real-time score tallies, solved challenges, and tie-breaking timestamps.</p>
+            </div>
+
+            <!-- Controls & Mode Toggle -->
+            <div class="flex flex-wrap items-center gap-3">
+              <!-- Competition Selector -->
+              <div class="flex items-center gap-2 bg-dark-850 border border-slate-800 px-3 py-1.5 rounded-lg text-xs">
+                <span class="font-mono text-slate-400">Contest:</span>
+                <select id="leaderboard-competition-select" class="bg-transparent font-medium text-white outline-none cursor-pointer max-w-xs" onchange="window.app.loadLeaderboard(this.value)">
+                  <!-- Dynamically populated -->
+                </select>
+              </div>
+
+              <!-- Global Hall of Fame Toggle -->
+              <button onclick="window.app.toggleGlobalLeaderboard()" id="btn-global-standings" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-dark-850 hover:bg-slate-800 text-amber-400 border border-amber-500/30 flex items-center gap-1.5 transition-colors">
+                <span>👑</span> Global Hall of Fame
+              </button>
+
+              <!-- Refresh Button -->
+              <button onclick="window.app.refreshCurrentLeaderboard(true)" class="p-2 rounded-lg bg-dark-850 hover:bg-slate-800 text-slate-300 border border-slate-800" title="Refresh Leaderboard">
+                ↻
+              </button>
+            </div>
+          </div>
+
+          <!-- Top 3 Podium Cards -->
+          <div id="podium-container" class="grid sm:grid-cols-3 gap-4">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Leaderboard Table Card -->
+          <div class="glass-panel rounded-2xl border border-slate-800 overflow-hidden shadow-card">
+            
+            <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-dark-900/60">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-mono uppercase tracking-wider text-slate-400">All Ranked Contestants</span>
+                <span id="leaderboard-count" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-brand-500/20 text-brand-400">0 Ranked</span>
+              </div>
+              <div class="text-[11px] font-mono text-slate-500 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span> Auto-syncing every 8s
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="border-b border-slate-800 text-slate-400 font-mono text-[11px] bg-dark-850/60">
+                    <th class="py-3 px-4 font-semibold">Rank</th>
+                    <th class="py-3 px-4 font-semibold">Student</th>
+                    <th class="py-3 px-4 font-semibold">Department & Year</th>
+                    <th class="py-3 px-4 font-semibold text-center">Solved</th>
+                    <th class="py-3 px-4 font-semibold text-right">Total Score</th>
+                    <th class="py-3 px-4 font-semibold text-right">Last Submission</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboard-tbody" class="divide-y divide-slate-800/60 font-sans">
+                  <!-- Dynamically populated -->
+                  <tr>
+                    <td colspan="6" class="text-center py-8 text-slate-500">Loading standings from MySQL...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- 4. COMPETITIONS DIRECTORY (view-competitions) -->
+        <!-- ============================================================== -->
+        <section id="view-competitions" class="dashboard-view space-y-6 max-w-7xl mx-auto">
+          
+          <!-- Competitions Toolbar -->
+          <div class="glass-panel p-5 rounded-xl border border-slate-800 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+            <div>
+              <h2 class="font-display text-xl font-bold text-white flex items-center gap-2">
+                <span>🎯</span> Tournament Directory
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">Filter by status, view participant capacity, and register students.</p>
+            </div>
+
+            <!-- Status Filter Pills -->
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="window.app.filterCompetitions('ALL')" data-filter="ALL" class="comp-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-500 text-white transition-all">
+                All
+              </button>
+              <button onclick="window.app.filterCompetitions('ACTIVE')" data-filter="ACTIVE" class="comp-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-dark-850 text-slate-300 hover:text-white transition-all">
+                Active Now
+              </button>
+              <button onclick="window.app.filterCompetitions('UPCOMING')" data-filter="UPCOMING" class="comp-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-dark-850 text-slate-300 hover:text-white transition-all">
+                Upcoming
+              </button>
+              <button onclick="window.app.filterCompetitions('COMPLETED')" data-filter="COMPLETED" class="comp-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-dark-850 text-slate-300 hover:text-white transition-all">
+                Completed
+              </button>
+            </div>
+          </div>
+
+          <!-- Competitions Cards Grid -->
+          <div id="competitions-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamically populated -->
+          </div>
+
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- 5. STUDENT PORTAL (view-students) -->
+        <!-- ============================================================== -->
+        <section id="view-students" class="dashboard-view space-y-6 max-w-7xl mx-auto">
+          
+          <div class="grid lg:grid-cols-12 gap-6">
+            
+            <!-- Left: Student Directory -->
+            <div class="lg:col-span-7 space-y-4">
+              <div class="glass-panel p-5 rounded-xl border border-slate-800 flex items-center justify-between">
+                <div>
+                  <h2 class="font-display text-lg font-bold text-white flex items-center gap-2">
+                    <span>👥</span> Enrolled Student Roster
+                  </h2>
+                  <p class="text-xs text-slate-400 mt-0.5">All registered participants eligible for tournament entry.</p>
+                </div>
+                <span id="student-count-badge" class="px-2.5 py-1 rounded text-xs font-mono font-bold bg-indigo-500/20 text-indigo-300">
+                  0 Students
                 </span>
               </div>
 
-              <form id="submission-form" onsubmit="window.app.handleAnswerSubmit(event)">
-                <div class="mb-4">
-                  <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">
-                    Your Answer / Solution Output:
-                  </label>
-                  <textarea id="submit-answer-text" rows="5" placeholder="Enter your answer or output exact solution (e.g. -3, 3 or O(log N) or SYN, SYN-ACK, ACK)..." class="w-full brutalist-input p-3 text-sm font-mono" required></textarea>
-                  <p class="text-[11px] text-text-secondary mt-1 font-primary">
-                    Answers are evaluated against contest correct answers with normalized whitespace.
-                  </p>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-4">
-                  <button type="submit" id="btn-submit-answer" class="brutalist-btn bg-brand-primary text-text-on-primary px-8 py-3.5 text-sm hover:bg-brand-secondary flex items-center gap-2">
-                    <span>⚡</span> Submit & Evaluate
-                  </button>
-
-                  <button type="button" onclick="window.app.clearSubmissionForm()" class="brutalist-btn bg-neutral-surface text-text-secondary px-4 py-3.5 text-xs hover:bg-neutral-surface1">
-                    Clear
-                  </button>
-                </div>
-              </form>
-
-              <!-- Live Submission Result Banner -->
-              <div id="submission-result" class="mt-6 hidden">
-                <!-- Result injected via JS -->
+              <!-- Student Cards Container -->
+              <div id="students-list-container" class="glass-panel p-4 rounded-2xl border border-slate-800 divide-y divide-slate-800 max-h-[600px] overflow-y-auto space-y-1">
+                <!-- Dynamically populated -->
               </div>
-
-              <!-- Student Past Submissions in this contest -->
-              <div class="mt-8 pt-6 border-t-2 border-neutral-border">
-                <h4 class="font-primary font-bold text-xs uppercase tracking-wider text-text-secondary mb-3">
-                  Recent Submissions by Selected Student
-                </h4>
-                <div id="student-recent-submissions" class="space-y-2">
-                  <p class="text-xs text-text-secondary italic">Select a student and contest to see history.</p>
-                </div>
-              </div>
-
             </div>
-          </div>
 
-        </div>
-
-      </div>
-    </section>
-
-    <!-- STUDENT PORTAL SECTION -->
-    <section id="students" class="py-14 px-6 bg-neutral-background border-t-4 border-brand-accent">
-      <div class="max-w-7xl mx-auto">
-
-        <div class="mb-8">
-          <div class="flex items-center gap-3 mb-2">
-            <div class="h-2 w-16 bg-brand-tertiary"></div>
-            <span class="font-primary font-bold uppercase tracking-wider text-xs text-brand-tertiary">Student Access</span>
-          </div>
-          <h2 class="font-display text-4xl sm:text-6xl font-bold text-text-primary tracking-tight">
-            STUDENT PORTAL
-          </h2>
-          <p class="text-sm text-text-secondary mt-1">
-            Enroll students with academic details (Name, Email, Department, Year of Study) to unlock competition participation.
-          </p>
-        </div>
-
-        <div class="grid lg:grid-cols-12 gap-8">
-          
-          <!-- Registration Form -->
-          <div class="lg:col-span-5">
-            <div class="border-4 border-brand-accent bg-neutral-surface p-6 shadow-dark">
-              <h3 class="font-display text-2xl font-bold text-brand-primary mb-4">
-                REGISTER NEW STUDENT
-              </h3>
-
-              <form id="student-register-form" onsubmit="window.app.handleStudentRegister(event)" class="space-y-4">
-                <div>
-                  <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Full Student Name</label>
-                  <input type="text" id="reg-student-name" placeholder="e.g. Siddharth Menon" class="w-full brutalist-input px-3 py-2 text-sm" required>
+            <!-- Right: Student Registration Form -->
+            <div class="lg:col-span-5 space-y-4">
+              <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                <div class="border-b border-slate-800 pb-3">
+                  <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
+                    <span>➕</span> Register New Student
+                  </h3>
+                  <p class="text-xs text-slate-400 mt-0.5">Create a student record in MySQL.</p>
                 </div>
 
-                <div>
-                  <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Institutional Email</label>
-                  <input type="email" id="reg-student-email" placeholder="e.g. siddharth.m@campus.edu" class="w-full brutalist-input px-3 py-2 text-sm" required>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
+                <form id="student-register-form" onsubmit="window.app.handleStudentRegister(event)" class="space-y-4">
                   <div>
-                    <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Department</label>
-                    <select id="reg-student-dept" class="w-full brutalist-input px-3 py-2 text-sm font-primary font-semibold" required>
+                    <label class="block text-xs font-mono text-slate-400 mb-1">Full Student Name:</label>
+                    <input type="text" id="reg-student-name" placeholder="e.g. Sanjai Prasad" class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none" required>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-mono text-slate-400 mb-1">Institutional Email:</label>
+                    <input type="email" id="reg-student-email" placeholder="e.g. sanjai@campus.edu" class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none" required>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-mono text-slate-400 mb-1">Department:</label>
+                    <select id="reg-student-dept" class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none" required>
                       <option value="Computer Science">Computer Science</option>
-                      <option value="Information Technology">Information Tech</option>
-                      <option value="Artificial Intelligence">AI & Data Science</option>
-                      <option value="Electronics & Comm">ECE</option>
-                      <option value="Mechanical Eng">Mechanical</option>
+                      <option value="Information Technology">Information Technology</option>
+                      <option value="Artificial Intelligence">Artificial Intelligence</option>
+                      <option value="Data Science">Data Science</option>
+                      <option value="Electronics & Communication">Electronics & Communication</option>
                     </select>
                   </div>
+
                   <div>
-                    <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Year of Study</label>
-                    <select id="reg-student-year" class="w-full brutalist-input px-3 py-2 text-sm font-primary font-semibold" required>
-                      <option value="1">1st Year</option>
-                      <option value="2">2nd Year</option>
-                      <option value="3" selected>3rd Year</option>
-                      <option value="4">4th Year</option>
-                      <option value="5">5th Year (PG)</option>
+                    <label class="block text-xs font-mono text-slate-400 mb-1">Year of Study:</label>
+                    <select id="reg-student-year" class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none" required>
+                      <option value="1">Year 1 (Freshman)</option>
+                      <option value="2">Year 2 (Sophomore)</option>
+                      <option value="3" selected>Year 3 (Junior)</option>
+                      <option value="4">Year 4 (Senior)</option>
                     </select>
                   </div>
+
+                  <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-semibold text-xs tracking-wider uppercase transition-all shadow-glow-cyan">
+                    Create Student Profile
+                  </button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- 6. ORGANIZER COMMAND HUB (view-organizer) -->
+        <!-- ============================================================== -->
+        <section id="view-organizer" class="dashboard-view space-y-6 max-w-7xl mx-auto">
+          
+          <!-- Organizer Sub-Navigation -->
+          <div class="glass-panel p-5 rounded-xl border border-slate-800 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+            <div>
+              <h2 class="font-display text-xl font-bold text-white flex items-center gap-2">
+                <span>🛠️</span> Organizer Command Center
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">Author competitions, add challenge problems, and inspect submissions.</p>
+            </div>
+
+            <!-- Sub Tabs -->
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="window.app.switchOrganizerTab('create-comp')" id="tab-btn-create-comp" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-brand-500 text-white transition-all">
+                ➕ Host Competition
+              </button>
+              <button onclick="window.app.switchOrganizerTab('add-challenge')" id="tab-btn-add-challenge" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-dark-850 text-slate-300 hover:text-white transition-all">
+                🧩 Add Challenges
+              </button>
+              <button onclick="window.app.switchOrganizerTab('review-submissions')" id="tab-btn-review-submissions" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-dark-850 text-slate-300 hover:text-white transition-all">
+                📝 Grade Submissions
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab 1: Create Competition -->
+          <div id="tab-create-comp" class="glass-panel p-6 sm:p-8 rounded-2xl border border-slate-800 max-w-3xl mx-auto">
+            <h3 class="font-display font-bold text-lg text-white mb-4 border-b border-slate-800 pb-2">
+              Launch a New Tournament
+            </h3>
+
+            <form onsubmit="window.app.handleCreateCompetition(event)" class="space-y-4">
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1">Competition Title:</label>
+                  <input type="text" id="new-comp-name" placeholder="e.g. Winter Algorithmic Invitational" class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none" required>
                 </div>
-
-                <button type="submit" class="w-full brutalist-btn bg-brand-primary text-text-on-primary py-3 text-xs uppercase hover:bg-brand-secondary tracking-wider font-extrabold mt-2">
-                  + Register Student
-                </button>
-              </form>
-            </div>
-          </div>
-
-          <!-- Enrolled Students Directory -->
-          <div class="lg:col-span-7">
-            <div class="border-4 border-brand-accent bg-neutral-surface shadow-dark">
-              <div class="bg-brand-accent text-text-on-primary px-6 py-3 flex items-center justify-between font-primary font-bold text-xs uppercase">
-                <span>Enrolled Students Directory</span>
-                <span id="student-count-badge" class="bg-brand-primary text-white px-2 py-0.5 text-[10px]">0 Students</span>
-              </div>
-
-              <div class="p-4 max-h-[420px] overflow-y-auto divide-y divide-neutral-border" id="students-list-container">
-                <!-- Students injected by JS -->
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ORGANIZER CONSOLE SECTION -->
-    <section id="organizer" class="py-14 px-6 bg-neutral-surface1 border-t-4 border-brand-accent">
-      <div class="max-w-7xl mx-auto">
-
-        <div class="mb-8">
-          <div class="flex items-center gap-3 mb-2">
-            <div class="h-2 w-16 bg-brand-accent"></div>
-            <span class="font-primary font-bold uppercase tracking-wider text-xs text-brand-accent">Host & Manage</span>
-          </div>
-          <h2 class="font-display text-4xl sm:text-6xl font-bold text-text-primary tracking-tight">
-            ORGANIZER CONSOLE
-          </h2>
-          <p class="text-sm text-text-secondary mt-1">
-            Create new competitions, define question challenges and marks, and review or manually evaluate student submissions.
-          </p>
-        </div>
-
-        <!-- Organizer Tabs -->
-        <div class="flex flex-wrap gap-3 mb-6">
-          <button onclick="window.app.switchOrganizerTab('create-comp')" id="tab-btn-create-comp" class="brutalist-btn bg-brand-accent text-text-on-primary px-4 py-2 text-xs">
-            1. Host Competition
-          </button>
-          <button onclick="window.app.switchOrganizerTab('add-challenge')" id="tab-btn-add-challenge" class="brutalist-btn bg-neutral-surface text-text-primary px-4 py-2 text-xs hover:bg-neutral-surface1">
-            2. Add Challenges & Points
-          </button>
-          <button onclick="window.app.switchOrganizerTab('review-submissions')" id="tab-btn-review-submissions" class="brutalist-btn bg-neutral-surface text-text-primary px-4 py-2 text-xs hover:bg-neutral-surface1">
-            3. Review & Grade Submissions
-          </button>
-        </div>
-
-        <!-- Tab 1: Create Competition -->
-        <div id="tab-create-comp" class="border-4 border-brand-accent bg-neutral-surface p-6 sm:p-8 shadow-dark">
-          <h3 class="font-display text-3xl font-bold text-brand-primary mb-4">
-            CREATE NEW COMPETITION
-          </h3>
-
-          <form onsubmit="window.app.handleCreateCompetition(event)" class="space-y-4">
-            <div class="grid md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Competition Name</label>
-                <input type="text" id="new-comp-name" placeholder="e.g. Turing Algothon 2026" class="w-full brutalist-input px-3 py-2 text-sm" required>
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1">Category / Type:</label>
+                  <select id="new-comp-type" class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none">
+                    <option value="Coding Contest">Coding Contest</option>
+                    <option value="Technical Challenge">Technical Challenge</option>
+                    <option value="Quiz">Technical Quiz</option>
+                    <option value="Hackathon">Hackathon</option>
+                  </select>
+                </div>
               </div>
 
               <div>
-                <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Competition Type</label>
-                <select id="new-comp-type" class="w-full brutalist-input px-3 py-2 text-sm font-primary font-semibold">
-                  <option value="Coding Contest">Coding Contest</option>
-                  <option value="Quiz">Technical Quiz</option>
-                  <option value="Technical Challenge">Technical Challenge</option>
-                  <option value="Hackathon">Hackathon Arena</option>
+                <label class="block text-xs font-mono text-slate-400 mb-1">Description:</label>
+                <textarea id="new-comp-desc" rows="3" placeholder="Brief rules and event focus..." class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none" required></textarea>
+              </div>
+
+              <div class="grid sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1">Start Time:</label>
+                  <input type="datetime-local" id="new-comp-start" class="w-full p-2 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none" required>
+                </div>
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1">End Time:</label>
+                  <input type="datetime-local" id="new-comp-end" class="w-full p-2 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none" required>
+                </div>
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1">Participant Cap:</label>
+                  <input type="number" id="new-comp-max" value="50" min="5" max="500" class="w-full p-2 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none" required>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-brand-500 to-amber-500 hover:from-brand-600 hover:to-amber-600 text-white font-semibold text-xs tracking-wider uppercase transition-all shadow-glow-orange">
+                Publish Competition
+              </button>
+            </form>
+          </div>
+
+          <!-- Tab 2: Add Challenge -->
+          <div id="tab-add-challenge" class="glass-panel p-6 sm:p-8 rounded-2xl border border-slate-800 max-w-3xl mx-auto hidden">
+            <h3 class="font-display font-bold text-lg text-white mb-4 border-b border-slate-800 pb-2">
+              Add Problem to Competition
+            </h3>
+
+            <form onsubmit="window.app.handleAddChallenge(event)" class="space-y-4">
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1">Target Competition:</label>
+                  <select id="challenge-target-comp" class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none" required>
+                    <!-- Dynamically populated -->
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1">Points Value:</label>
+                  <input type="number" id="new-ch-points" value="20" min="5" max="100" class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none" required>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono text-slate-400 mb-1">Challenge Title:</label>
+                <input type="text" id="new-ch-title" placeholder="e.g. Reverse Linked List" class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none" required>
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono text-slate-400 mb-1">Problem Description:</label>
+                <textarea id="new-ch-desc" rows="3" placeholder="Provide problem constraints and format requirements..." class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none" required></textarea>
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono text-slate-400 mb-1">Expected Correct Answer:</label>
+                <input type="text" id="new-ch-answer" placeholder="Exact answer or key for automated evaluation" class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white font-mono focus:border-brand-500 focus:outline-none" required>
+              </div>
+
+              <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs tracking-wider uppercase transition-all shadow-glow-cyan">
+                Attach Challenge Question
+              </button>
+            </form>
+          </div>
+
+          <!-- Tab 3: Review & Grade Submissions -->
+          <div id="tab-review-submissions" class="glass-panel rounded-2xl border border-slate-800 overflow-hidden shadow-card hidden">
+            <div class="p-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-4 bg-dark-900/60">
+              <div>
+                <h4 class="font-bold text-sm text-white">Submissions Review & Grading</h4>
+                <p class="text-xs text-slate-400">Inspect answers and perform manual score adjustments.</p>
+              </div>
+              <div class="flex items-center gap-2 bg-dark-850 border border-slate-800 px-3 py-1.5 rounded-lg text-xs">
+                <span class="font-mono text-slate-400">Filter Contest:</span>
+                <select id="review-comp-select" class="bg-transparent font-medium text-white outline-none cursor-pointer max-w-xs" onchange="window.app.loadSubmissionsForReview(this.value)">
+                  <!-- Dynamically populated -->
                 </select>
               </div>
             </div>
 
-            <div>
-              <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Description & Rules</label>
-              <textarea id="new-comp-desc" rows="3" placeholder="Explain the rules, topic domain, and scoring guidelines..." class="w-full brutalist-input p-3 text-sm font-primary" required></textarea>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="border-b border-slate-800 text-slate-400 font-mono text-[11px] bg-dark-850/60">
+                    <th class="py-2.5 px-4 font-semibold">Sub ID</th>
+                    <th class="py-2.5 px-4 font-semibold">Student</th>
+                    <th class="py-2.5 px-4 font-semibold">Challenge</th>
+                    <th class="py-2.5 px-4 font-semibold">Submitted Answer</th>
+                    <th class="py-2.5 px-4 font-semibold">Score</th>
+                    <th class="py-2.5 px-4 font-semibold">Status</th>
+                    <th class="py-2.5 px-4 font-semibold text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="review-submissions-tbody" class="divide-y divide-slate-800/60 font-sans">
+                  <tr>
+                    <td colspan="7" class="py-6 text-center text-slate-500">Select a competition to review submissions.</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-
-            <div class="grid sm:grid-cols-3 gap-4">
-              <div>
-                <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Start Time</label>
-                <input type="datetime-local" id="new-comp-start" class="w-full brutalist-input px-3 py-2 text-sm" required>
-              </div>
-
-              <div>
-                <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">End Time</label>
-                <input type="datetime-local" id="new-comp-end" class="w-full brutalist-input px-3 py-2 text-sm" required>
-              </div>
-
-              <div>
-                <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Max Participants</label>
-                <input type="number" id="new-comp-max" value="50" min="1" max="1000" class="w-full brutalist-input px-3 py-2 text-sm" required>
-              </div>
-            </div>
-
-            <div class="pt-2">
-              <button type="submit" class="brutalist-btn bg-brand-primary text-text-on-primary px-8 py-3 text-xs uppercase hover:bg-brand-secondary">
-                🚀 Publish Competition
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Tab 2: Add Challenge -->
-        <div id="tab-add-challenge" class="border-4 border-brand-accent bg-neutral-surface p-6 sm:p-8 shadow-dark hidden">
-          <h3 class="font-display text-3xl font-bold text-brand-secondary mb-4">
-            ADD CHALLENGE QUESTION
-          </h3>
-
-          <form onsubmit="window.app.handleAddChallenge(event)" class="space-y-4">
-            <div class="grid md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Select Target Competition</label>
-                <select id="challenge-target-comp" class="w-full brutalist-input px-3 py-2 text-sm font-primary font-semibold" required>
-                  <!-- Populated dynamically -->
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Challenge Title</label>
-                <input type="text" id="new-ch-title" placeholder="e.g. Longest Substring Without Repeats" class="w-full brutalist-input px-3 py-2 text-sm" required>
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Question Description / Problem Statement</label>
-              <textarea id="new-ch-desc" rows="4" placeholder="Detail the problem, inputs, and desired solution format..." class="w-full brutalist-input p-3 text-sm font-mono" required></textarea>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Points / Marks</label>
-                <input type="number" id="new-ch-points" value="20" min="1" max="100" class="w-full brutalist-input px-3 py-2 text-sm" required>
-              </div>
-
-              <div>
-                <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Correct Answer (For Automated Grading)</label>
-                <input type="text" id="new-ch-answer" placeholder="Exact expected answer / output string" class="w-full brutalist-input px-3 py-2 text-sm font-mono" required>
-              </div>
-            </div>
-
-            <div class="pt-2">
-              <button type="submit" class="brutalist-btn bg-brand-secondary text-text-on-primary px-8 py-3 text-xs uppercase hover:bg-brand-primary">
-                + Add Challenge to Competition
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Tab 3: Review & Grade Submissions -->
-        <div id="tab-review-submissions" class="border-4 border-brand-accent bg-neutral-surface shadow-dark hidden">
-          <div class="bg-brand-accent text-text-on-primary px-6 py-4 flex flex-wrap items-center justify-between gap-4 font-primary">
-            <div>
-              <span class="font-bold text-sm uppercase tracking-wider">Submissions Grading Console</span>
-              <span class="text-xs text-neutral-border block">Review answers and override scores</span>
-            </div>
-            <select id="review-comp-select" class="brutalist-input px-3 py-1.5 text-xs text-brand-accent font-bold" onchange="window.app.loadSubmissionsForReview(this.value)">
-              <!-- Populated dynamically -->
-            </select>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr class="border-b-2 border-brand-accent bg-neutral-surface1 font-primary font-bold uppercase">
-                  <th class="py-3 px-4">Sub ID</th>
-                  <th class="py-3 px-4">Student</th>
-                  <th class="py-3 px-4">Challenge</th>
-                  <th class="py-3 px-4">Submitted Answer</th>
-                  <th class="py-3 px-4">Score</th>
-                  <th class="py-3 px-4">Status</th>
-                  <th class="py-3 px-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="review-submissions-tbody" class="divide-y divide-neutral-border font-primary">
-                <!-- Populated dynamically -->
-              </tbody>
-            </table>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- 7. TOURNAMENT HISTORY (view-history) -->
+        <!-- ============================================================== -->
+        <section id="view-history" class="dashboard-view space-y-6 max-w-7xl mx-auto">
+          
+          <div class="glass-panel p-5 rounded-xl border border-slate-800 flex items-center justify-between">
+            <div>
+              <h2 class="font-display text-xl font-bold text-white flex items-center gap-2">
+                <span>📜</span> Tournament Hall of Fame & Archives
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">Historical records and podium standings of completed competitions.</p>
+            </div>
           </div>
-        </div>
 
-      </div>
-    </section>
-
-    <!-- COMPETITION HISTORY & ARCHIVE SECTION (Skewed) -->
-    <section id="history" class="py-14 px-6 skew-section bg-neutral-surface1 border-y-4 border-brand-accent">
-      <div class="max-w-7xl mx-auto">
-
-        <div class="mb-8">
-          <div class="flex items-center gap-3 mb-2">
-            <div class="h-2 w-16 bg-brand-primary"></div>
-            <span class="font-primary font-bold uppercase tracking-wider text-xs text-brand-primary">Hall of Fame</span>
+          <!-- History Podiums and Records -->
+          <div id="history-container" class="space-y-6">
+            <!-- Dynamically populated -->
           </div>
-          <h2 class="font-display text-4xl sm:text-6xl font-bold text-text-primary tracking-tight">
-            COMPETITION HISTORY
-          </h2>
-          <p class="text-sm text-text-secondary mt-1">
-            Archived records of completed competitions, final podiums, scores, and historical student achievements.
-          </p>
-        </div>
 
-        <!-- History Cards List -->
-        <div id="history-container" class="space-y-6">
-          <!-- Populated by JS -->
-        </div>
+        </section>
 
-      </div>
-    </section>
+      </main>
 
-  </main>
+    </div>
+
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODALS -->
+  <!-- ============================================================== -->
 
   <!-- Registration Modal -->
-  <div id="registration-modal" class="fixed inset-0 bg-brand-accent/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
-    <div class="border-4 border-brand-accent bg-neutral-surface max-w-lg w-full p-6 shadow-dark">
-      <div class="flex items-center justify-between border-b-2 border-brand-accent pb-3 mb-4">
-        <h3 class="font-display text-2xl font-bold text-brand-accent">
-          REGISTER FOR CONTEST
-        </h3>
-        <button onclick="window.app.closeRegistrationModal()" class="text-2xl font-bold text-brand-accent hover:text-brand-primary">
-          &times;
-        </button>
+  <div id="registration-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="glass-panel p-6 sm:p-8 rounded-2xl border border-slate-700 max-w-md w-full shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-display font-bold text-lg text-white">Enroll in Competition</h3>
+        <button onclick="window.app.closeRegistrationModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
       </div>
 
-      <div class="mb-4">
-        <div id="modal-comp-name" class="font-primary font-bold text-base text-brand-primary mb-1">Competition Title</div>
-        <div id="modal-comp-meta" class="text-xs text-text-secondary">Details</div>
+      <div>
+        <h4 id="modal-comp-name" class="font-bold text-brand-400 text-sm">Competition Title</h4>
+        <p id="modal-comp-meta" class="text-xs text-slate-400 mt-0.5">Coding Contest • Closes Soon</p>
       </div>
 
-      <div class="mb-6">
-        <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Select Enrolled Student</label>
-        <select id="modal-student-select" class="w-full brutalist-input px-3 py-2 text-sm font-primary font-semibold">
-          <!-- Populated dynamically -->
+      <div class="space-y-2">
+        <label class="block text-xs font-mono text-slate-400">Select Student to Register:</label>
+        <select id="modal-student-select" class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none">
+          <!-- Dynamically populated -->
         </select>
-        <p class="text-[11px] text-text-secondary mt-1 font-primary">
-          Don't see your name? Register in the <a href="#students" onclick="window.app.closeRegistrationModal()" class="text-brand-primary font-bold underline">Student Portal</a> first.
-        </p>
       </div>
 
-      <div class="flex gap-3 justify-end">
-        <button onclick="window.app.closeRegistrationModal()" class="brutalist-btn bg-neutral-surface text-text-secondary px-4 py-2 text-xs">
-          Cancel
+      <div class="flex items-center gap-3 pt-2">
+        <button onclick="window.app.confirmRegistration()" class="flex-1 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-xs tracking-wider uppercase transition-colors">
+          Confirm Enrollment
         </button>
-        <button onclick="window.app.confirmRegistration()" class="brutalist-btn bg-brand-primary text-text-on-primary px-6 py-2 text-xs hover:bg-brand-secondary">
-          Confirm Registration
+        <button onclick="window.app.closeRegistrationModal()" class="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">
+          Cancel
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Manual Grading Modal -->
-  <div id="grading-modal" class="fixed inset-0 bg-brand-accent/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
-    <div class="border-4 border-brand-accent bg-neutral-surface max-w-md w-full p-6 shadow-dark">
-      <div class="flex items-center justify-between border-b-2 border-brand-accent pb-3 mb-4">
-        <h3 class="font-display text-2xl font-bold text-brand-accent">
-          GRADE SUBMISSION
-        </h3>
-        <button onclick="window.app.closeGradingModal()" class="text-2xl font-bold text-brand-accent hover:text-brand-primary">
-          &times;
-        </button>
+  <!-- Grading Modal -->
+  <div id="grading-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="glass-panel p-6 rounded-2xl border border-slate-700 max-w-sm w-full shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-display font-bold text-base text-white">Override / Grade Submission</h3>
+        <button onclick="window.app.closeGradingModal()" class="text-slate-400 hover:text-white">✕</button>
       </div>
 
       <input type="hidden" id="grade-sub-id">
 
-      <div class="space-y-4 mb-6">
+      <div class="space-y-3">
         <div>
-          <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Score Awarded</label>
-          <input type="number" id="grade-sub-score" min="0" max="100" class="w-full brutalist-input px-3 py-2 text-sm font-bold" required>
+          <label class="block text-xs font-mono text-slate-400 mb-1">Score Awarded:</label>
+          <input type="number" id="grade-sub-score" min="0" max="100" class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none">
         </div>
 
         <div>
-          <label class="block text-xs font-primary font-bold uppercase text-text-secondary mb-1">Evaluation Status</label>
-          <select id="grade-sub-status" class="w-full brutalist-input px-3 py-2 text-sm font-primary font-semibold">
+          <label class="block text-xs font-mono text-slate-400 mb-1">Evaluation Status:</label>
+          <select id="grade-sub-status" class="w-full p-2.5 rounded-xl bg-dark-850 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none">
             <option value="EVALUATED">EVALUATED</option>
             <option value="PENDING">PENDING</option>
-            <option value="REJECTED">REJECTED</option>
+            <option value="FLAGGED">FLAGGED</option>
           </select>
         </div>
       </div>
 
-      <div class="flex gap-3 justify-end">
-        <button onclick="window.app.closeGradingModal()" class="brutalist-btn bg-neutral-surface text-text-secondary px-4 py-2 text-xs">
-          Cancel
+      <div class="flex items-center gap-2 pt-2">
+        <button onclick="window.app.saveGrading()" class="flex-1 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-xs tracking-wider uppercase transition-colors">
+          Save Grade
         </button>
-        <button onclick="window.app.saveGrading()" class="brutalist-btn bg-brand-primary text-text-on-primary px-6 py-2 text-xs hover:bg-brand-secondary">
-          Save Score
+        <button onclick="window.app.closeGradingModal()" class="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">
+          Cancel
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="bg-brand-accent text-neutral-background pt-10 pb-8 mt-12 border-t-8 border-brand-primary">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="grid md:grid-cols-4 gap-8 mb-8">
-        <div class="md:col-span-2">
-          <h3 class="font-display text-4xl font-bold mb-2 text-brand-primary">CAMPUS CHALLENGE ARENA</h3>
-          <p class="text-neutral-border text-xs leading-relaxed max-w-md">
-            Centralized college competition ecosystem. Conducting coding contests, quizzes, technical challenges, and live leaderboards with strict JDBC data validations and MySQL storage.
-          </p>
-        </div>
-        <div>
-          <h4 class="font-primary font-bold mb-3 uppercase tracking-wider text-brand-secondary text-xs">Database Schema</h4>
-          <ul class="space-y-1.5 text-xs text-neutral-border font-mono">
-            <li>• STUDENTS</li>
-            <li>• COMPETITIONS</li>
-            <li>• CHALLENGES</li>
-            <li>• COMPETITION_REGISTRATIONS</li>
-            <li>• SUBMISSIONS</li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="font-primary font-bold mb-3 uppercase tracking-wider text-brand-secondary text-xs">System Status</h4>
-          <ul class="space-y-1.5 text-xs text-neutral-border font-primary">
-            <li>Database: <span class="text-emerald-400 font-bold">campus_challenge</span></li>
-            <li>Connectivity: <span class="text-emerald-400 font-bold">MySQL Connector/J</span></li>
-            <li>Framework: <span class="text-white">Spring Boot 3.3 • Java 17</span></li>
-            <li>Server Port: <span class="text-brand-secondary font-bold">8080</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="border-t-2 border-brand-primary/40 pt-5 flex flex-col sm:flex-row items-center justify-between text-xs font-primary text-neutral-border gap-3">
-        <p>© 2026 Campus Challenge Arena. Designed with Brutalist Aesthetics.</p>
-        <p>College Contest Management & Real-Time Leaderboard System</p>
-      </div>
-    </div>
-  </footer>
-
+  <!-- Application Logic -->
   <script src="/app.js"></script>
 </body>
 </html>
