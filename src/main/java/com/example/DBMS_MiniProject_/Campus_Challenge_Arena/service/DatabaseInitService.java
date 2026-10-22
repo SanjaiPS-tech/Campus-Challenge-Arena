@@ -7,11 +7,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
+@Order(1)
 public class DatabaseInitService implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseInitService.class);
